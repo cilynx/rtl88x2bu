@@ -1225,7 +1225,7 @@ s8 rtw_rf_get_kfree_tx_gain_offset(_adapter *padapter, u8 path, u8 ch)
 		kfree_offset = kfree_data->bb_gain[bb_gain_sel][path];
 		if (IS_HARDWARE_TYPE_8723D(padapter))
 			RTW_INFO("%s path:%s, ch:%u, bb_gain_sel:%d, kfree_offset:%d\n"
-				, __func__, (path == 0)?"S1":"S0", 
+				, __func__, (path == 0)?"S1":"S0",
 				ch, bb_gain_sel, kfree_offset);
 		else
 			RTW_INFO("%s path:%u, ch:%u, bb_gain_sel:%d, kfree_offset:%d\n"
@@ -1256,7 +1256,7 @@ void rtw_rf_set_tx_gain_offset(_adapter *adapter, u8 path, s8 offset)
 		target_path = path;
 		RTW_INFO("kfree gain_offset 0x55:0x%x ", rtw_hal_read_rfreg(adapter, target_path, 0x55, 0xffffffff));
 	}
-	
+
 	switch (rtw_get_chip_type(adapter)) {
 #ifdef CONFIG_RTL8723D
 	case RTL8723D:
@@ -1311,7 +1311,7 @@ void rtw_rf_set_tx_gain_offset(_adapter *adapter, u8 path, s8 offset)
 		rtw_warn_on(1);
 		break;
 	}
-	
+
 	if (IS_HARDWARE_TYPE_8723D(adapter)) {
 		if (path == PPG_8723D_S1)
 			val32 = rtw_hal_read_rfreg(adapter, target_path, 0x55, 0xffffffff);

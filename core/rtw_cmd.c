@@ -1329,13 +1329,13 @@ static void rtw_ft_validate_akm_type(_adapter  *padapter,
 
 	/*IEEE802.11-2012 Std. Table 8-101-AKM suite selectors*/
 	if (rtw_ft_valid_akm(padapter, psecuritypriv->rsn_akm_suite_type)) {
-		ptmp = rtw_get_ie(&pnetwork->network.IEs[12], 
+		ptmp = rtw_get_ie(&pnetwork->network.IEs[12],
 				_MDIE_, &tmp_len, (pnetwork->network.IELength-12));
 		if (ptmp) {
 			pft_roam->mdid = *(u16 *)(ptmp+2);
 			pft_roam->ft_cap = *(ptmp+4);
 
-			RTW_INFO("FT: target " MAC_FMT " mdid=(0x%2x), capacity=(0x%2x)\n", 
+			RTW_INFO("FT: target " MAC_FMT " mdid=(0x%2x), capacity=(0x%2x)\n",
 				MAC_ARG(pnetwork->network.MacAddress), pft_roam->mdid, pft_roam->ft_cap);
 			rtw_ft_set_flags(padapter, RTW_FT_PEER_EN);
 
@@ -1350,7 +1350,7 @@ static void rtw_ft_validate_akm_type(_adapter  *padapter,
 		/* It could be a non-FT connection */
 		rtw_ft_clr_flags(padapter, (RTW_FT_PEER_EN|RTW_FT_PEER_OTD_EN));
 		rtw_ft_reset_status(padapter);
-	}	
+	}
 }
 #endif
 
@@ -1470,9 +1470,9 @@ u8 rtw_joinbss_cmd(_adapter  *padapter, struct wlan_network *pnetwork)
 	pqospriv->qos_option = 0;
 
 	if (pregistrypriv->wmm_enable) {
-#ifdef CONFIG_WMMPS_STA	
+#ifdef CONFIG_WMMPS_STA
 		rtw_uapsd_use_default_setting(padapter);
-#endif /* CONFIG_WMMPS_STA */		
+#endif /* CONFIG_WMMPS_STA */
 		tmp_len = rtw_restruct_wmm_ie(padapter, &pnetwork->network.IEs[0], &psecnetwork->IEs[0], pnetwork->network.IELength, psecnetwork->IELength);
 
 		if (psecnetwork->IELength != tmp_len) {
@@ -2922,7 +2922,7 @@ u8 _lps_chk_by_tp(_adapter *adapter, u8 from_timer)
 #endif
 
 static u8 _lps_chk_by_pkt_cnts(_adapter *padapter, u8 from_timer, u8 bBusyTraffic)
-{		
+{
 	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
 	u8	bEnterPS = _FALSE;
 
@@ -3203,7 +3203,7 @@ static void dynamic_update_bcn_check(_adapter *padapter)
 
 		if (_FALSE != ATOMIC_READ(&pmlmepriv->olbc)
 			&& _FALSE != ATOMIC_READ(&pmlmepriv->olbc_ht)) {
-					
+
 			if (rtw_ht_operation_update(padapter) > 0) {
 				update_beacon(padapter, _HT_CAPABILITY_IE_, NULL, _FALSE);
 				update_beacon(padapter, _HT_ADD_INFO_IE_, NULL, _TRUE);
@@ -3827,7 +3827,7 @@ inline u8 p2p_cancel_roch_cmd(_adapter *adapter, u64 cookie, struct wireless_dev
 #endif /* CONFIG_IOCTL_CFG80211 */
 #endif /* CONFIG_P2P */
 
-#ifdef CONFIG_IOCTL_CFG80211 
+#ifdef CONFIG_IOCTL_CFG80211
 inline u8 rtw_mgnt_tx_cmd(_adapter *adapter, u8 tx_ch, u8 no_cck, const u8 *buf, size_t len, int wait_ack, u8 flags)
 {
 	struct cmd_obj *cmdobj;
@@ -4013,7 +4013,7 @@ void rtw_dfs_ch_switch_hdl(struct dvobj_priv *dvobj)
 	if (ifbmp_s) {
 		_adapter *iface;
 		int i;
-	
+
 		for (i = 0; i < dvobj->iface_nums; i++) {
 			iface = dvobj->padapters[i];
 			if (!iface || !(ifbmp_s & BIT(iface->iface_id)))
@@ -5345,7 +5345,7 @@ static s32 rtw_req_per_cmd_hdl(_adapter *adapter)
 	}
 
 	/* group_macid: always be 0 in NIC, so only pass macid_bitmap.m0
-	 * rpt_type: 0 includes all info in 1, use 0 for now 
+	 * rpt_type: 0 includes all info in 1, use 0 for now
 	 * macid_bitmap: pass m0 only for NIC
 	 */
 	ret = rtw_hal_set_req_per_rpt_cmd(adapter, 0, 0, req_macid_bmp.m0);

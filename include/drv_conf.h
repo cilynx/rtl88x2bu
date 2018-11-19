@@ -475,11 +475,11 @@
 	#endif
 #endif
 
-#define CONFIG_RTW_TPT_MODE 
+#define CONFIG_RTW_TPT_MODE
 
 #ifdef CONFIG_PCI_BCN_POLLING
 #define CONFIG_BCN_ICF
-#endif 
+#endif
 
 #ifndef CONFIG_PCI_MSI
 #define CONFIG_RTW_PCI_MSI_DISABLE

@@ -1744,7 +1744,7 @@ void BlinkHandler(PLED_USB pLed)
 		, rtw_is_surprise_removed(padapter)?"True":"False" );*/
 		return;
 	}
-	
+
 	#ifdef CONFIG_SW_LED
 	// led_enable 1 is normal blinking so don't cause always on/off
 	if (padapter->registrypriv.led_ctrl != 1) {

@@ -203,7 +203,7 @@ static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz, u8 bag
 #ifdef CONFIG_WMMPS_STA
 			if (pattrib->trigger_frame)
 				SET_TX_DESC_TRI_FRAME_8822B (ptxdesc, 1);
-#endif /* CONFIG_WMMPS_STA */			
+#endif /* CONFIG_WMMPS_STA */
 
 		} else {
 			/*
@@ -436,7 +436,7 @@ static s32 rtw_dump_xframe(PADAPTER padapter, struct xmit_frame *pxmitframe)
 			/* download rsvd page or fw */
 			inner_ret = rtw_write_port(padapter, ff_hwaddr, w_sz, (unsigned char *)pxmitbuf);
 		else
-			enqueue_pending_xmitbuf(pxmitpriv, pxmitbuf);		
+			enqueue_pending_xmitbuf(pxmitpriv, pxmitbuf);
 #else
 		inner_ret = rtw_write_port(padapter, ff_hwaddr, w_sz, (unsigned char *)pxmitbuf);
 #endif
@@ -745,7 +745,7 @@ agg_end:
 		/* download rsvd page or fw */
 		rtw_write_port(padapter, ff_hwaddr, pbuf_tail, (u8 *)pxmitbuf);
 	else
-		enqueue_pending_xmitbuf(pxmitpriv, pxmitbuf);		
+		enqueue_pending_xmitbuf(pxmitpriv, pxmitbuf);
 #else
 	rtw_write_port(padapter, ff_hwaddr, pbuf_tail, (u8 *)pxmitbuf);
 #endif

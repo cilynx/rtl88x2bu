@@ -102,7 +102,7 @@ PHY_GetTxPowerIndex_8192F(
 );
 
 VOID
-PHY_GetTxPowerLevel8192F(			
+PHY_GetTxPowerLevel8192F(
 	IN	PADAPTER		Adapter,
 	OUT s32				*powerlevel
 );

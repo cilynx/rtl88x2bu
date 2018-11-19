@@ -41,7 +41,7 @@ enum NHM_PID {
 		nhm.mntr_time = time;\
 	} while (0)
 
-	
+
 #define init_acs_clm(clm, time) \
 	init_clm_param(clm, CLM_ACS, CLM_LV_2, time)
 
@@ -50,7 +50,7 @@ enum NHM_PID {
 
 #define init_11K_high_nhm(nhm, time) \
 	init_nhm_param(nhm, NHM_EXCLUDE_TXON, NHM_EXCLUDE_CCA, NHM_CNT_ALL, IEEE_11K_HIGH, NHM_LV_2, time)
-	
+
 #define init_11K_low_nhm(nhm, time) \
 		init_nhm_param(nhm, NHM_EXCLUDE_TXON, NHM_EXCLUDE_CCA, NHM_CNT_ALL, IEEE_11K_LOW, NHM_LV_2, time)
 

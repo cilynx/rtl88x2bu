@@ -18,7 +18,7 @@
 #define C2H_TYPE_REG 0
 #define C2H_TYPE_PKT 1
 
-/* 
+/*
 * C2H event format:
 * Fields    TRIGGER    PAYLOAD    SEQ    PLEN    ID
 * BITS     [127:120]    [119:16]   [15:8]  [7:4]  [3:0]
@@ -32,7 +32,7 @@
 #define SET_C2H_PLEN(_c2h, _val)	SET_BITS_TO_LE_1BYTE(((u8*)(_c2h)), 4, 4, _val)
 #define SET_C2H_SEQ(_c2h, _val)		SET_BITS_TO_LE_1BYTE(((u8*)(_c2h)) + 1 , 0, 8, _val)
 
-/* 
+/*
 * C2H event format:
 * Fields    TRIGGER     PLEN      PAYLOAD    SEQ      ID
 * BITS    [127:120]  [119:112]  [111:16]   [15:8]   [7:0]

@@ -2922,7 +2922,7 @@ static int rtw_recv_indicatepkt_check(union recv_frame *rframe, u8 *ehdr_pos, u3
 					RTW_INFO("0x%x ",ehdr_pos[i+ETHERNET_HEADER_SIZE]);
 				RTW_INFO("\n");
 				}
-				
+
 			}
 		}
 	}
@@ -4871,7 +4871,7 @@ void rx_query_phy_status(
 						precvframe->u.hdr.psta = psta;
 					rx_process_phy_info(padapter, precvframe);
 				}
-			} else 
+			} else
 #endif
 			{
 					if (psta)

@@ -98,7 +98,7 @@ ifeq ($(CONFIG_WLAN_HAL_8822CE),y)
 	_PHYDM_FILES += phydm/halrf/rtl8822c/halrf_8822c.o
 	_PHYDM_FILES += phydm/halrf/rtl8822c/halrf_iqk_8822c.o
 	_PHYDM_FILES += phydm/halrf/rtl8822c/halrf_dpk_8822c.o
-	_PHYDM_FILES += phydm/halrf/rtl8822c/halrf_rfk_init_8822c.o	
+	_PHYDM_FILES += phydm/halrf/rtl8822c/halrf_rfk_init_8822c.o
 	ifeq ($(CONFIG_RTL_ODM_WLAN_DRIVER),y)
 		_PHYDM_FILES += \
 		phydm/rtl8822c/halhwimg8822c_bb.o\

@@ -806,7 +806,7 @@ void odm_txpowertracking_check_ce(void *dm_void)
 		dm->rf_calibrate_info.tm_trigger = 1;
 		return;
 	}
-	
+
 	if (dm->support_ic_type &
 			(ODM_RTL8822C | ODM_RTL8814B))
 		return;

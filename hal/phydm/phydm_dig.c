@@ -135,7 +135,7 @@ void phydm_dig_damping_chk(void *dm_void)
 
 	switch (igi_bitmap_4bit) {
 	case 0x5:
-	/*@ 4b'0101 
+	/*@ 4b'0101
 	* IGI:[3]down(0x24)->[2]up(0x26)->[1]down(0x24)->[0]up(0x26)->[new](Lock @ 0x26)
 	* FA: [3] >high1   ->[2] <low   ->[1] >high1   ->[0] <low   ->[new]   <low
 	*

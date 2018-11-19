@@ -339,7 +339,7 @@ struct pwrctrl_priv {
 
 #ifdef CONFIG_WMMPS_STA
 	u8 wmm_smart_ps;
-#endif /* CONFIG_WMMPS_STA */	
+#endif /* CONFIG_WMMPS_STA */
 
 	u32	alives;
 	_workitem cpwm_event;

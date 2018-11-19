@@ -976,11 +976,11 @@ unsigned int OnAction_p2p(_adapter *padapter, union recv_frame *precv_frame);
 #ifdef CONFIG_RTW_80211R
 void rtw_ft_update_bcn(_adapter *padapter, union recv_frame *precv_frame);
 void rtw_ft_start_clnt_join(_adapter *padapter);
-u8 rtw_ft_update_rsnie(_adapter *padapter, u8 bwrite, 
+u8 rtw_ft_update_rsnie(_adapter *padapter, u8 bwrite,
 	struct pkt_attrib *pattrib, u8 **pframe);
-void rtw_ft_build_auth_req_ies(_adapter *padapter, 
+void rtw_ft_build_auth_req_ies(_adapter *padapter,
 	struct pkt_attrib *pattrib, u8 **pframe);
-void rtw_ft_build_assoc_req_ies(_adapter *padapter, 
+void rtw_ft_build_assoc_req_ies(_adapter *padapter,
 	u8 is_reassoc, struct pkt_attrib *pattrib, u8 **pframe);
 u8 rtw_ft_update_auth_rsp_ies(_adapter *padapter, u8 *pframe, u32 len);
 void rtw_ft_start_roam(_adapter *padapter, u8 *pTargetAddr);

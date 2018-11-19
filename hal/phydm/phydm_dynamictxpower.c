@@ -221,7 +221,7 @@ u8 phydm_search_min_power_index(void *dm_void)
 #endif
 				if (gain_index == 0xff) {
 					min_gain_index = 0x20;
-					PHYDM_DBG(dm, DBG_DYN_TXPWR, 
+					PHYDM_DBG(dm, DBG_DYN_TXPWR,
 						"Error Gain idx!! Rewite to: ((%d))\n", min_gain_index);
 					break;
 				}
@@ -349,7 +349,7 @@ void phydm_dtp_per_sta(void *dm_void, u8 macid)
 		PHYDM_DBG(dm, DBG_DYN_TXPWR,
 			  "STA=%d , RSSI: %d , GetPwrLv: %d\n", macid,
 			  rssi->rssi, dtp->sta_tx_high_power_lvl);
-		if (dtp->sta_tx_high_power_lvl == tx_high_pwr_level_unchange 
+		if (dtp->sta_tx_high_power_lvl == tx_high_pwr_level_unchange
 			|| dtp->sta_tx_high_power_lvl == dtp->sta_last_dtp_lvl) {
 			dtp->sta_tx_high_power_lvl = dtp->sta_last_dtp_lvl;
 			PHYDM_DBG(dm, DBG_DYN_TXPWR,

@@ -333,7 +333,7 @@ u8 usb_read8(struct intf_hdl *pintfhdl, u32 addr)
 
 	wvalue = (u16)(addr & 0x0000ffff);
 	len = 1;
-	
+
 /* WLANON PAGE0_REG needs to add an offset 0x8000 */
 #if defined(CONFIG_RTL8710B)
 	if(wvalue >= 0x0000 && wvalue < 0x0100)
@@ -363,7 +363,7 @@ u16 usb_read16(struct intf_hdl *pintfhdl, u32 addr)
 
 	wvalue = (u16)(addr & 0x0000ffff);
 	len = 2;
-	
+
 /* WLANON PAGE0_REG needs to add an offset 0x8000 */
 #if defined(CONFIG_RTL8710B)
 	if(wvalue >= 0x0000 && wvalue < 0x0100)
@@ -394,7 +394,7 @@ u32 usb_read32(struct intf_hdl *pintfhdl, u32 addr)
 
 	wvalue = (u16)(addr & 0x0000ffff);
 	len = 4;
-	
+
 /* WLANON PAGE0_REG needs to add an offset 0x8000 */
 #if defined(CONFIG_RTL8710B)
 	if(wvalue >= 0x0000 && wvalue < 0x0100)
@@ -426,7 +426,7 @@ int usb_write8(struct intf_hdl *pintfhdl, u32 addr, u8 val)
 	wvalue = (u16)(addr & 0x0000ffff);
 	len = 1;
 	data = val;
-	
+
 /* WLANON PAGE0_REG needs to add an offset 0x8000 */
 #if defined(CONFIG_RTL8710B)
 	if(wvalue >= 0x0000 && wvalue < 0x0100)

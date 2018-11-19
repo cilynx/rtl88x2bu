@@ -125,7 +125,7 @@ void rtl8822b_set_FwPwrMode_cmd(PADAPTER adapter, u8 psmode)
 #ifdef CONFIG_WMMPS_STA
 	struct mlme_priv	*pmlmepriv = &(adapter->mlmepriv);
 	struct qos_priv	*pqospriv = &pmlmepriv->qospriv;
-#endif /* CONFIG_WMMPS_STA */	
+#endif /* CONFIG_WMMPS_STA */
 	u8 h2c[RTW_HALMAC_H2C_MAX_SIZE] = {0};
 	u8 PowerState = 0, awake_intvl = 1, rlbm = 0;
 	u8 allQueueUAPSD = 0;
@@ -143,7 +143,7 @@ void rtl8822b_set_FwPwrMode_cmd(PADAPTER adapter, u8 psmode)
 			psmode == PS_MODE_ACTIVE ? pwrpriv->current_lps_hw_port_id : hw_port);
 
 	if (psmode == PS_MODE_MIN || psmode == PS_MODE_MAX) {
-#ifdef CONFIG_WMMPS_STA	
+#ifdef CONFIG_WMMPS_STA
 		if (rtw_is_wmmps_mode(adapter)) {
 			mode = 2;
 
@@ -156,8 +156,8 @@ void rtl8822b_set_FwPwrMode_cmd(PADAPTER adapter, u8 psmode)
 #endif /* CONFIG_WMMPS_STA */
 		{
 			mode = 1;
-#ifdef CONFIG_WMMPS_STA	
-			/* For WMMPS test case, the station must retain sleep mode to capture buffered data on LPS mechanism */ 
+#ifdef CONFIG_WMMPS_STA
+			/* For WMMPS test case, the station must retain sleep mode to capture buffered data on LPS mechanism */
 			if ((pqospriv->uapsd_tid & BIT_MASK_TID_TC)  != 0)
 				smart_ps = 0;
 			else
@@ -222,7 +222,7 @@ void rtl8822b_set_FwPwrMode_cmd(PADAPTER adapter, u8 psmode)
 	else
 		fw_psmode_str = "UNSPECIFIED";
 
-	RTW_INFO(FUNC_ADPT_FMT": fw ps mode = %s, drv ps mode = %d, rlbm = %d , smart_ps = %d, allQueueUAPSD = %d\n", 
+	RTW_INFO(FUNC_ADPT_FMT": fw ps mode = %s, drv ps mode = %d, rlbm = %d , smart_ps = %d, allQueueUAPSD = %d\n",
 				FUNC_ADPT_ARG(adapter), fw_psmode_str, psmode, rlbm, smart_ps, allQueueUAPSD);
 
 	SET_PWR_MODE_SET_CMD_ID(h2c, CMD_ID_SET_PWR_MODE);
@@ -274,7 +274,7 @@ void rtl8822b_set_BcnEarly_C2H_Rpt_cmd(PADAPTER padapter, u8 enable)
 	SET_PWR_MODE_SET_RLBM(u1H2CSetPwrMode, 1);
 	SET_PWR_MODE_SET_BCN_EARLY_RPT(u1H2CSetPwrMode, enable);
 	SET_PWR_MODE_SET_PWR_STATE(u1H2CSetPwrMode, 0x0C);
-	
+
 	rtw_halmac_send_h2c(adapter_to_dvobj(padapter), u1H2CSetPwrMode);
 }
 #endif
@@ -406,7 +406,7 @@ C2HTxRPTHandler_8822b(
 		RTW_WARN("%s,%d: No gotc2h!\n", __FUNCTION__, __LINE__);
 		return;
 	}
-	
+
 	adapter_ognl = rtw_get_iface_by_id(GET_PRIMARY_ADAPTER(Adapter), pstapriv->c2h_adapter_id);
 	if(!adapter_ognl) {
 		RTW_WARN("%s: No adapter!\n", __FUNCTION__);
@@ -452,7 +452,7 @@ C2HSPC_STAT_8822b(
 		RTW_WARN("%s, %d: No gotc2h!\n", __FUNCTION__, __LINE__);
 		return;
 	}
-	
+
 	adapter_ognl = rtw_get_iface_by_id(GET_PRIMARY_ADAPTER(Adapter), pstapriv->c2h_adapter_id);
 	if(!adapter_ognl) {
 		RTW_WARN("%s: No adapter!\n", __FUNCTION__);

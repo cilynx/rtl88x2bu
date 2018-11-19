@@ -1863,7 +1863,7 @@ void halrf_dpk_track(void *dm_void)
 #if (RTL8822C_SUPPORT == 1)
 	case ODM_RTL8822C:
 		dpk_track_8822c(dm);
-		break;		
+		break;
 #endif
 
 #if (RTL8195B_SUPPORT == 1)
@@ -1889,7 +1889,7 @@ void halrf_dpk_track(void *dm_void)
 #if (RTL8198F_SUPPORT == 1)
 	case ODM_RTL8198F:
 		dpk_track_8198f(dm);
-		break;		
+		break;
 #endif
 
 #endif
@@ -1931,7 +1931,7 @@ void halrf_dpk_reload(void *dm_void)
 	case ODM_RTL8198F:
 		if (dpk_info->dpk_path_ok > 0)
 			dpk_reload_8198f(dm);
-		break;		
+		break;
 #endif
 
 #endif

@@ -102,7 +102,7 @@ void rtw_sw_led_blink_uc_trx_only(LED_DATA *led)
 				led->BlinkingLedState = RTW_LED_OFF;
 			else
 				led->BlinkingLedState = RTW_LED_ON;
-			
+
 			if (bStopBlinking) {
 				led->CurrLedState = RTW_LED_OFF;
 				led->bLedBlinkInProgress = _FALSE;
@@ -225,7 +225,7 @@ void rtw_led_set_iface_en_mask(_adapter *adapter, u8 mask)
 void rtw_led_set_ctl_en_mask(_adapter *adapter, u32 ctl_mask)
 {
 	struct led_priv *ledpriv = adapter_to_led(adapter);
-	
+
 #if CONFIG_RTW_SW_LED_TRX_DA_CLASSIFY
 	if (ctl_mask & BIT(LED_CTL_TX))
 		ctl_mask |= BIT(LED_CTL_UC_TX) | BIT(LED_CTL_BMC_TX);

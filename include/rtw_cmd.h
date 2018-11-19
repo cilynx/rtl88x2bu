@@ -213,7 +213,7 @@ u8 p2p_cancel_roch_cmd(_adapter *adapter, u64 cookie, struct wireless_dev *wdev,
 #endif /* CONFIG_IOCTL_CFG80211 */
 #endif /* CONFIG_P2P */
 
-#ifdef CONFIG_IOCTL_CFG80211 
+#ifdef CONFIG_IOCTL_CFG80211
 u8 rtw_mgnt_tx_cmd(_adapter *adapter, u8 tx_ch, u8 no_cck, const u8 *buf, size_t len, int wait_ack, u8 flags);
 struct mgnt_tx_parm {
 	u8 tx_ch;

@@ -210,7 +210,7 @@ static int rtw_mesh_path_sel_frame_tx(enum rtw_mpath_frame_type mpath_action, u8
 				      const u8 *originator_addr, u32 originator_sn,
 				      u8 target_flags, const u8 *target,
 				      u32 target_sn, const u8 *da, u8 hopcount, u8 ttl,
-				      u32 lifetime, u32 metric, u32 preq_id, 
+				      u32 lifetime, u32 metric, u32 preq_id,
 				      _adapter *adapter)
 {
 	struct xmit_priv *pxmitpriv = &(adapter->xmitpriv);
@@ -390,7 +390,7 @@ int rtw_mesh_path_error_tx(_adapter *adapter,
 	dump_mgntframe(adapter, pmgntframe);
 
 	RTW_HWMP_DBG("TX PERR toward "MAC_FMT", ra = "MAC_FMT"\n", MAC_ARG(target), MAC_ARG(ra));
-	
+
 	return 0;
 }
 
@@ -616,7 +616,7 @@ void rtw_ieee80211s_update_metric(_adapter *adapter, u8 mac_id,
 	sta->metrics.total_pkt = total_pkt;
 
 	rtw_ewma_err_rate_add(&sta->metrics.err_rate, per);
-	if (rtw_ewma_err_rate_read(&sta->metrics.err_rate) > 
+	if (rtw_ewma_err_rate_read(&sta->metrics.err_rate) >
 			RTW_LINK_FAIL_THRESH)
 		rtw_mesh_plink_broken(sta);
 }
@@ -1018,7 +1018,7 @@ static void rtw_hwmp_rann_frame_process(_adapter *adapter,
 			_rtw_memcpy(path->add_chk_rann_snd_addr,
 				    path->rann_snd_addr, ETH_ALEN);
 			preq_node_flag |= RTW_PREQ_Q_F_CHK;
-			
+
 		}
 #endif
 		rtw_mesh_queue_preq(path, preq_node_flag);
@@ -1159,7 +1159,7 @@ static u32 rtw_hwmp_route_info_get(_adapter *adapter,
 			rtw_mesh_path_activate(path);
 #ifdef CONFIG_RTW_MESH_ADD_ROOT_CHK
 			if (path->is_root && (action == RTW_MPATH_PREP)) {
-				_rtw_memcpy(path->rann_snd_addr, 
+				_rtw_memcpy(path->rann_snd_addr,
 				mgmt->addr2, ETH_ALEN);
 				path->rann_metric = new_metric;
 			}

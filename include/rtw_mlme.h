@@ -604,7 +604,7 @@ enum rtw_ft_capability {
 
 #define rtw_ft_roam(a)	\
 	((rtw_to_roam(a) > 0) && rtw_ft_chk_flags(a, RTW_FT_PEER_EN))
-	
+
 #define rtw_ft_valid_akm(a, t)	\
 	((rtw_ft_chk_flags(a, RTW_FT_EN)) && \
 	(((t) == 3) || ((t) == 4)))
@@ -617,7 +617,7 @@ enum rtw_ft_capability {
 	((rtw_ft_chk_flags(a, RTW_FT_OTD_EN))	\
 	&& ((a)->mlmepriv.ft_roam.ft_roam_on_expired == _FALSE)	\
 	&& ((a)->mlmepriv.ft_roam.ft_cap & 0x01))
-	
+
 #define rtw_ft_otd_roam(a) \
 	rtw_ft_chk_flags(a, RTW_FT_PEER_OTD_EN)
 
@@ -630,7 +630,7 @@ enum rtw_ft_capability {
 
 struct ft_roam_info {
 	u16	mdid;
-	u8	ft_cap;	
+	u8	ft_cap;
 	/*b0: FT over DS, b1: Resource Req Protocol Cap, b2~b7: Reserved*/
 	u8	updated_ft_ies[RTW_FT_MAX_IE_SZ];
 	u16	updated_ft_ies_len;
@@ -641,7 +641,7 @@ struct ft_roam_info {
 	u8	ft_flags;
 	u32 ft_status;
 	u32 ft_req_retry_cnt;
-	bool ft_updated_bcn;	
+	bool ft_updated_bcn;
 };
 #endif
 
@@ -692,7 +692,7 @@ struct nb_rpt_hdr {
 	u32 bss_info;
 	u8 reg_class;
 	u8 ch_num;
-	u8 phy_type;	
+	u8 phy_type;
 };
 
 /*IEEE Std 80211v, Figure 7-95e2¡XBSS Termination Duration subelement field format */
@@ -1069,7 +1069,7 @@ void rtw_sta_timeout_event_callback(_adapter *adapter, u8 *pbuf);
 #endif /* CONFIG_IEEE80211W */
 #ifdef CONFIG_RTW_80211R
 void rtw_ft_info_init(struct ft_roam_info *pft);
-u8 rtw_ft_chk_roaming_candidate(_adapter *padapter, 
+u8 rtw_ft_chk_roaming_candidate(_adapter *padapter,
 	struct wlan_network *competitor);
 void rtw_ft_update_stainfo(_adapter *padapter, WLAN_BSSID_EX *pnetwork);
 void rtw_ft_reassoc_event_callback(_adapter *padapter, u8 *pbuf);
