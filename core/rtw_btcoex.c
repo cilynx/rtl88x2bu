@@ -506,7 +506,7 @@ u8 rtw_btcoex_get_ant_div_cfg(PADAPTER padapter)
 	PHAL_DATA_TYPE pHalData;
 
 	pHalData = GET_HAL_DATA(padapter);
-	
+
 	return (pHalData->AntDivCfg == 0) ? _FALSE : _TRUE;
 }
 

@@ -783,7 +783,7 @@ odm_iq_calibrate(
 {
 	void	*adapter = dm->adapter;
 	struct dm_iqk_info	*iqk_info = &dm->IQK_info;
-	
+
 	RF_DBG(dm, DBG_RF_IQK, "=>%s\n",__FUNCTION__);
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)

@@ -506,7 +506,7 @@ ssize_t proc_set_new_bcn_max(struct file *file, const char __user *buffer, size_
 #ifdef CONFIG_POWER_SAVING
 int proc_get_ps_info(struct seq_file *m, void *v);
 ssize_t proc_set_ps_info(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
-#ifdef CONFIG_WMMPS_STA	
+#ifdef CONFIG_WMMPS_STA
 int proc_get_wmmps_info(struct seq_file *m, void *v);
 ssize_t proc_set_wmmps_info(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 #endif /* CONFIG_WMMPS_STA */

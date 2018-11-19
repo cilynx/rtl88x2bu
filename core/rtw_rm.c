@@ -1879,7 +1879,7 @@ int retrieve_radio_meas_result(struct rm_obj *prm)
 		/* IPI 0~10 */
 		for (i=0;i<11;i++)
 			prm->p.ipi[i] = hal_data->acs.nhm[ch][i];
-		
+
 #else
 		val8 = 0;
 		prm->p.anpi = val8;
@@ -2285,7 +2285,7 @@ static void rm_dbg_add_meas(_adapter *padapter, char *s)
 	if (prm->q.action_code == RM_ACT_RADIO_MEAS_REQ)
 		sprintf(pstr(s), "\nAdd rmid=%x, meas_type=%s ok\n",
 			prm->rmid, rm_type_req_name(prm->q.m_type));
-	else  if (prm->q.action_code == RM_ACT_NB_REP_REQ) 
+	else  if (prm->q.action_code == RM_ACT_NB_REP_REQ)
 		sprintf(pstr(s), "\nAdd rmid=%x, meas_type=bcn_req ok\n",
 			prm->rmid);
 

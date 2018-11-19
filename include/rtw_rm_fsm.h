@@ -267,7 +267,7 @@ struct data_buf {
 
 struct rm_obj {
 
-	/* aid << 16 
+	/* aid << 16
 		|diag_token << 8
 		|B(1) 1/0:All_AID/UNIC
 		|B(0) 1/0:RM_MASTER/RM_SLAVE */

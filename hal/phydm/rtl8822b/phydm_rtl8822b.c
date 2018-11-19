@@ -507,7 +507,7 @@ void phydm_set_weighting_mcc(u8 b_equal_weighting, void *dm_void, u8 port)
 	mcc_dm->mcc_reg_id[4] = 0x4;
 	mcc_dm->mcc_dm_reg[4] = 0x81b;
 	mcc_dm->mcc_dm_val[4][port] = val_0x81b;
-	
+
 }
 void phydm_dyn_ant_dec_mcc(u8 port, u8 rssi_in, void *dm_void)
 {
@@ -573,11 +573,11 @@ u8 phydm_check(void *dm_void)
 				mcc_macid = mcc_dm->sta_macid[i][j];
 				p_entry = dm->phydm_sta_info[mcc_macid];
 				if (p_entry == NULL) {
-					PHYDM_DBG(dm, DBG_COMP_MCC, "Pentry == NULL(mac=%d)\n", 
+					PHYDM_DBG(dm, DBG_COMP_MCC, "Pentry == NULL(mac=%d)\n",
 						mcc_dm->sta_macid[i][j]);
 					return _FAIL;
 				}
-				PHYDM_DBG(dm, DBG_COMP_MCC, "undecorated_smoothed_pwdb=%d\n", 
+				PHYDM_DBG(dm, DBG_COMP_MCC, "undecorated_smoothed_pwdb=%d\n",
 					p_entry->rssi_stat.rssi);
 				if (p_entry->rssi_stat.rssi < rssi_tmp_min[i])
 					rssi_tmp_min[i] = p_entry->rssi_stat.rssi;
@@ -615,7 +615,7 @@ void phydm_mcc_h2ccmd(void *dm_void)
 	u8 h2c_mcc[H2C_MAX_LENGTH];
 
 	if (mcc_dm->mcc_rf_channel[0] == 0xff && mcc_dm->mcc_rf_channel[1] == 0xff) {
-		PHYDM_DBG(dm, DBG_COMP_MCC, "MCC channel Error\n");	
+		PHYDM_DBG(dm, DBG_COMP_MCC, "MCC channel Error\n");
 		return;
 	}
 	/* Set Channel number */
@@ -655,8 +655,8 @@ void phydm_mcc_h2ccmd(void *dm_void)
 					h2c_mcc[5], h2c_mcc[6]);
 		}
 	}
-	
-	
+
+
 }
 
 void phydm_mcc_ctrl(void *dm_void)
@@ -716,7 +716,7 @@ void phydm_mcc_switch(void *dm_void)
 	}
 	/* Set IGI*/
 	phydm_mcc_igi_cal(dm);
-	
+
 	/* Set Antenna Gain*/
 #if (RTL8822B_SUPPORT == 1)
 	phydm_dynamic_ant_weighting_mcc_8822b(dm);
@@ -760,7 +760,7 @@ phydm_pw_sat_8822b(
 
 			odm_set_bb_reg(dm, 0x830, MASKDWORD, 0x79a0eaaa);
 			odm_set_bb_reg(dm, 0xe58, BIT(20), 0x1);
-				
+
 			odm_set_bb_reg(dm, 0xcb0, (MASKBYTE2 | MASKLWORD),
 					0x177717);
 			odm_set_bb_reg(dm, 0xeb0, (MASKBYTE2 | MASKLWORD),

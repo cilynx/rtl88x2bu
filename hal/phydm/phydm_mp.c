@@ -272,7 +272,7 @@ void phydm_mp_set_single_carrier(void *dm_void, boolean is_single_carrier)
 			odm_set_bb_reg(dm, R_0x100, 0x100, 0x0);
 			odm_set_bb_reg(dm, R_0x100, 0x100, 0x1);
 		}
-	} 
+	}
 }
 void phydm_mp_reset_rx_counters_phy(void *dm_void)
 {
@@ -306,9 +306,9 @@ void phydm_mp_get_tx_ok(void *dm_void, u32 rate_index)
 void phydm_mp_get_rx_ok(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct phydm_mp *mp = &dm->dm_mp_table;	
+	struct phydm_mp *mp = &dm->dm_mp_table;
 
-	u32 cck_ok = 0, ofdm_ok = 0, ht_ok = 0, vht_ok = 0;	
+	u32 cck_ok = 0, ofdm_ok = 0, ht_ok = 0, vht_ok = 0;
 	u32 cck_err = 0, ofdm_err = 0, ht_err = 0, vht_err = 0;
 
 	if (dm->support_ic_type & ODM_IC_JGR3_SERIES) {
@@ -316,7 +316,7 @@ void phydm_mp_get_rx_ok(void *dm_void)
 		ofdm_ok = odm_get_bb_reg(dm, R_0x2c14, 0xffff);
 		ht_ok = odm_get_bb_reg(dm, R_0x2c10, 0xffff);
 		vht_ok = odm_get_bb_reg(dm, R_0x2c0c, 0xffff);
-  
+
 		cck_err = odm_get_bb_reg(dm, R_0x2c04, 0xffff0000);
 		ofdm_err = odm_get_bb_reg(dm, R_0x2c14, 0xffff0000);
 		ht_err = odm_get_bb_reg(dm, R_0x2c10, 0xffff0000);
@@ -326,7 +326,7 @@ void phydm_mp_get_rx_ok(void *dm_void)
 		ofdm_ok = odm_get_bb_reg(dm, R_0xf14, 0x3FFF);
 		ht_ok = odm_get_bb_reg(dm, R_0xf10, 0x3FFF);
 		vht_ok = odm_get_bb_reg(dm, R_0xf0c, 0x3FFF);
-  
+
 		cck_err = odm_get_bb_reg(dm, R_0xf04, 0x3FFF0000);
 		ofdm_err = odm_get_bb_reg(dm, R_0xf14, 0x3FFF0000);
 		ht_err = odm_get_bb_reg(dm, R_0xf10, 0x3FFF0000);
@@ -335,7 +335,7 @@ void phydm_mp_get_rx_ok(void *dm_void)
 		cck_ok = odm_get_bb_reg(dm, R_0xf88, MASKDWORD);
 		ofdm_ok = odm_get_bb_reg(dm, R_0xf94, 0xffff);
 		ht_ok = odm_get_bb_reg(dm, R_0xf90, 0xffff);
-	    
+
 		cck_err = odm_get_bb_reg(dm, R_0xf84, MASKDWORD);
 		ofdm_err = odm_get_bb_reg(dm, R_0xf94, 0xffff0000);
 		ht_err = odm_get_bb_reg(dm, R_0xf90, 0xffff0000);

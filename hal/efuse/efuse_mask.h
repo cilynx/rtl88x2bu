@@ -62,11 +62,11 @@
 	#if defined(CONFIG_RTL8821C)
 		#include "rtl8821c/HalEfuseMask8821C_USB.h"
 	#endif
-	
+
 	#if defined(CONFIG_RTL8710B)
 		#include "rtl8710b/HalEfuseMask8710B_USB.h"
 	#endif
-	
+
 	#if defined(CONFIG_RTL8192F)
 		#include "rtl8192f/HalEfuseMask8192F_USB.h"
 	#endif

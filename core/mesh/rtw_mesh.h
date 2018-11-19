@@ -376,7 +376,7 @@ struct rtw_mesh_info {
 	systime next_perr;
 	/* Last used Path Discovery ID */
 	u32 preq_id;
-	
+
 	ATOMIC_T mpaths;
 	struct rtw_mesh_table *mesh_paths;
 	struct rtw_mesh_table *mpp_paths;

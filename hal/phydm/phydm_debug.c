@@ -2201,7 +2201,7 @@ void phydm_basic_dbg_message(void *dm_void)
 
 	/*if (!(dm->debug_components & DBG_CMN))*/
 	/*	return;				*/
-	
+
 
 	if (dm->cmn_dbg_msg_cnt >= dm->cmn_dbg_msg_period) {
 		dm->cmn_dbg_msg_cnt = PHYDM_WATCH_DOG_PERIOD;

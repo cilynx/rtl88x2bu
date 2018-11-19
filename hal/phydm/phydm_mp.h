@@ -60,7 +60,7 @@ struct phydm_mp {
  * 1 ============================================================
  */
 enum TX_MODE_OFDM {
-	OFDM_OFF = 0,	
+	OFDM_OFF = 0,
 	OFDM_CONT_TX = 1,
 	OFDM_SINGLE_CARRIER = 2,
 	OFDM_SINGLE_TONE = 4,

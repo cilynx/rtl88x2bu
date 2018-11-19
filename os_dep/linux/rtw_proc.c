@@ -1033,15 +1033,15 @@ static int proc_get_turboedca_ctrl(struct seq_file *m, void *v)
 		u32 edca_param;
 
 		if (hal_data->dis_turboedca == 0)
-			RTW_PRINT_SEL(m, "Turbo-EDCA : %s\n", "Enable"); 
-		else 		
+			RTW_PRINT_SEL(m, "Turbo-EDCA : %s\n", "Enable");
+		else
 			RTW_PRINT_SEL(m, "Turbo-EDCA : %s, mode=%d, edca_param_mode=0x%x\n", "Disable", hal_data->dis_turboedca, hal_data->edca_param_mode);
 
 
 		rtw_hal_get_hwreg(padapter, HW_VAR_AC_PARAM_BE, (u8 *)(&edca_param));
 
 		_RTW_PRINT_SEL(m, "PARAM_BE:0x%x\n", edca_param);
-		
+
 	}
 
 	return 0;
@@ -1072,28 +1072,28 @@ static ssize_t proc_set_turboedca_ctrl(struct file *file, const char __user *buf
 		}
 
 		/*  0: enable turboedca,
-			1: disable turboedca, 
+			1: disable turboedca,
 			2: disable turboedca and setting EDCA parameter based on the input parameter
-			> 2 : currently reset to 0 */ 
-			
-		if (mode > 2) 
+			> 2 : currently reset to 0 */
+
+		if (mode > 2)
 			mode = 0;
 
 		hal_data->dis_turboedca = mode;
-		
+
 		hal_data->edca_param_mode = 0; /* init. value */
 
 		RTW_INFO("dis_turboedca mode = 0x%x\n", hal_data->dis_turboedca);
-		
+
 		if (num == 2) {
 
-			hal_data->edca_param_mode = param_mode;			
+			hal_data->edca_param_mode = param_mode;
 
 			RTW_INFO("param_mode = 0x%x\n", param_mode);
 		}
-		
+
 	}
-	
+
 	return count;
 
 }
@@ -1269,7 +1269,7 @@ ssize_t proc_set_macaddr_acl(struct file *file, const char __user *buffer, size_
 #define MAC_ACL_CMD_DEL		2
 #define MAC_ACL_CMD_CLR		3
 #define MAC_ACL_CMD_NUM		4
-	
+
 	static const char * const mac_acl_cmd_str[] = {
 		"mode",
 		"add",
@@ -1371,7 +1371,7 @@ ssize_t proc_set_macaddr_acl(struct file *file, const char __user *buffer, size_
 				 } else if (!is_bcast)
 					rtw_acl_add_sta(adapter, period, addr);
 			}
-		
+
 			c = strsep(&next, " \t");
 		}
 	}
@@ -2036,7 +2036,7 @@ static void rtw_set_tx_bw_mode(struct _ADAPTER *adapter, u8 bw_mode)
 	) {
 		/* RA mask update needed */
 		update = _TRUE;
-	}		
+	}
 	adapter->driver_tx_bw_mode = bw_mode;
 
 	if (update == _TRUE) {
@@ -3093,7 +3093,7 @@ static ssize_t proc_set_napi_th(struct file *file, const char __user *buffer, si
 
 	for (i = 0; i < dvobj->iface_nums; i++) {
 		iface = dvobj->padapters[i];
-		if (iface) {	
+		if (iface) {
 			if (buffer && !copy_from_user(tmp, buffer, count)) {
 				registry = &iface->registrypriv;
 				num = sscanf(tmp, "%d", &thrshld);
@@ -3615,7 +3615,7 @@ static void tpt_mode_default(struct _ADAPTER *adapter)
 	dvobj->scan_deny = _FALSE;
 
 	/* 2. back to original LPS mode */
-#ifdef CONFIG_LPS		
+#ifdef CONFIG_LPS
 	rtw_pm_set_lps(adapter, adapter->registrypriv.power_mgnt);
 #endif
 
@@ -3630,13 +3630,13 @@ static void rtw_tpt_mode(struct _ADAPTER *adapter)
 
 	if (dvobj->tpt_mode > 0) {
 
-		/* when enable each tpt mode 
+		/* when enable each tpt mode
 			1. scan deny
 			2. disable LPS */
-			
+
 		dvobj->scan_deny = _TRUE;
 
-#ifdef CONFIG_LPS		
+#ifdef CONFIG_LPS
 		rtw_pm_set_lps(adapter, PS_MODE_ACTIVE);
 #endif
 
@@ -3647,9 +3647,9 @@ static void rtw_tpt_mode(struct _ADAPTER *adapter)
 			tpt_mode_default(adapter);
 			break;
 		case 1: /* High TP*/
-			/*tpt_mode1(adapter);*/			 
+			/*tpt_mode1(adapter);*/
 			dvobj->edca_be_ul = 0x5e431c;
-			dvobj->edca_be_dl = 0x00431c;			 
+			dvobj->edca_be_dl = 0x00431c;
 			break;
 		case 2: /* noise */
 			/* tpt_mode2(adapter); */
@@ -3673,7 +3673,7 @@ static void rtw_tpt_mode(struct _ADAPTER *adapter)
 			rtw_set_tx_bw_mode(adapter, 0x20); /* for 2.4g, fixed tx_bw_mode to 20Mhz */
 			break;
 		default: /* default mode */
-			tpt_mode_default(adapter);		
+			tpt_mode_default(adapter);
 			break;
 	}
 
@@ -3706,7 +3706,7 @@ static ssize_t proc_set_tpt_mode(struct file *file, const char __user *buffer,
 	}
 
 	if (mode > MAX_TPT_MODE_NUM )
-		mode = 0;	
+		mode = 0;
 
 	RTW_PRINT("%s: previous mode =  %d\n",
 		  __FUNCTION__, dvobj->tpt_mode);
@@ -3976,7 +3976,7 @@ const struct rtw_proc_hdl adapter_proc_hdls[] = {
 	RTW_PROC_HDL_SSEQ("ps_info", proc_get_ps_info, proc_set_ps_info),
 #ifdef CONFIG_WMMPS_STA
 	RTW_PROC_HDL_SSEQ("wmmps_info", proc_get_wmmps_info, proc_set_wmmps_info),
-#endif /* CONFIG_WMMPS_STA */	
+#endif /* CONFIG_WMMPS_STA */
 #endif
 #ifdef CONFIG_TDLS
 	RTW_PROC_HDL_SSEQ("tdls_info", proc_get_tdls_info, NULL),

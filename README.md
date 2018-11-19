@@ -138,8 +138,8 @@ EOF
 
 $ iwconfig
 wlx74ee2ae24062  IEEE 802.11an  ESSID:"borg"  Nickname:"<WIFI@REALTEK>"
-          Mode:Master  Frequency:5.18 GHz  Access Point: 74:EE:2A:E2:40:62   
-          Bit Rate:144.4 Mb/s   Sensitivity:0/0  
+          Mode:Master  Frequency:5.18 GHz  Access Point: 74:EE:2A:E2:40:62
+          Bit Rate:144.4 Mb/s   Sensitivity:0/0
           Retry:off   RTS thr:off   Fragment thr:off
           Power Management:off
           Link Quality=0/100  Signal level=-100 dBm  Noise level=0 dBm

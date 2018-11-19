@@ -84,7 +84,7 @@ static void rtw_init_wireless_mode(_adapter *padapter)
 	struct hal_spec_t *hal_spec = GET_HAL_SPEC(padapter);
 	if(hal_spec->proto_cap & PROTO_CAP_11B)
 		proto_wireless_mode |= WIRELESS_11B;
-	
+
 	if(hal_spec->proto_cap & PROTO_CAP_11G)
 		proto_wireless_mode |= WIRELESS_11G;
 #ifdef CONFIG_80211AC_VHT
@@ -103,7 +103,7 @@ static void rtw_init_wireless_mode(_adapter *padapter)
 #endif
 
 #ifdef CONFIG_80211AC_VHT
-	if(hal_spec->proto_cap & PROTO_CAP_11AC) 
+	if(hal_spec->proto_cap & PROTO_CAP_11AC)
 		proto_wireless_mode |= WIRELESS_11AC;
 #endif
 	padapter->registrypriv.wireless_mode &= proto_wireless_mode;
@@ -119,7 +119,7 @@ void rtw_hal_def_value_init(_adapter *padapter)
 		padapter->hal_func.init_default_value(padapter);
 
 		rtw_init_hal_com_default_value(padapter);
-		
+
 		#ifdef CONFIG_FW_MULTI_PORT_SUPPORT
 		adapter_to_dvobj(padapter)->dft.port_id = 0xFF;
 		adapter_to_dvobj(padapter)->dft.mac_id = 0xFF;

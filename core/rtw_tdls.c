@@ -940,7 +940,7 @@ void rtw_tdls_set_ch_sw_oper_control(_adapter *padapter, u8 enable)
 	}
 	else
 		pHalData->ch_switch_offload = _FALSE;
-	
+
 	if (ATOMIC_READ(&padapter->tdlsinfo.chsw_info.chsw_on) != enable)
 		ATOMIC_SET(&padapter->tdlsinfo.chsw_info.chsw_on, enable);
 
@@ -1869,7 +1869,7 @@ sint On_TDLS_Setup_Req(_adapter *padapter, union recv_frame *precv_frame, struct
 		ptdls_sta = rtw_alloc_stainfo(pstapriv, psa);
 		if (ptdls_sta == NULL)
 			goto exit;
-		
+
 		ptdlsinfo->sta_cnt++;
 	}
 	else {

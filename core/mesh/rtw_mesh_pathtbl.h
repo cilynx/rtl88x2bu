@@ -42,7 +42,7 @@
  *	With this flag, It will try the last used rann_snd_addr
  * @RTW_MESH_PATH_PEER_AKA: only used toward a peer, only used in active keep
  *	alive mechanism. PREQ's da = path dst
- * 
+ *
  * RTW_MESH_PATH_RESOLVED is used by the mesh path timer to
  * decide when to stop or cancel the mesh path discovery.
  */

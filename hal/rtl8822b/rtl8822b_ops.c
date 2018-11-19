@@ -1395,7 +1395,7 @@ static void hw_var_set_bcn_func(PADAPTER adapter, u8 enable)
 		val8 |= BIT_EN_BCN_TRXRPT_V1_8822B;
 		rtw_write8(adapter, REG_FWHW_TXQ_CTRL_8822B, val8);
 
-		
+
 		switch (adapter->hw_port) {
 		case HW_PORT0:
 			val8 =  BIT_EN_BCN_FUNCTION_8822B | BIT_P0_EN_TXBCN_RPT_8822B;
@@ -3035,7 +3035,7 @@ u8 rtl8822b_gethaldefvar(PADAPTER adapter, HAL_DEF_VARIABLE variable, void *pval
 
 	/* support 1T STBC under 2TX */
 	case HAL_DEF_TX_STBC:
-#ifdef CONFIG_ALPHA_SMART_ANTENNA 
+#ifdef CONFIG_ALPHA_SMART_ANTENNA
 		*(u8 *)pval = 0;
 #else
 		if (hal->rf_type == RF_1T2R || hal->rf_type == RF_1T1R)
@@ -3394,7 +3394,7 @@ void rtl8822b_fill_txdesc_mgnt_bf(struct xmit_frame *frame, u8 *desc)
 	/*SET_TX_DESC_MACID_8822B(desc, pattrib->mac_id);*/ /* ad-hoc mode */
 	/*SET_TX_DESC_G_ID_8822B(desc, 63);*/
 	/*
-	 * partial AID of 1st STA, at infrastructure mode, either SU or MU; 
+	 * partial AID of 1st STA, at infrastructure mode, either SU or MU;
 	 * MACID, at ad-hoc mode
 	 *
 	 * For WMAC to restore the received CSI report of STA1.
@@ -3596,7 +3596,7 @@ static void fill_default_txdesc(struct xmit_frame *pxmitframe, u8 *pbuf)
 				SET_TX_DESC_DATA_SHORT_8822B(pbuf, 1);
 #ifdef CONFIG_IP_R_MONITOR
 			if((pattrib->ether_type == ETH_P_ARP) &&
-				(IsSupportedTxOFDM(adapter->registrypriv.wireless_mode))) 
+				(IsSupportedTxOFDM(adapter->registrypriv.wireless_mode)))
 				SET_TX_DESC_DATARATE_8822B(pbuf, MRateToHwRate(IEEE80211_OFDM_RATE_6MB));
 			 else
 #endif/*CONFIG_IP_R_MONITOR*/

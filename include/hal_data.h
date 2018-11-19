@@ -397,7 +397,7 @@ typedef struct hal_com_data {
 	u16	ForcedDataRate;	/* Force Data Rate. 0: Auto, 0x02: 1M ~ 0x6C: 54M. */
 	u8	bDumpRxPkt;
 	u8	bDumpTxPkt;
-	u8	dis_turboedca; /* 1: disable turboedca, 
+	u8	dis_turboedca; /* 1: disable turboedca,
 						  2: disable turboedca and setting EDCA parameter based on the input parameter*/
 	u32 edca_param_mode;
 
