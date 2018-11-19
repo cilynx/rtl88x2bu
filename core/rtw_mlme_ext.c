@@ -2136,14 +2136,15 @@ unsigned int OnAuth(_adapter *padapter, union recv_frame *precv_frame)
 			if (rtw_is_list_empty(&pstat->asoc_list) == _FALSE) {
 				rtw_list_delete(&pstat->asoc_list);
 				pstapriv->asoc_list_cnt--;
-				if (pstat->expire_to > 0)
+				if (pstat->expire_to > 0) {
 					;/* TODO: STA re_auth within expire_to */
+				}
 			}
 			_exit_critical_bh(&pstapriv->asoc_list_lock, &irqL);
 
-			if (seq == 1)
+			if (seq == 1) {
 				; /* TODO: STA re_auth and auth timeout */
-
+			}
 		}
 	}
 
