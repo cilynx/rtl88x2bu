@@ -6,10 +6,12 @@ Realtek's 5.6.1 source was found bundled with the [Cudy WU1200 AC1200 High Gain 
 
 Build confirmed on:
 
-```bash
-Nothing just yet
-````
-
+```
+Linux version 5.3.0-050300-generic (kernel@sita) (gcc version 9.2.1 20190909 (Ubuntu 9.2.1-8ubuntu1)) #201909152230 SMP Sun Sep 15 22:32:54 UTC 2019
+```
+```
+Linux version 5.2.0-2-amd64 (debian-kernel@lists.debian.org) (gcc version 8.3.0 (Debian 8.3.0-21)) #1 SMP Debian 5.2.9-2 (2019-08-21)
+```
 ## DKMS installation
 
 ```bash
