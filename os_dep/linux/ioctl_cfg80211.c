@@ -686,6 +686,7 @@ static int rtw_cfg80211_sync_iftype(_adapter *adapter)
 	return _SUCCESS;
 }
 
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(4, 20, 0))
 static u64 rtw_get_systime_us(void)
 {
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 39))
@@ -698,6 +699,7 @@ static u64 rtw_get_systime_us(void)
 	return ((u64)tv.tv_sec * 1000000) + tv.tv_usec;
 #endif
 }
+#endif
 
 /* Try to remove non target BSS's SR to reduce PBC overlap rate */
 static int rtw_cfg80211_clear_wps_sr_of_non_target_bss(_adapter *padapter, struct wlan_network *pnetwork, struct cfg80211_ssid *req_ssid)
@@ -790,8 +792,12 @@ struct cfg80211_bss *rtw_cfg80211_inform_bss(_adapter *padapter, struct wlan_net
 	if (0)
 		notify_timestamp = le64_to_cpu(*(u64 *)rtw_get_timestampe_from_ie(pnetwork->network.IEs));
 	else
-		notify_timestamp = rtw_get_systime_us();
-
+	#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 20, 0))
+			notify_timestamp = ktime_to_us(ktime_get_boottime());
+	#else
+			notify_timestamp = rtw_get_systime_us();
+	#endif
+	
 	notify_interval = le16_to_cpu(*(u16 *)rtw_get_beacon_interval_from_ie(pnetwork->network.IEs));
 	notify_capability = le16_to_cpu(*(u16 *)rtw_get_capability_from_ie(pnetwork->network.IEs));
 
