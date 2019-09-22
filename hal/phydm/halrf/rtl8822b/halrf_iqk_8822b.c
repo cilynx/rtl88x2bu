@@ -443,11 +443,11 @@ void _iqk_reload_iqk_setting_8822b(struct dm_struct *dm, u8 ch,
 				odm_write_4byte(dm, 0x1bd8, data);
 			}
 			if (idx == 0) {
-				report = ~(iqk->iqk_fail_report[ch][path][idx]);
+				report = !(iqk->iqk_fail_report[ch][path][idx]);
 				odm_set_bb_reg(dm, iqk_apply[path],
 					       BIT(0), report);
 			} else {
-				report = ~(iqk->iqk_fail_report[ch][path][idx]);
+				report = !(iqk->iqk_fail_report[ch][path][idx]);
 				odm_set_bb_reg(dm, iqk_apply[path],
 					       BIT(10), report);
 			}
