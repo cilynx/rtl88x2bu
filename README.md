@@ -1,3 +1,11 @@
+# Administrative Note
+
+As of upstream version 5.6.1, I'm moving away from individual repositories for each upstream version in favor of a single repository with branches for each upstream version.  Hopefully, this will help with clutter and URL consistency moving forward.  The archived repositories are available here:
+* [rtl88x2BU_WiFi_linux_v5.3.1_27678.20180430_COEX20180427-5959](https://github.com/cilynx/rtl88x2BU_WiFi_linux_v5.3.1_27678.20180430_COEX20180427-5959)
+* [rtl88x2BU_WiFi_linux_v5.2.4.4_26334.20180126_COEX20171012-5044](https://github.com/cilynx/rtl88x2BU_WiFi_linux_v5.2.4.4_26334.20180126_COEX20171012-5044)
+* [rtl88x2BU_WiFi_linux_v5.2.4.4_25643.20171212_COEX20171012-5044](https://github.com/cilynx/rtl88x2BU_WiFi_linux_v5.2.4.4_25643.20171212_COEX20171012-5044)
+* [rtl88x2BU_WiFi_linux_v5.2.4.1_22719_COEX20170518-4444.20170613](https://github.com/cilynx/rtl88x2BU_WiFi_linux_v5.2.4.1_22719_COEX20170518-4444.20170613)
+
 # Driver for rtl88x2bu wifi adaptors
 
 Updated driver for rtl88x2bu wifi adaptors based on Realtek's source distributed with myriad adapters.
