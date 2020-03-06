@@ -15,6 +15,9 @@ Realtek's 5.6.1 source was found bundled with the [Cudy WU1200 AC1200 High Gain 
 Build confirmed on:
 
 ```
+Linux ThinkPad-P52 5.4.0-9-generic #12-Ubuntu SMP Mon Dec 16 22:34:19 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+```
+```
 Linux version 5.3.0-050300-generic (kernel@sita) (gcc version 9.2.1 20190909 (Ubuntu 9.2.1-8ubuntu1)) #201909152230 SMP Sun Sep 15 22:32:54 UTC 2019
 ```
 ```
@@ -104,4 +107,50 @@ sudo systemctl enable hostapd
 sudo reboot
 ```
 
+If you want 802.11an speeds 144Mbps you could use this config below:
+```
+# Configure hostapd
+sudo tee /etc/hostapd/hostapd.conf <<EOF
+nterface=wlx74ee2ae24062
+driver=nl80211
+ssid=borg
+
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=2
+wpa_passphrase=toe54321
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP
+
+hw_mode=a
+channel=36
+wmm_enabled=1
+
+country_code=US
+
+require_ht=1
+ieee80211ac=1
+require_vht=1
+
+#This below is supposed to get us 867Mbps and works on rtl8814au doesn't work on this driver yet
+#vht_oper_chwidth=1
+#vht_oper_centr_freq_seg0_idx=157
+
+ieee80211n=1
+ieee80211ac=1
+EOF
+
+$ iwconfig 
+wlx74ee2ae24062  IEEE 802.11an  ESSID:"borg"  Nickname:"<WIFI@REALTEK>"
+          Mode:Master  Frequency:5.18 GHz  Access Point: 74:EE:2A:E2:40:62   
+          Bit Rate:144.4 Mb/s   Sensitivity:0/0  
+          Retry:off   RTS thr:off   Fragment thr:off
+          Power Management:off
+          Link Quality=0/100  Signal level=-100 dBm  Noise level=0 dBm
+          Rx invalid nwid:0  Rx invalid crypt:0  Rx invalid frag:0
+          Tx excessive retries:0  Invalid misc:0   Missed beacon:0
+
+```
 If you want to setup masquerading or bridging, check out [the official Raspberry Pi docs](https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md).
