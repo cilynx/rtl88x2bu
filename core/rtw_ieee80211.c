@@ -1707,7 +1707,7 @@ void dump_ht_cap_ie_content(void *sel, const u8 *buf, u32 buf_len)
 void dump_ht_cap_ie(void *sel, const u8 *ie, u32 ie_len)
 {
 	const u8 *ht_cap_ie;
-	sint ht_cap_ielen;
+	sint ht_cap_ielen = 0;
 
 	ht_cap_ie = rtw_get_ie(ie, WLAN_EID_HT_CAP, &ht_cap_ielen, ie_len);
 	if (!ie || ht_cap_ie != ie)
@@ -1740,7 +1740,7 @@ void dump_ht_op_ie_content(void *sel, const u8 *buf, u32 buf_len)
 void dump_ht_op_ie(void *sel, const u8 *ie, u32 ie_len)
 {
 	const u8 *ht_op_ie;
-	sint ht_op_ielen;
+	sint ht_op_ielen = 0;
 
 	ht_op_ie = rtw_get_ie(ie, WLAN_EID_HT_OPERATION, &ht_op_ielen, ie_len);
 	if (!ie || ht_op_ie != ie)
