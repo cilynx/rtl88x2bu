@@ -17,17 +17,21 @@ Build confirmed on:
 ```
 Linux version 5.4.0-4-amd64 (debian-kernel@lists.debian.org) (gcc version 9.2.1 20200203 (Debian 9.2.1-28)) #1 SMP Debian 5.4.19-1 (2020-02-13)
 ```
+
+## Simple Usage
+
+In order to make direct use of the driver it should suffice to build the driver
+with `make` and to load it with `insmod 88x2bu.ko`. This will allow you
+to use the driver directly without changing your system persistently.
+
+It might happen that your system freezes instantaneously. Ensure to not loose
+important work by saving and such beforehand.
+
 ## DKMS installation
 
-```bash
-cd rtl88x2bu
-VER=$(sed -n 's/\PACKAGE_VERSION="\(.*\)"/\1/p' dkms.conf)
-sudo rsync -rvhP ./ /usr/src/rtl88x2bu-${VER}
-sudo dkms add -m rtl88x2bu -v ${VER}
-sudo dkms build -m rtl88x2bu -v ${VER}
-sudo dkms install -m rtl88x2bu -v ${VER}
-sudo modprobe 88x2bu
-```
+If you want to have the driver available at startup, it will you convenient to
+register it in DKMS. This can be done completely automatically with the script
+`deploy.sh`.
 
 ## Raspberry Pi Access Point
 
