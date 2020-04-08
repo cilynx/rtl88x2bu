@@ -15,6 +15,9 @@ Realtek's 5.6.1 source was found bundled with the [Cudy WU1200 AC1200 High Gain 
 Build confirmed on:
 
 ```
+Linux 5.6.0-gentoo #1 SMP Tue Mar 31 09:56:02 JST 2020 GenuineIntel GNU/Linux gcc (Gentoo 9.3.0 p1) 9.3.0
+```
+```
 Linux ThinkPad-P52 5.4.0-9-generic #12-Ubuntu SMP Mon Dec 16 22:34:19 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
 ```
 ```
