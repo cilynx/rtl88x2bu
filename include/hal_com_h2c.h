@@ -110,6 +110,7 @@ enum h2c_cmd {
 	H2C_AOAC_RSVDPAGE3 = 0x88,
 	H2C_P2P_OFFLOAD_RSVD_PAGE = 0x8A,
 	H2C_P2P_OFFLOAD = 0x8B,
+	H2C_NLO_INFO = 0x8C,  /* for 3081 Chip*/
 #ifdef CONFIG_FW_HANDLE_TXBCN
 	H2C_FW_BCN_OFFLOAD = 0xBA,
 #endif
@@ -186,6 +187,8 @@ enum h2c_cmd {
 #endif /*DBG_FW_DEBUG_MSG_PKT*/
 
 #define H2C_SINGLE_CHANNELSWITCH_V2_LEN 2
+
+#define H2C_NLO_INFO_LEN 2
 
 #define eq_mac_addr(a, b)						(((a)[0] == (b)[0] && (a)[1] == (b)[1] && (a)[2] == (b)[2] && (a)[3] == (b)[3] && (a)[4] == (b)[4] && (a)[5] == (b)[5]) ? 1 : 0)
 #define cp_mac_addr(des, src)					((des)[0] = (src)[0], (des)[1] = (src)[1], (des)[2] = (src)[2], (des)[3] = (src)[3], (des)[4] = (src)[4], (des)[5] = (src)[5])
@@ -539,6 +542,11 @@ s32 rtw_hal_customer_str_write(_adapter *adapter, const u8 *cs);
 #define SET_H2CCMD_AOAC_RSVDPAGE_LOC_PROBE_PACKET(__pH2CCmd, __Value)	SET_BITS_TO_LE_1BYTE((__pH2CCmd)+1, 0, 8, __Value)
 #define SET_H2CCMD_AOAC_RSVDPAGE_LOC_SCAN_INFO(__pH2CCmd, __Value)	SET_BITS_TO_LE_1BYTE((__pH2CCmd)+2, 0, 8, __Value)
 #define SET_H2CCMD_AOAC_RSVDPAGE_LOC_SSID_INFO(__pH2CCmd, __Value)	SET_BITS_TO_LE_1BYTE((__pH2CCmd)+3, 0, 8, __Value)
+
+/* NLO SCAN offload for 8822B/8814A/8821C */
+#define SET_H2CCMD_NLO_FUN_EN(__pH2CCmd, __Value)                      SET_BITS_TO_LE_1BYTE((__pH2CCmd), 0, 1, __Value)
+#define SET_H2CCMD_NLO_PS_32K(__pH2CCmd, __Value)                      SET_BITS_TO_LE_1BYTE((__pH2CCmd), 1, 1, __Value)
+#define SET_H2CCMD_NLO_LOC_NLO_INFO(__pH2CCmd, __Value)        SET_BITS_TO_LE_1BYTE((__pH2CCmd)+1, 0, 8, __Value)
 #endif /* CONFIG_PNO_SUPPORT */
 
 #ifdef CONFIG_P2P_WOWLAN

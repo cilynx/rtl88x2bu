@@ -411,6 +411,9 @@ rtw_phydm_cfg_phy_para(
 #endif
 
 #if (RTL8192F_SUPPORT == 1)
+	#if (DM_ODM_SUPPORT_TYPE == ODM_CE)
+		#include "rtl8192f_hal.h"/*need to before rf.h*/
+	#endif
 	#include "rtl8192f/halhwimg8192f_mac.h"
 	#include "rtl8192f/halhwimg8192f_rf.h"
 	#include "rtl8192f/halhwimg8192f_bb.h"
@@ -421,9 +424,6 @@ rtw_phydm_cfg_phy_para(
 	#include "halrf/rtl8192f/halrf_8192f.h"
 	#if (DM_ODM_SUPPORT_TYPE == ODM_AP)
 		#include "halrf/rtl8192f/halrf_dpk_8192f.h"
-	#endif
-	#if (DM_ODM_SUPPORT_TYPE == ODM_CE)
-		#include "rtl8192f_hal.h"
 	#endif
 #endif
 

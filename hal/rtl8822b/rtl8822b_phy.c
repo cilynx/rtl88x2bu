@@ -529,6 +529,9 @@ void rtl8822b_phy_haldm_watchdog(PADAPTER adapter)
 	struct pwrctrl_priv *pwrpriv = adapter_to_pwrctl(adapter);
 	u8 lps_changed = _FALSE;
 	u8 in_lps = _FALSE;
+	PADAPTER current_lps_iface = NULL, iface = NULL;
+	struct dvobj_priv *dvobj = adapter_to_dvobj(adapter);
+	u8 i = 0;
 
 #ifdef CONFIG_MP_INCLUDED
 	/* for MP power tracking */
@@ -570,9 +573,16 @@ void rtl8822b_phy_haldm_watchdog(PADAPTER adapter)
 
 #ifdef CONFIG_LPS
 	if (pwrpriv->bLeisurePs && bFwCurrentInPSMode && pwrpriv->pwr_mode != PS_MODE_ACTIVE) {
+
+		for (i = 0; i < dvobj->iface_nums; i++) {
+			iface = dvobj->padapters[i];
+			if (pwrpriv->current_lps_hw_port_id == rtw_hal_get_port(iface))
+				current_lps_iface = iface;
+		}
+
 		lps_changed = _TRUE;
 		in_lps = _TRUE;
-		LPS_Leave(adapter, "LPS_CTRL_PHYDM");
+		LPS_Leave(current_lps_iface, "LPS_CTRL_PHYDM");
 	}
 #endif
 
@@ -580,7 +590,7 @@ void rtl8822b_phy_haldm_watchdog(PADAPTER adapter)
 
 #ifdef CONFIG_LPS
 	if (lps_changed)
-		LPS_Enter(adapter, "LPS_CTRL_PHYDM");
+		LPS_Enter(current_lps_iface, "LPS_CTRL_PHYDM");
 #endif
 
 

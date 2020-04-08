@@ -952,6 +952,12 @@ void halrf_support_ability_debug(void *dm_void, char input[][16], u32 *_used,
 			 "04. (( %s ))HAL_RF_TXGAPK\n",
 			 ((rf->rf_supportability & HAL_RF_TXGAPK) ? ("V") :
 			 (".")));
+#if (RTL8192F_SUPPORT == 1)
+		PDM_SNPF(out_len, used, output + used, out_len - used,
+			 "07. (( %s ))HAL_2GBAND_SHIFT\n",
+			 ((rf->rf_supportability & HAL_2GBAND_SHIFT) ? ("V") :
+			 (".")));
+#endif
 	} else {
 		if (dm_value[1] == 1) /* enable */
 			rf->rf_supportability |= BIT(dm_value[0]);
@@ -966,6 +972,48 @@ void halrf_support_ability_debug(void *dm_void, char input[][16], u32 *_used,
 
 	*_used = used;
 	*_out_len = out_len;
+}
+
+void halrf_support_band_shift_debug(void *dm_void, char input[][16], u32 *_used,
+				    char *output, u32 *_out_len)
+{
+	struct dm_struct *dm = (struct dm_struct *)dm_void;
+	struct _hal_rf_ *rf = &dm->rf_table;
+	//u32 band_value[2] = {00};
+	u32 dm_value[10] = {0};
+	u32 used = *_used;
+	u32 out_len = *_out_len;
+	u8 i;
+
+#if (RTL8192F_SUPPORT == 1)
+	for (i = 0; i < 7; i++)
+		if (input[i + 1])
+			PHYDM_SSCANF(input[i + 2], DCMD_DECIMAL, &dm_value[i]);
+
+	if (!(rf->rf_supportability & HAL_2GBAND_SHIFT)) {
+		PDM_SNPF(out_len, used, output + used, out_len - used,
+			 "\nCurr-RF_supportability[07. (( . ))HAL_2GBAND_SHIFT]\nNo RF Band Shift,default: 2.4G!\n");
+	} else {
+		if (dm_value[0] == 01) {
+			rf->rf_shift_band = HAL_RF_2P3;
+			PDM_SNPF(out_len, used, output + used, out_len - used,
+				 "\n[rf_shift_band] = %d\nRF Band Shift to 2.3G!\n",
+				 rf->rf_shift_band);
+		} else if (dm_value[0] == 02) {
+			rf->rf_shift_band = HAL_RF_2P5;
+			PDM_SNPF(out_len, used, output + used, out_len - used,
+				 "\n[rf_shift_band] = %d\nRF Band Shift to 2.5G!\n",
+				 rf->rf_shift_band);
+		} else {
+			rf->rf_shift_band = HAL_RF_2P4;
+			PDM_SNPF(out_len, used, output + used, out_len - used,
+				 "\n[rf_shift_band] = %d\nNo RF Band Shift,default: 2.4G!\n",
+				 rf->rf_shift_band);
+		}
+	}
+	*_used = used;
+	*_out_len = out_len;
+#endif
 }
 
 void halrf_cmn_info_init(void *dm_void, enum halrf_cmninfo_init cmn_info,
@@ -1134,6 +1182,18 @@ void halrf_supportability_init_mp(void *dm_void)
 			0;
 		break;
 #endif
+#if (RTL8192F_SUPPORT == 1)
+	case ODM_RTL8192F:
+		rf->rf_supportability =
+			HAL_RF_TX_PWR_TRACK |
+			HAL_RF_IQK |
+			HAL_RF_LCK |
+			HAL_2GBAND_SHIFT |
+			/*@HAL_RF_DPK |*/
+			/*@HAL_RF_TXGAPK |*/
+			0;
+		break;
+#endif
 #if (RTL8195B_SUPPORT == 1)
 	case ODM_RTL8195B:
 		rf->rf_supportability =
@@ -1204,6 +1264,18 @@ void halrf_supportability_init(void *dm_void)
 			HAL_RF_TX_PWR_TRACK |
 			HAL_RF_IQK |
 			HAL_RF_LCK |
+			/*@HAL_RF_DPK |*/
+			/*@HAL_RF_TXGAPK |*/
+			0;
+		break;
+#endif
+#if (RTL8192F_SUPPORT == 1)
+	case ODM_RTL8192F:
+		rf->rf_supportability =
+			HAL_RF_TX_PWR_TRACK |
+			HAL_RF_IQK |
+			HAL_RF_LCK |
+			HAL_2GBAND_SHIFT |
 			/*@HAL_RF_DPK |*/
 			/*@HAL_RF_TXGAPK |*/
 			0;

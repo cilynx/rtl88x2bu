@@ -65,6 +65,7 @@ enum rx_rpt_type {
 	HT_MPDU_OK,
 	HT_MPDU_FAIL,
 	HT_PPDU,
+	HT_FALSE_ALARM,
 	RX_FULL_DROP,		/* 10 */
 	FWFF_FULL_DROP,
 	VHT_SU_MPDU_OK = 16,	/* 16 */

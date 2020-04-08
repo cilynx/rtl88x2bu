@@ -180,7 +180,7 @@
 
 #define CONFIG_RTW_LED
 #ifdef CONFIG_RTW_LED
-//	#define CONFIG_RTW_SW_LED
+	#define CONFIG_RTW_SW_LED
 	#ifdef CONFIG_RTW_SW_LED
 		/* #define CONFIG_RTW_LED_HANDLED_BY_CMD_THREAD */
 	#endif

@@ -776,9 +776,9 @@ void phydm_dig_init(void *dm_void)
 
 #ifdef PHYDM_TDMA_DIG_SUPPORT
 	#if (DM_ODM_SUPPORT_TYPE & (ODM_WIN | ODM_CE))
-	dm->original_dig_restore = true;
-	dm->tdma_dig_timer_ms = DIG_TIMER_MS;
-	dm->tdma_dig_state_number = DIG_NUM_OF_TDMA_STATES;
+		dm->original_dig_restore = true;
+		dm->tdma_dig_state_number = DIG_NUM_OF_TDMA_STATES;
+		dm->tdma_dig_timer_ms = DIG_TIMER_MS;
 	#endif
 #endif
 #ifdef CFG_DIG_DAMPING_CHK
@@ -1666,9 +1666,9 @@ void phydm_tdma_dig_timer_check(void *dm_void)
 	    dig_t->tdma_dig_cnt == dig_t->pre_tdma_dig_cnt) {
 		if (dm->support_ability & ODM_BB_DIG) {
 #ifdef IS_USE_NEW_TDMA
-			if (dm->support_ic_type &
-			    (ODM_RTL8198F | ODM_RTL8814B | ODM_RTL8822B |
-				 ODM_RTL8812F)) {
+			if (dm->support_ic_type & (ODM_RTL8198F | ODM_RTL8814B |
+			    ODM_RTL8812F | ODM_RTL8822B | ODM_RTL8192F |
+			    ODM_RTL8821C)) {
 				PHYDM_DBG(dm, DBG_DIG,
 					  "Check fail, Restart timer\n\n");
 				phydm_false_alarm_counter_reset(dm);
@@ -1676,7 +1676,7 @@ void phydm_tdma_dig_timer_check(void *dm_void)
 					      dm->tdma_dig_timer_ms);
 			} else {
 				PHYDM_DBG(dm, DBG_DIG,
-					  "Not 98F/14B/12F no SW timer\n");
+					  "Not 98F/14B/12F/22B/92F/21C no SW timer\n");
 			}
 #else
 			/*@if interrupt mask info is got.*/
@@ -1724,12 +1724,12 @@ void phydm_tdma_dig(void *dm_void)
 	u32 reg_c50 = 0;
 
 #if (RTL8198F_SUPPORT || RTL8814B_SUPPORT || RTL8812F_SUPPORT ||\
-	 RTL8822B_SUPPORT)
+	RTL8822B_SUPPORT || RTL8192F_SUPPORT || RTL8821C_SUPPORT)
 #ifdef IS_USE_NEW_TDMA
 	if (dm->support_ic_type &
-	    (ODM_RTL8198F | ODM_RTL8814B | ODM_RTL8812F |
-		 ODM_RTL8822B)) {
-		PHYDM_DBG(dm, DBG_DIG, "98F/14B/12F, new tdma\n");
+	    (ODM_RTL8198F | ODM_RTL8814B | ODM_RTL8812F | ODM_RTL8822B |
+	     ODM_RTL8192F | ODM_RTL8821C)) {
+		PHYDM_DBG(dm, DBG_DIG, "98F/14B/12F/22B/92F/21C, new tdma\n");
 		return;
 	}
 #endif
@@ -1940,6 +1940,25 @@ void phydm_false_alarm_counter_reset(void *dm_void)
 	dig_t->fa_end_timestamp = timestamp;
 }
 
+void phydm_tdma_dig_para_upd(void *dm_void, enum upd_type type, u8 input)
+{
+	struct dm_struct *dm = (struct dm_struct *)dm_void;
+
+	switch (type) {
+	case ENABLE_TDMA:
+		dm->original_dig_restore = !((boolean)input);
+		break;
+	case MODE_DECISION:
+		if (input == MODE_PERFORMANCE)
+			dm->tdma_dig_state_number = DIG_NUM_OF_TDMA_STATES + 2;
+		else if (input == MODE_COVERAGE)
+			dm->tdma_dig_state_number = DIG_NUM_OF_TDMA_STATES;
+		else
+			dm->tdma_dig_state_number = DIG_NUM_OF_TDMA_STATES;
+		break;
+	}
+}
+
 #ifdef IS_USE_NEW_TDMA
 void phydm_tdma_dig_timers(void *dm_void, u8 state)
 {
@@ -2009,24 +2028,6 @@ u8 get_new_igi_bound(struct dm_struct *dm, u8 igi, u32 fa_cnt, u8 *rx_gain_max,
 		#endif
 		#endif
 		PHYDM_DBG(dm, DBG_DIG, "First connect: foce IGI=0x%x\n", igi);
-	} else if (dm->is_linked) {
-		PHYDM_DBG(dm, DBG_DIG, "Adjust IGI @ linked\n");
-		/* @4 Abnormal # beacon case */
-		/*#if (DM_ODM_SUPPORT_TYPE & (ODM_WIN | ODM_CE))
-		 *if (dm->phy_dbg_info.num_qry_beacon_pkt < 5 &&
-		 *fa_cnt < DM_DIG_FA_TH1 && dm->bsta_state &&
-		 *dm->support_ic_type != ODM_RTL8723D) {
-		 *rx_gain_min = 0x1c;
-		 *igi = *rx_gain_min;
-		 *PHYDM_DBG(dm, DBG_DIG, "Beacon_num=%d,force igi=0x%x\n",
-		 *dm->phy_dbg_info.num_qry_beacon_pkt, igi);
-		 * } else {
-		 *igi = phydm_new_igi_by_fa(dm, igi, fa_cnt, step);
-		 *}
-		 *#else
-		 *igi = phydm_new_igi_by_fa(dm, igi, fa_cnt, step);
-		 *#endif
-		 */
 	} else {
 		/* @2 Before link */
 		PHYDM_DBG(dm, DBG_DIG, "Adjust IGI before link\n");

@@ -488,6 +488,11 @@ struct pwrctrl_priv {
 	u32 rx_time;
 #endif /* CONFIG_RTW_CFGVEDNOR_LLSTATS */
 
+#ifdef CONFIG_LPS_ACK
+	struct submit_ctx lps_ack_sctx;
+	s8 lps_ack_status;
+	_mutex lps_ack_mutex;
+#endif /* CONFIG_LPS_ACK */
 };
 
 #define rtw_get_ips_mode_req(pwrctl) \
@@ -523,6 +528,7 @@ extern s32 rtw_register_evt_alive(PADAPTER padapter);
 extern void rtw_unregister_evt_alive(PADAPTER padapter);
 extern void cpwm_int_hdl(PADAPTER padapter, struct reportpwrstate_parm *preportpwrstate);
 extern void LPS_Leave_check(PADAPTER padapter);
+void rtw_set_fw_config_32k(PADAPTER, u8);
 #endif
 
 extern void LeaveAllPowerSaveMode(PADAPTER Adapter);

@@ -371,6 +371,7 @@ enum halrf_func_idx { /*F_XXX = PHYDM XXX function*/
 	RF03_DPK = 3,
 	RF04_TXGAPK = 4,
 	RF05_DACK = 5,
+	RF07_2GBAND_SHIFT = 7
 };
 
 enum halrf_ability {
@@ -379,7 +380,14 @@ enum halrf_ability {
 	HAL_RF_LCK = BIT(RF02_LCK),
 	HAL_RF_DPK = BIT(RF03_DPK),
 	HAL_RF_TXGAPK = BIT(RF04_TXGAPK),
-	HAL_RF_DACK = BIT(RF05_DACK)
+	HAL_RF_DACK = BIT(RF05_DACK),
+	HAL_2GBAND_SHIFT = BIT(RF07_2GBAND_SHIFT)
+};
+
+enum halrf_shift_band {
+	HAL_RF_2P4 = 0,
+	HAL_RF_2P3 = 1,
+	HAL_RF_2P5 = 2
 };
 
 enum halrf_dbg_comp {
@@ -430,6 +438,7 @@ struct _hal_rf_ {
 
 	/*update*/
 	u32 rf_supportability;
+	u8 rf_shift_band;
 
 	u8 eeprom_thermal;
 	u8 dpk_en; /*Enable Function DPK OFF/ON = 0/1*/
@@ -468,6 +477,8 @@ u8 halrf_match_iqk_version(void *dm_void);
 
 void halrf_support_ability_debug(void *dm_void, char input[][16], u32 *_used,
 				 char *output, u32 *_out_len);
+void halrf_support_band_shift_debug(void *dm_void, char input[][16], u32 *_used,
+				    char *output, u32 *_out_len);
 
 void halrf_cmn_info_init(void *dm_void, enum halrf_cmninfo_init cmn_info,
 			 u32 value);

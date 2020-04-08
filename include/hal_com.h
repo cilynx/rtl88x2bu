@@ -547,6 +547,8 @@ u64 rtw_hal_get_tsftr_by_port(_adapter *adapter, u8 port);
 s32 rtw_hal_set_wifi_btc_port_id_cmd(_adapter *adapter);
 #endif
 
+void rtw_lps_state_chk(_adapter *adapter, u8 ps_mode);
+
 #ifdef CONFIG_GPIO_API
 	u8 rtw_hal_get_gpio(_adapter *adapter, u8 gpio_num);
 	int rtw_hal_set_gpio_output_value(_adapter *adapter, u8 gpio_num, bool isHigh);
@@ -632,6 +634,13 @@ void rtw_wow_pattern_cam_dump(_adapter *adapter);
 void rtw_wow_pattern_read_cam_ent(_adapter *adapter, u8 id, struct  rtl_wow_pattern *context);
 void rtw_dump_wow_pattern(void *sel, struct rtl_wow_pattern *pwow_pattern, u8 idx);
 #endif
+
+#ifdef CONFIG_PNO_SUPPORT
+struct pno_ssid;
+void rtw_hal_construct_ProbeReq(_adapter *padapter, u8 *pframe,
+                                       u32 *pLength, struct pno_ssid *ssid);
+#endif
+
 
 struct rtw_ndp_info {
 	u8 enable:1;

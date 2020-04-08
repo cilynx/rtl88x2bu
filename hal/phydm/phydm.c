@@ -2809,6 +2809,11 @@ void odm_cancel_all_timers(struct dm_struct *dm)
 #if (defined(CONFIG_PHYDM_ANTENNA_DIVERSITY))
 	odm_ant_div_timers(dm, CANCEL_ANTDIV_TIMMER);
 #endif
+#ifdef PHYDM_TDMA_DIG_SUPPORT
+#ifdef IS_USE_NEW_TDMA
+	phydm_tdma_dig_timers(dm, CANCEL_TDMA_DIG_TIMMER);
+#endif
+#endif
 #ifdef CONFIG_ADAPTIVE_SOML
 	phydm_adaptive_soml_timers(dm, CANCEL_SOML_TIMMER);
 #endif
@@ -2836,6 +2841,11 @@ void odm_release_all_timers(struct dm_struct *dm)
 {
 #if (defined(CONFIG_PHYDM_ANTENNA_DIVERSITY))
 	odm_ant_div_timers(dm, RELEASE_ANTDIV_TIMMER);
+#endif
+#ifdef PHYDM_TDMA_DIG_SUPPORT
+#ifdef IS_USE_NEW_TDMA
+	phydm_tdma_dig_timers(dm, RELEASE_TDMA_DIG_TIMMER);
+#endif
 #endif
 #ifdef CONFIG_ADAPTIVE_SOML
 	phydm_adaptive_soml_timers(dm, RELEASE_SOML_TIMMER);

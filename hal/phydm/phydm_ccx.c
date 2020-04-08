@@ -250,7 +250,7 @@ void phydm_fahm_set_th_by_igi(void *dm_void, u8 igi)
 		odm_set_bb_reg(dm, R_0x970, MASKDWORD, val);
 		val = BYTE_2_DWORD(f_th[7], f_th[6], f_th[5], f_th[4]);
 		odm_set_bb_reg(dm, R_0x974, MASKDWORD, val);
-		BYTE_2_DWORD(0, f_th[10], f_th[9], f_th[8]);
+		val = BYTE_2_DWORD(0, f_th[10], f_th[9], f_th[8]);
 		odm_set_bb_reg(dm, R_0x978, 0xffffff, val);
 	}
 }

@@ -661,6 +661,7 @@ void rtl8822b_c2h_handler_no_io(PADAPTER adapter, u8 *pbuf, u16 length)
 	case C2H_IQK_FINISH:
 	case C2H_MCC:
 	case C2H_BCN_EARLY_RPT:
+	case C2H_LPS_STATUS_RPT:
 	case C2H_EXTEND:
 		/* no I/O, process directly */
 #ifdef CONFIG_LPS_PWR_TRACKING

@@ -1567,6 +1567,21 @@ static void hw_var_set_mlme_sitesurvey(PADAPTER adapter, u8 enable)
 	}
 }
 
+static void clear_macid_drop(struct _ADAPTER *a)
+{
+	u16 offset;
+	u32 drop;
+	u8 i;
+
+
+	for (i = 0; i < 4; i++) {
+		offset = REG_MACID_DROP0_8822B + (i * 4);
+		drop = rtw_read32(a, offset);
+		if (drop)
+			rtw_write32(a, offset, 0);
+	}
+}
+
 static void hw_var_set_mlme_join(PADAPTER adapter, u8 type)
 {
 	u8 val8;
@@ -1681,6 +1696,10 @@ static void hw_var_set_mlme_join(PADAPTER adapter, u8 type)
 	val16 = BIT_LRL_8822B(RetryLimit) | BIT_SRL_8822B(RetryLimit);
 	rtw_write16(adapter, REG_RETRY_LIMIT_8822B, val16);
 #endif /* !CONFIG_CONCURRENT_MODE */
+
+	if (type == 0)
+		/* Clear macid drop to avoid lost data frame */
+		clear_macid_drop(adapter);
 }
 
 static void hw_var_set_acm_ctrl(PADAPTER adapter, u8 ctrl)

@@ -256,6 +256,9 @@
 		#define CONFIG_P2P_PS_NOA_USE_MACID_SLEEP
 	#endif
 	#define CONFIG_RTS_FULL_BW
+	#ifdef CONFIG_LPS
+		#define CONFIG_LPS_ACK
+	#endif
 #endif /* CONFIG_RTL8822B */
 
 #ifdef CONFIG_RTL8821C

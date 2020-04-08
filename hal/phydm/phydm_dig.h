@@ -92,6 +92,17 @@ enum phydm_dig_mode {
 	PHYDM_DIG_COVERAGE_MODE		= 1,
 };
 
+#ifdef PHYDM_TDMA_DIG_SUPPORT
+enum upd_type {
+	ENABLE_TDMA,
+	MODE_DECISION
+};
+
+enum tdma_opmode {
+	MODE_PERFORMANCE = 1,
+	MODE_COVERAGE = 2
+};
+
 #ifdef IS_USE_NEW_TDMA
 enum tdma_dig_timer {
 	INIT_TDMA_DIG_TIMMER,
@@ -104,6 +115,7 @@ enum tdma_dig_state {
 	TDMA_DIG_HIGH_STATE = 1,
 	NORMAL_DIG = 2
 };
+#endif
 #endif
 
 /*@--------------------Define Struct-----------------------------------*/
@@ -145,7 +157,8 @@ struct phydm_dig_struct {
 	u16		fa_th[3];
 #if (RTL8822B_SUPPORT || RTL8197F_SUPPORT || RTL8821C_SUPPORT ||\
 	RTL8198F_SUPPORT || RTL8192F_SUPPORT || RTL8195B_SUPPORT ||\
-	RTL8822C_SUPPORT || RTL8814B_SUPPORT || RTL8721D_SUPPORT)
+	RTL8822C_SUPPORT || RTL8814B_SUPPORT || RTL8721D_SUPPORT ||\
+	RTL8812F_SUPPORT || RTL8197G_SUPPORT)
 	u8		rf_gain_idx;
 	u8		agc_table_idx;
 	u8		big_jump_lmt[16];
@@ -290,6 +303,8 @@ void phydm_false_alarm_counter_reset(void *dm_void);
 void phydm_false_alarm_counter_acc(void *dm_void, boolean rssi_dump_en);
 
 void phydm_false_alarm_counter_acc_reset(void *dm_void);
+
+void phydm_tdma_dig_para_upd(void *dm_void, enum upd_type type, u8 input);
 
 #ifdef IS_USE_NEW_TDMA
 void phydm_tdma_dig_timers(void *dm_void, u8 state);

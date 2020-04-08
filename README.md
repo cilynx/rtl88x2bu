@@ -10,21 +10,12 @@ As of upstream version 5.6.1, I'm moving away from individual repositories for e
 
 Updated driver for rtl88x2bu wifi adaptors based on Realtek's source distributed with myriad adapters.
 
-Realtek's 5.6.1 source was found bundled with the [Cudy WU1200 AC1200 High Gain USB Wi-Fi Adapter](https://amzn.to/351ADVq) and can be downloaded from [Cudy's website](http://www.cudytech.com/productinfo/517558.html).
+Realtek's 5.6.1.6 source was found bundled with the [Cudy WU1200 AC1200 High Gain USB Wi-Fi Adapter](https://amzn.to/351ADVq) and can be downloaded from [Cudy's website](http://www.cudytech.com/wu1200_software_download).
 
 Build confirmed on:
 
 ```
-Linux 5.6.0-gentoo #1 SMP Tue Mar 31 09:56:02 JST 2020 GenuineIntel GNU/Linux gcc (Gentoo 9.3.0 p1) 9.3.0
-```
-```
-Linux ThinkPad-P52 5.4.0-9-generic #12-Ubuntu SMP Mon Dec 16 22:34:19 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
-```
-```
-Linux version 5.3.0-050300-generic (kernel@sita) (gcc version 9.2.1 20190909 (Ubuntu 9.2.1-8ubuntu1)) #201909152230 SMP Sun Sep 15 22:32:54 UTC 2019
-```
-```
-Linux version 5.2.0-2-amd64 (debian-kernel@lists.debian.org) (gcc version 8.3.0 (Debian 8.3.0-21)) #1 SMP Debian 5.2.9-2 (2019-08-21)
+Linux version 5.4.0-4-amd64 (debian-kernel@lists.debian.org) (gcc version 9.2.1 20200203 (Debian 9.2.1-28)) #1 SMP Debian 5.4.19-1 (2020-02-13)
 ```
 ## DKMS installation
 
@@ -145,7 +136,7 @@ ieee80211n=1
 ieee80211ac=1
 EOF
 
-$ iwconfig 
+$ iwconfig
 wlx74ee2ae24062  IEEE 802.11an  ESSID:"borg"  Nickname:"<WIFI@REALTEK>"
           Mode:Master  Frequency:5.18 GHz  Access Point: 74:EE:2A:E2:40:62   
           Bit Rate:144.4 Mb/s   Sensitivity:0/0  

@@ -2603,7 +2603,7 @@ int rtw_halmac_poweron(struct dvobj_priv *d)
 		addr = 0x3F3;
 		v8 = rtw_read8(a, addr);
 		RTW_PRINT("%s: 0x%X = 0x%02x\n", __FUNCTION__, addr, v8);
-
+		
 		/* are we in pcie debug mode? */
 		if (!(v8 & BIT(2))) {
 			RTW_PRINT("%s: Enable pcie debug mode\n", __FUNCTION__);
@@ -2961,7 +2961,7 @@ static int _send_general_info(struct dvobj_priv *d)
 	case HALMAC_RET_NO_DLFW:
 		RTW_WARN("%s: halmac_send_general_info() fail because fw not dl!\n",
 			 __FUNCTION__);
-		/* falls through */
+		/* go through */
 	default:
 		return -1;
 	}

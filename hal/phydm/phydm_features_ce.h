@@ -51,11 +51,12 @@
 
 /*@#define PHYDM_TDMA_DIG_SUPPORT*/
 
-#if (RTL8822B_SUPPORT)
-	/*#define IS_USE_NEW_TDMA*/
+#if (RTL8822B_SUPPORT || RTL8192F_SUPPORT || RTL8821C_SUPPORT)
+	#ifdef CONFIG_TDMADIG
 	#define PHYDM_TDMA_DIG_SUPPORT
 	#ifdef PHYDM_TDMA_DIG_SUPPORT
 	#define IS_USE_NEW_TDMA /*new tdma dig test*/
+	#endif
 	#endif
 #endif
 

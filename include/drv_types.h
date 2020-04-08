@@ -220,9 +220,6 @@ struct registry_priv {
 #ifdef CONFIG_TX_EARLY_MODE
 	u8   early_mode;
 #endif
-#ifdef CONFIG_SW_LED
-	u8   led_ctrl;
-#endif
 	u8	acm_method;
 	/* WMM */
 	u8	wmm_enable;

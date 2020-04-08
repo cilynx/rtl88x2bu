@@ -2240,9 +2240,6 @@ config_phydm_switch_bandwidth_8822b(struct dm_struct *dm,
 	/* @Modify RX DFIR parameters */
 	phydm_rxdfirpar_by_bw_8822b(dm, bandwidth);
 
-	/* Toggle IGI to let RF enter RX mode */
-	phydm_igi_toggle_8822b(dm);
-
 	/* @Modify CCA parameters */
 	phydm_ccapar_by_rfe_8822b(dm);
 
@@ -2262,6 +2259,9 @@ config_phydm_switch_bandwidth_8822b(struct dm_struct *dm,
 	odm_set_bb_reg(dm, R_0x808, MASKBYTE0, 0x0);
 	odm_set_bb_reg(dm, R_0x808, MASKBYTE0, (dm->rx_ant_status |
 						(dm->rx_ant_status << 4)));
+
+	/* Toggle IGI to let RF enter RX mode */
+	phydm_igi_toggle_8822b(dm);
 
 	PHYDM_DBG(dm, ODM_PHY_CONFIG, "Success\n");
 	return true;

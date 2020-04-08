@@ -1787,7 +1787,7 @@ chbw_decision:
 				, pdvobj->padapters[i]->mlmeextpriv.cur_channel
 				, pdvobj->padapters[i]->mlmeextpriv.cur_bwmode
 				, pdvobj->padapters[i]->mlmeextpriv.cur_ch_offset
-				, ht_option);
+				, ht_option, 0);
 		}
 	}
 #endif /* defined(CONFIG_IOCTL_CFG80211) && (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 5, 0)) */
@@ -1897,6 +1897,7 @@ int rtw_check_beacon_data(_adapter *padapter, u8 *pbuf,  int len)
 	u16 cap, ht_cap = _FALSE;
 	uint ie_len = 0;
 	int group_cipher, pairwise_cipher;
+	u32 akm;
 	u8 mfp_opt = MFP_NO;
 	u8	channel, network_type, supportRate[NDIS_802_11_LENGTH_RATES_EX];
 	int supportRateNum = 0;
@@ -2057,13 +2058,14 @@ int rtw_check_beacon_data(_adapter *padapter, u8 *pbuf,  int len)
 	psecuritypriv->wpa_psk = 0;
 
 	/* wpa2 */
+	akm = 0;
 	group_cipher = 0;
 	pairwise_cipher = 0;
 	psecuritypriv->wpa2_group_cipher = _NO_PRIVACY_;
 	psecuritypriv->wpa2_pairwise_cipher = _NO_PRIVACY_;
 	p = rtw_get_ie(ie + _BEACON_IE_OFFSET_, _RSN_IE_2_, &ie_len, (pbss_network->IELength - _BEACON_IE_OFFSET_));
 	if (p && ie_len > 0) {
-		if (rtw_parse_wpa2_ie(p, ie_len + 2, &group_cipher, &pairwise_cipher, NULL, &mfp_opt) == _SUCCESS) {
+		if (rtw_parse_wpa2_ie(p, ie_len + 2, &group_cipher, &pairwise_cipher, &akm, &mfp_opt) == _SUCCESS) {
 			psecuritypriv->dot11AuthAlgrthm = dot11AuthAlgrthm_8021X;
 			psecuritypriv->ndisauthtype = Ndis802_11AuthModeWPA2PSK;
 			psecuritypriv->dot8021xalg = 1;/* psk,  todo:802.1x */
@@ -2071,6 +2073,15 @@ int rtw_check_beacon_data(_adapter *padapter, u8 *pbuf,  int len)
 
 			psecuritypriv->wpa2_group_cipher = group_cipher;
 			psecuritypriv->wpa2_pairwise_cipher = pairwise_cipher;
+
+			/*
+			Kernel < v5.1, the auth_type set as NL80211_AUTHTYPE_AUTOMATIC 
+			in cfg80211_rtw_start_ap().
+			if the AKM SAE in the RSN IE, we have to update the auth_type for SAE
+			in rtw_check_beacon_data().
+			*/
+			if (CHECK_BIT(WLAN_AKM_TYPE_SAE, akm))
+				psecuritypriv->auth_type = NL80211_AUTHTYPE_SAE;
 #if 0
 			switch (group_cipher) {
 			case WPA_CIPHER_NONE:
@@ -3858,6 +3869,12 @@ u8 ap_free_sta(_adapter *padapter, struct sta_info *psta, bool active, u16 reaso
 
 	_enter_critical_bh(&psta->lock, &irqL);
 	psta->state &= ~(_FW_LINKED | WIFI_UNDER_KEY_HANDSHAKE);
+
+	if ((psta->auth_len != 0) && (psta->pauth_frame != NULL)) {
+		rtw_mfree(psta->pauth_frame, psta->auth_len);
+		psta->pauth_frame = NULL;
+		psta->auth_len = 0;
+	}
 	_exit_critical_bh(&psta->lock, &irqL);
 
 	if (!MLME_IS_MESH(padapter)) {
@@ -5172,6 +5189,7 @@ u16 rtw_ap_parse_sta_security_ie(_adapter *adapter, struct sta_info *sta, struct
 	u8 *wpa_ie;
 	int wpa_ie_len;
 	int group_cipher = 0, pairwise_cipher = 0;
+	u32 akm = 0;
 	u8 mfp_opt = MFP_NO;
 	u16 status = _STATS_SUCCESSFUL_;
 
@@ -5187,12 +5205,16 @@ u16 rtw_ap_parse_sta_security_ie(_adapter *adapter, struct sta_info *sta, struct
 		wpa_ie = elems->rsn_ie;
 		wpa_ie_len = elems->rsn_ie_len;
 
-		if (rtw_parse_wpa2_ie(wpa_ie - 2, wpa_ie_len + 2, &group_cipher, &pairwise_cipher, NULL, &mfp_opt) == _SUCCESS) {
+		if (rtw_parse_wpa2_ie(wpa_ie - 2, wpa_ie_len + 2, &group_cipher, &pairwise_cipher, &akm, &mfp_opt) == _SUCCESS) {
 			sta->dot8021xalg = 1;/* psk, todo:802.1x */
 			sta->wpa_psk |= BIT(1);
 
 			sta->wpa2_group_cipher = group_cipher & sec->wpa2_group_cipher;
 			sta->wpa2_pairwise_cipher = pairwise_cipher & sec->wpa2_pairwise_cipher;
+
+			sta->akm_suite_type = akm;
+			if ((CHECK_BIT(WLAN_AKM_TYPE_SAE, akm)) && (MFP_NO == mfp_opt))
+				status = WLAN_STATUS_ROBUST_MGMT_FRAME_POLICY_VIOLATION;
 
 			if (!sta->wpa2_group_cipher)
 				status = WLAN_STATUS_GROUP_CIPHER_NOT_VALID;
@@ -5238,6 +5260,18 @@ u16 rtw_ap_parse_sta_security_ie(_adapter *adapter, struct sta_info *sta, struct
 		status = WLAN_STATUS_ROBUST_MGMT_FRAME_POLICY_VIOLATION;
 	else if (sec->mfp_opt >= MFP_OPTIONAL && mfp_opt >= MFP_OPTIONAL)
 		sta->flags |= WLAN_STA_MFP;
+
+	if ((sec->auth_type == NL80211_AUTHTYPE_SAE) &&
+		(CHECK_BIT(WLAN_AKM_TYPE_SAE, sta->akm_suite_type)) &&
+		(WLAN_AUTH_OPEN == sta->authalg)) {
+		/* WPA3-SAE, PMK caching */
+		if (rtw_cached_pmkid(adapter, sta->cmn.mac_addr) == -1) {
+			RTW_INFO("SAE: No PMKSA cache entry found\n");
+			status = WLAN_STATUS_INVALID_PMKID;
+		} else {
+			RTW_INFO("SAE: PMKSA cache entry found\n");
+		}
+	}
 
 	if (status != _STATS_SUCCESSFUL_)
 		goto exit;

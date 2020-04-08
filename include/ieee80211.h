@@ -142,14 +142,45 @@ extern u8 WPA_CIPHER_SUITE_WEP104[];
 #define RSN_SELECTOR_LEN 4
 
 extern u16 RSN_VERSION_BSD;
-extern u8 RSN_AUTH_KEY_MGMT_UNSPEC_802_1X[];
-extern u8 RSN_AUTH_KEY_MGMT_PSK_OVER_802_1X[];
 extern u8 RSN_CIPHER_SUITE_NONE[];
 extern u8 RSN_CIPHER_SUITE_WEP40[];
 extern u8 RSN_CIPHER_SUITE_TKIP[];
 extern u8 RSN_CIPHER_SUITE_WRAP[];
 extern u8 RSN_CIPHER_SUITE_CCMP[];
 extern u8 RSN_CIPHER_SUITE_WEP104[];
+
+/* AKM suite type */
+extern u8 WLAN_AKM_8021X[];
+extern u8 WLAN_AKM_PSK[];
+extern u8 WLAN_AKM_FT_8021X[];
+extern u8 WLAN_AKM_FT_PSK[];
+extern u8 WLAN_AKM_8021X_SHA256[];
+extern u8 WLAN_AKM_PSK_SHA256[];
+extern u8 WLAN_AKM_TDLS[];
+extern u8 WLAN_AKM_SAE[];
+extern u8 WLAN_AKM_FT_OVER_SAE[];
+extern u8 WLAN_AKM_8021X_SUITE_B[];
+extern u8 WLAN_AKM_8021X_SUITE_B_192[];
+extern u8 WLAN_AKM_FILS_SHA256[];
+extern u8 WLAN_AKM_FILS_SHA384[];
+extern u8 WLAN_AKM_FT_FILS_SHA256[];
+extern u8 WLAN_AKM_FT_FILS_SHA384[];
+
+#define WLAN_AKM_TYPE_8021X BIT(0)
+#define WLAN_AKM_TYPE_PSK BIT(1)
+#define WLAN_AKM_TYPE_FT_8021X BIT(2)
+#define WLAN_AKM_TYPE_FT_PSK BIT(3)
+#define WLAN_AKM_TYPE_8021X_SHA256 BIT(4)
+#define WLAN_AKM_TYPE_PSK_SHA256 BIT(5)
+#define WLAN_AKM_TYPE_TDLS BIT(6)
+#define WLAN_AKM_TYPE_SAE BIT(7)
+#define WLAN_AKM_TYPE_FT_OVER_SAE BIT(8)
+#define WLAN_AKM_TYPE_8021X_SUITE_B BIT(9)
+#define WLAN_AKM_TYPE_8021X_SUITE_B_192 BIT(10)
+#define WLAN_AKM_TYPE_FILS_SHA256 BIT(11)
+#define WLAN_AKM_TYPE_FILS_SHA384 BIT(12)
+#define WLAN_AKM_TYPE_FT_FILS_SHA256 BIT(13)
+#define WLAN_AKM_TYPE_FT_FILS_SHA384 BIT(14)
 
 /* IEEE 802.11i */
 #define PMKID_LEN 16
@@ -665,6 +696,7 @@ struct ieee80211_snap_hdr {
 /* Authentication algorithms */
 #define WLAN_AUTH_OPEN 0
 #define WLAN_AUTH_SHARED_KEY 1
+#define WLAN_AUTH_SAE 3
 
 #define WLAN_AUTH_CHALLENGE_LEN 128
 
@@ -781,6 +813,8 @@ struct ieee80211_snap_hdr {
 #define WLAN_EID_VHT_CAPABILITY 191
 #define WLAN_EID_VHT_OPERATION 192
 #define WLAN_EID_VHT_OP_MODE_NOTIFY 199
+#define WLAN_EID_EXTENSION 255
+#define WLAN_EID_EXT_OWE_DH_PARAM 32
 
 #define IEEE80211_MGMT_HDR_LEN 24
 #define IEEE80211_DATA_HDR3_LEN 24
@@ -1456,6 +1490,7 @@ struct ieee80211_txb {
 
 #define MAX_WPA_IE_LEN (256)
 #define MAX_WPS_IE_LEN (512)
+#define MAX_OWE_IE_LEN (128)
 #define MAX_P2P_IE_LEN (256)
 #define MAX_WFD_IE_LEN (128)
 
@@ -2070,8 +2105,8 @@ unsigned char *rtw_get_wpa2_ie(unsigned char *pie, int *rsn_ie_len, int limit);
 int rtw_get_wpa_cipher_suite(u8 *s);
 int rtw_get_wpa2_cipher_suite(u8 *s);
 int rtw_get_wapi_ie(u8 *in_ie, uint in_len, u8 *wapi_ie, u16 *wapi_len);
-int rtw_parse_wpa_ie(u8 *wpa_ie, int wpa_ie_len, int *group_cipher, int *pairwise_cipher, int *is_8021x);
-int rtw_parse_wpa2_ie(u8 *wpa_ie, int wpa_ie_len, int *group_cipher, int *pairwise_cipher, int *is_8021x, u8 *mfp_opt);
+int rtw_parse_wpa_ie(u8 *wpa_ie, int wpa_ie_len, int *group_cipher, int *pairwise_cipher, u32 *akm);
+int rtw_parse_wpa2_ie(u8 *wpa_ie, int wpa_ie_len, int *group_cipher, int *pairwise_cipher, u32 *akm, u8 *mfp_opt);
 
 int rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie, u16 *wpa_len);
 
@@ -2080,6 +2115,8 @@ u8 *rtw_get_wps_ie_from_scan_queue(u8 *in_ie, uint in_len, u8 *wps_ie, uint *wps
 u8 *rtw_get_wps_ie(const u8 *in_ie, uint in_len, u8 *wps_ie, uint *wps_ielen);
 u8 *rtw_get_wps_attr(u8 *wps_ie, uint wps_ielen, u16 target_attr_id , u8 *buf_attr, u32 *len_attr);
 u8 *rtw_get_wps_attr_content(u8 *wps_ie, uint wps_ielen, u16 target_attr_id , u8 *buf_content, uint *len_content);
+
+u8 *rtw_get_owe_ie(const u8 *in_ie, uint in_len, u8 *owe_ie, uint *owe_ielen);
 
 /**
  * for_each_ie - iterate over continuous IEs
@@ -2146,8 +2183,6 @@ uint	rtw_is_cckrates_included(u8 *rate);
 uint	rtw_is_cckratesonly_included(u8 *rate);
 uint rtw_get_cckrate_size(u8 *rate,u32 rate_length);
 int rtw_check_network_type(unsigned char *rate, int ratelen, int channel);
-
-void rtw_get_bcn_info(struct wlan_network *pnetwork);
 
 u8 rtw_check_invalid_mac_address(u8 *mac_addr, u8 check_local_bit);
 void rtw_macaddr_cfg(u8 *out, const u8 *hw_mac_addr);
