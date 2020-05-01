@@ -2,5 +2,5 @@ config RTL8822BU
 	tristate "Realtek 8822B USB WiFi"
 	depends on USB
 	---help---
-	  Help message of RTL8822BU
+	  RTL88X2BU driver updated for current kernels.
 
