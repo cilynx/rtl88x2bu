@@ -817,7 +817,7 @@ u16 rtw_get_cur_max_rate(_adapter *adapter)
 	else
 #endif /* CONFIG_80211N_HT */
 	{
-		/*station mode show :station && ap support rate; softap :show ap support rate*/	
+		/*station mode show :station && ap support rate; softap :show ap support rate*/
 		if (check_fwstate(pmlmepriv, WIFI_STATION_STATE) == _TRUE)
 			get_rate_set(adapter, sta_bssrate, &sta_bssrate_len);/*get sta rate and length*/
 
@@ -839,7 +839,7 @@ u16 rtw_get_cur_max_rate(_adapter *adapter)
 					}
 				}
 			} else {
-			
+
 				if (rate > max_rate)
 					max_rate = rate;
 

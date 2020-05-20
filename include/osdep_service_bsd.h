@@ -82,20 +82,20 @@
 	struct list_head *next, *prev;
 	};
 	struct	__queue	{
-		struct	list_head	queue;	
+		struct	list_head	queue;
 		_lock	lock;
 	};
 
 	typedef	struct mbuf _pkt;
 	typedef struct mbuf	_buffer;
-	
+
 	typedef struct	__queue	_queue;
 	typedef struct	list_head	_list;
 	typedef	int	_OS_STATUS;
 	//typedef u32	_irqL;
 	typedef unsigned long _irqL;
 	typedef	struct	ifnet * _nic_hdl;
-	
+
 	typedef pid_t		_thread_hdl_;
 //	typedef struct thread		_thread_hdl_;
 	typedef void		thread_return;
@@ -119,7 +119,7 @@
 #define LIST_CONTAINOR(ptr, type, member) \
         ((type *)((char *)(ptr)-(SIZE_T)(&((type *)0)->member)))
 #define container_of(p,t,n) (t*)((p)-&(((t*)0)->n))
-/* 
+/*
  * Linux timers are emulated using FreeBSD callout functions
  * (and taskqueue functionality).
  *
@@ -142,13 +142,13 @@ typedef enum work_state {
         WORK_STATE_UNSET = 0,
         WORK_STATE_CALLOUT_PENDING = 1,
         WORK_STATE_TASK_PENDING = 2,
-        WORK_STATE_WORK_CANCELLED = 3        
+        WORK_STATE_WORK_CANCELLED = 3
 } work_state_t;
 
 struct work_struct {
         struct task task; /* FreeBSD task */
         work_state_t state; /* the pending or otherwise state of work. */
-        work_func_t func;       
+        work_func_t func;
 };
 #define spin_unlock_irqrestore mtx_unlock_irqrestore
 #define spin_unlock_bh mtx_unlock_irqrestore
@@ -176,10 +176,10 @@ typedef unsigned char *sk_buff_data_t;
 typedef union ktime ktime_t;		/* Kill this */
 
 void rtw_mtx_lock(_lock *plock);
-	
+
 void rtw_mtx_unlock(_lock *plock);
 
-/** 
+/**
  *	struct sk_buff - socket buffer
  *	@next: Next buffer in list
  *	@prev: Previous buffer in list
@@ -208,7 +208,7 @@ void rtw_mtx_unlock(_lock *plock);
  *	@priority: Packet queueing priority
  *	@users: User count - see {datagram,tcp}.c
  *	@protocol: Packet protocol from driver
- *	@truesize: Buffer size 
+ *	@truesize: Buffer size
  *	@head: Head of buffer
  *	@data: Data head pointer
  *	@tail: Tail pointer
@@ -471,7 +471,7 @@ void dev_kfree_skb_any(struct sk_buff *skb);
  *
  * These macros will use the SYSINIT framework to call a specified
  * function (with no arguments) on module loading or unloading.
- * 
+ *
  */
 
 void module_init_exit_wrapper(void *arg);
@@ -488,13 +488,13 @@ void module_init_exit_wrapper(void *arg);
 
 /*
  * The usb_register and usb_deregister functions are used to register
- * usb drivers with the usb subsystem. 
+ * usb drivers with the usb subsystem.
  */
 int usb_register(struct usb_driver *driver);
 int usb_deregister(struct usb_driver *driver);
 
 /*
- * usb_get_dev and usb_put_dev - increment/decrement the reference count 
+ * usb_get_dev and usb_put_dev - increment/decrement the reference count
  * of the usb device structure.
  *
  * Original body of usb_get_dev:
@@ -512,7 +512,7 @@ usb_get_dev(struct usb_device *dev)
         return dev;
 }
 
-static inline void 
+static inline void
 usb_put_dev(struct usb_device *dev)
 {
         return;
@@ -587,18 +587,18 @@ typedef unsigned gfp_t;
 __inline static _list *get_next(_list	*list)
 {
 	return list->next;
-}	
+}
 
 __inline static _list	*get_list_head(_queue	*queue)
 {
 	return (&(queue->queue));
 }
 
-	
-#define LIST_CONTAINOR(ptr, type, member) \
-        ((type *)((char *)(ptr)-(SIZE_T)(&((type *)0)->member)))	
 
-        
+#define LIST_CONTAINOR(ptr, type, member) \
+        ((type *)((char *)(ptr)-(SIZE_T)(&((type *)0)->member)))
+
+
 __inline static void _enter_critical(_lock *plock, _irqL *pirqL)
 {
 	spin_lock_irqsave(plock, *pirqL);
@@ -691,7 +691,7 @@ static inline void _init_timer(_timer *ptimer, _nic_hdl padapter, void *pfunc, v
 }
 
 __inline static void _set_timer(_timer *ptimer,u32 delay_time)
-{	
+{
 	if (ptimer->function && ptimer->arg) {
 		rtw_mtx_lock(NULL);
 		callout_reset(&ptimer->callout, delay_time, timer_hdl, ptimer);

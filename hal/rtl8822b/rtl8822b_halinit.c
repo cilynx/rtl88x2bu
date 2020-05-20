@@ -160,7 +160,7 @@ u8 rtl8822b_hal_init(PADAPTER adapter)
 		return _FALSE;
 	}
 
-	
+
 
 	RTW_INFO("%s Download Firmware from %s success\n", __FUNCTION__, (fw_bin) ? "file" : "array");
 	RTW_INFO("%s FW Version:%d SubVersion:%d FW size:%d\n", "NIC",

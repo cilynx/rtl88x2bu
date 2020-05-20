@@ -29,7 +29,7 @@
 	typedef KSEMAPHORE 	_sema;
 	typedef	LIST_ENTRY	_list;
 	typedef NDIS_STATUS _OS_STATUS;
-	
+
 
 	typedef NDIS_SPIN_LOCK	_lock;
 
@@ -47,14 +47,14 @@
 	};
 
 	struct	__queue	{
-		LIST_ENTRY	queue;	
+		LIST_ENTRY	queue;
 		_lock	lock;
 	};
 
 	typedef	NDIS_PACKET	_pkt;
 	typedef NDIS_BUFFER	_buffer;
 	typedef struct	__queue	_queue;
-	
+
 	typedef PKTHREAD _thread_hdl_;
 	typedef void	thread_return;
 	typedef void* thread_context;
@@ -64,40 +64,40 @@
 
 	#define HZ			10000000
 	#define SEMA_UPBND	(0x7FFFFFFF)   //8192
-	
+
 __inline static _list *get_next(_list	*list)
 {
 	return list->Flink;
-}	
+}
 
 __inline static _list	*get_list_head(_queue	*queue)
 {
 	return (&(queue->queue));
 }
-	
+
 
 #define LIST_CONTAINOR(ptr, type, member) CONTAINING_RECORD(ptr, type, member)
-     
+
 
 __inline static _enter_critical(_lock *plock, _irqL *pirqL)
 {
-	NdisAcquireSpinLock(plock);	
+	NdisAcquireSpinLock(plock);
 }
 
 __inline static _exit_critical(_lock *plock, _irqL *pirqL)
 {
-	NdisReleaseSpinLock(plock);	
+	NdisReleaseSpinLock(plock);
 }
 
 
 __inline static _enter_critical_ex(_lock *plock, _irqL *pirqL)
 {
-	NdisDprAcquireSpinLock(plock);	
+	NdisDprAcquireSpinLock(plock);
 }
 
 __inline static _exit_critical_ex(_lock *plock, _irqL *pirqL)
 {
-	NdisDprReleaseSpinLock(plock);	
+	NdisDprReleaseSpinLock(plock);
 }
 
 __inline static void _enter_critical_bh(_lock *plock, _irqL *pirqL)
@@ -125,7 +125,7 @@ __inline static _exit_critical_mutex(_mutex *pmutex, _irqL *pirqL)
 __inline static void rtw_list_delete(_list *plist)
 {
 	RemoveEntryList(plist);
-	InitializeListHead(plist);	
+	InitializeListHead(plist);
 }
 
 static inline void timer_hdl(

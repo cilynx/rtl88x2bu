@@ -427,7 +427,7 @@ int rtw_remove_ie_g_rate(u8 *ie, uint *ie_len, uint offset, u8 eid)
 
 	while (1) {
 		tem_target_ie=rtw_get_ie(start,eid,&temp_target_ielen,search_len);
-		
+
 		/*if(tem_target_ie)
 			RTW_INFO("%s, tem_target_ie=%u\n", __FUNCTION__,*tem_target_ie);*/
 		if (tem_target_ie && temp_target_ielen) {
@@ -441,7 +441,7 @@ int rtw_remove_ie_g_rate(u8 *ie, uint *ie_len, uint offset, u8 eid)
 			target_ielen=cck_rate_size;/*discount g mode rate 6, 9 12,18Mbps,id , length*/
 			*(tem_target_ie+1)=target_ielen;/*set new length to Supposrted Rates*/
 			target_ie=tem_target_ie+target_ielen + 2;/*set target ie to address of rate 6Mbps */
-	
+
 			_rtw_memmove(target_ie, remain_ies, remain_len);
 			*ie_len = *ie_len - rm_size;
 			ret = rm_size;
@@ -1707,7 +1707,7 @@ void dump_ht_cap_ie_content(void *sel, const u8 *buf, u32 buf_len)
 void dump_ht_cap_ie(void *sel, const u8 *ie, u32 ie_len)
 {
 	const u8 *ht_cap_ie;
-	sint ht_cap_ielen;
+	sint ht_cap_ielen = 0;
 
 	ht_cap_ie = rtw_get_ie(ie, WLAN_EID_HT_CAP, &ht_cap_ielen, ie_len);
 	if (!ie || ht_cap_ie != ie)
@@ -1740,7 +1740,7 @@ void dump_ht_op_ie_content(void *sel, const u8 *buf, u32 buf_len)
 void dump_ht_op_ie(void *sel, const u8 *ie, u32 ie_len)
 {
 	const u8 *ht_op_ie;
-	sint ht_op_ielen;
+	sint ht_op_ielen = 0;
 
 	ht_op_ie = rtw_get_ie(ie, WLAN_EID_HT_OPERATION, &ht_op_ielen, ie_len);
 	if (!ie || ht_op_ie != ie)

@@ -127,7 +127,7 @@ void halrf_psd(
 	psd->buf_size = 256;
 
 	mode = average >> 16;
-	
+
 	if (mode == 1)
 		average_tmp = average & 0xffff;
 	else if (mode == 2)
@@ -284,7 +284,7 @@ void halrf_iqk_psd(
 	psd->buf_size = 256;
 
 	mode = average >> 16;
-	
+
 	if (mode == 1)
 		average_tmp = average & 0xffff;
 	else if (mode == 2) {

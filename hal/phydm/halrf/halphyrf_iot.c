@@ -500,7 +500,7 @@ odm_reset_iqk_result(
 
 u8 odm_get_right_chnl_place_for_iqk(u8 chnl)
 {
-	
+
 }
 
 void
@@ -508,7 +508,7 @@ odm_iq_calibrate(
 	struct dm_struct	*dm
 )
 {
-	
+
 }
 
 void phydm_rf_init(void		*dm_void)
@@ -516,7 +516,7 @@ void phydm_rf_init(void		*dm_void)
 	struct dm_struct	*dm = (struct dm_struct *)dm_void;
 
 	odm_txpowertracking_init(dm);
-	
+
 	odm_clear_txpowertracking_state(dm);
 }
 

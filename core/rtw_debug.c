@@ -139,7 +139,7 @@ void dump_drv_cfg(void *sel)
 
 #ifdef CONFIG_RTW_TPT_MODE
 	RTW_PRINT_SEL(sel, "CONFIG_RTW_TPT_MODE\n");
-#endif 
+#endif
 
 #ifdef CONFIG_USB_HCI
 #ifdef CONFIG_SUPPORT_USB_INT
@@ -1803,7 +1803,7 @@ ssize_t proc_set_rate_ctl(struct file *file, const char __user *buffer, size_t c
 
 		if ((fix_rate == 0) || (fix_rate == 0xFF))
 			en = 0;
-			
+
 		if (macid != 255) {
 			RTW_INFO("Call phydm_fw_fix_rate()--en[%d] mac_id[%d] bw[%d] fix_rate[%d]\n", en, macid, bw, fix_rate);
 			phydm_fw_fix_rate(dm, en, macid, bw, fix_rate);
@@ -2695,7 +2695,7 @@ int proc_get_rx_signal(struct seq_file *m, void *v)
 
 		RTW_PRINT_SEL(m, "rx_rate = %s\n", HDATA_RATE(odm->rx_rate));
 		return 0;
-	} else 
+	} else
 #endif
 	{
 		/* RTW_PRINT_SEL(m, "rxpwdb:%d\n", padapter->recvpriv.rxpwdb); */
@@ -4916,21 +4916,21 @@ ssize_t proc_set_ps_info(struct file *file, const char __user *buffer, size_t co
 		RTW_INFO("%s: back to original LPS/IPS Mode\n", __FUNCTION__);
 
 		rtw_pm_set_lps(adapter, adapter->registrypriv.power_mgnt);
-		
+
 		rtw_pm_set_ips(adapter, adapter->registrypriv.ips_mode);
 
 		goto exit;
 	}
-	
-	if (mode == 1) { 
+
+	if (mode == 1) {
 		/* LPS */
-		RTW_INFO("%s: LPS: %s, en=%d\n", __FUNCTION__, (en == 0) ? "disable":"enable", en);	
+		RTW_INFO("%s: LPS: %s, en=%d\n", __FUNCTION__, (en == 0) ? "disable":"enable", en);
 		if (rtw_pm_set_lps(adapter, en) != 0 )
 			RTW_ERR("%s: invalid parameter, mode=%d, level=%d\n", __FUNCTION__, mode, en);
-		
+
 	} else if (mode == 2) {
 		/* IPS */
-		RTW_INFO("%s: IPS: %s, en=%d\n", __FUNCTION__, (en == 0) ? "disable":"enable", en);	
+		RTW_INFO("%s: IPS: %s, en=%d\n", __FUNCTION__, (en == 0) ? "disable":"enable", en);
 		if (rtw_pm_set_ips(adapter, en) != 0 )
 			RTW_ERR("%s: invalid parameter, mode=%d, level=%d\n", __FUNCTION__, mode, en);
 	} else

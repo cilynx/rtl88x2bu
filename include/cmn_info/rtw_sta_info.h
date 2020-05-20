@@ -189,7 +189,7 @@ struct dtp_info {
 };
 
 struct cmn_sta_info {
-	u16	dm_ctrl;			/*[Driver]*/			
+	u16	dm_ctrl;			/*[Driver]*/
 	enum channel_width	bw_mode;	/*[Driver] max support BW*/
 	u8	mac_id;				/*[Driver]*/
 	u8	mac_addr[6];			/*[Driver]*/

@@ -530,8 +530,8 @@ get_swing_index(
 	u32			bb_swing, table_value;
 
 	if (dm->support_ic_type == ODM_RTL8188E || dm->support_ic_type == ODM_RTL8723B ||
-	    dm->support_ic_type == ODM_RTL8192E || dm->support_ic_type == ODM_RTL8188F || 
-	    dm->support_ic_type == ODM_RTL8703B || dm->support_ic_type == ODM_RTL8723D || 
+	    dm->support_ic_type == ODM_RTL8192E || dm->support_ic_type == ODM_RTL8188F ||
+	    dm->support_ic_type == ODM_RTL8703B || dm->support_ic_type == ODM_RTL8723D ||
 	    dm->support_ic_type == ODM_RTL8192F || dm->support_ic_type == ODM_RTL8710B ||
 	    dm->support_ic_type == ODM_RTL8821) {
 		bb_swing = odm_get_bb_reg(dm, REG_OFDM_0_XA_TX_IQ_IMBALANCE, 0xFFC00000);
@@ -674,11 +674,11 @@ odm_txpowertracking_thermal_meter_init(
 			cali_info->default_ofdm_index = 28;						 	   /*OFDM: -1dB*/
 			cali_info->default_cck_index = 28;							/*CCK:   -6dB*/
 			/* JJ ADD 20161014 */
-		} else if (dm->support_ic_type == ODM_RTL8710B) {			
+		} else if (dm->support_ic_type == ODM_RTL8710B) {
 			cali_info->default_ofdm_index = 28;					/*OFDM: -1dB*/
 			cali_info->default_cck_index = 28;					/*CCK:   -6dB*/
 		/*Winnita add 20170828*/
-		} else if (dm->support_ic_type == ODM_RTL8192F) {			
+		} else if (dm->support_ic_type == ODM_RTL8192F) {
 			cali_info->default_ofdm_index = 30;					/*OFDM: 0dB*/
 			cali_info->default_cck_index = 28;					/*CCK:   -6dB*/
 		} else {

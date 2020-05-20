@@ -881,9 +881,9 @@ static void update_attrib_vcs_info(_adapter *padapter, struct xmit_frame *pxmitf
 #ifdef CONFIG_WMMPS_STA
 /*
  * update_attrib_trigger_frame_info
- * For Station mode, if a specific TID of driver setting and an AP support uapsd function, the data 
+ * For Station mode, if a specific TID of driver setting and an AP support uapsd function, the data
  * frame with corresponding TID will be a trigger frame when driver is in wmm power saving mode.
- * 
+ *
  * Arguments:
  * @padapter: _adapter pointer.
  * @pattrib: pkt_attrib pointer.
@@ -893,7 +893,7 @@ static void update_attrib_vcs_info(_adapter *padapter, struct xmit_frame *pxmitf
  */
 static void update_attrib_trigger_frame_info(_adapter *padapter, struct pkt_attrib *pattrib) {
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-	struct pwrctrl_priv 	*pwrpriv = adapter_to_pwrctl(padapter); 
+	struct pwrctrl_priv 	*pwrpriv = adapter_to_pwrctl(padapter);
 	struct qos_priv 	*pqospriv = &pmlmepriv->qospriv;
 	u8 trigger_frame_en = 0;
 
@@ -1377,8 +1377,9 @@ static s32 update_attrib(_adapter *padapter, _pkt *pkt, struct pkt_attrib *pattr
 		_rtw_memcpy(pattrib->ra, pattrib->dst, ETH_ALEN);
 		_rtw_memcpy(pattrib->ta, get_bssid(pmlmepriv), ETH_ALEN);
 		DBG_COUNTER(padapter->tx_logs.core_tx_upd_attrib_ap);
-	} else
+	} else {
 		DBG_COUNTER(padapter->tx_logs.core_tx_upd_attrib_unknown);
+	}
 
 get_sta_info:
 	bmcast = IS_MCAST(pattrib->ra);
@@ -1575,7 +1576,7 @@ get_sta_info:
 
 #ifdef CONFIG_WMMPS_STA
 	update_attrib_trigger_frame_info(padapter, pattrib);
-#endif /* CONFIG_WMMPS_STA */	
+#endif /* CONFIG_WMMPS_STA */
 
 	/* pattrib->priority = 5; */ /* force to used VI queue, for testing */
 	pattrib->hw_ssn_sel = pxmitpriv->hw_ssn_seq_no;
@@ -1878,7 +1879,7 @@ s32 rtw_make_wlanhdr(_adapter *padapter , u8 *hdr, struct pkt_attrib *pattrib)
 				/* TBD: temporary set (rspi, eosp) = (0, 1) which means End MPSP */
 				set_rspi(qc, 0);
 				SetEOSP(qc, 1);
-				
+
 				set_mctrl_present(qc, 1);
 			}
 #endif

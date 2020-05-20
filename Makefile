@@ -1,20 +1,19 @@
 EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS)
-EXTRA_CFLAGS += -O1
-EXTRA_CFLAGS += -Wno-vla # https://github.com/cilynx/rtl88x2BU_WiFi_linux_v5.3.1_27678.20180430_COEX20180427-5959/issues/11
-#EXTRA_CFLAGS += -O3
-#EXTRA_CFLAGS += -Wall
-#EXTRA_CFLAGS += -Wextra
-#EXTRA_CFLAGS += -Werror
+EXTRA_CFLAGS += -O2
+EXTRA_CFLAGS += -Wall
+EXTRA_CFLAGS += -Wextra
+EXTRA_CFLAGS += -Werror
 #EXTRA_CFLAGS += -pedantic
 #EXTRA_CFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
 
-EXTRA_CFLAGS += -Wno-unused-variable
-EXTRA_CFLAGS += -Wno-unused-value
+EXTRA_CFLAGS += -Wno-cast-function-type
+EXTRA_CFLAGS += -Wno-type-limits
+EXTRA_CFLAGS += -Wno-unused-function
 EXTRA_CFLAGS += -Wno-unused-label
 EXTRA_CFLAGS += -Wno-unused-parameter
-EXTRA_CFLAGS += -Wno-unused-function
-EXTRA_CFLAGS += -Wno-unused
-#EXTRA_CFLAGS += -Wno-uninitialized
+EXTRA_CFLAGS += -Wno-unused-value
+EXTRA_CFLAGS += -Wno-unused-variable
+EXTRA_CFLAGS += -Wno-vla
 
 GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
 ifeq ($(GCC_VER_49),1)
@@ -111,7 +110,7 @@ CONFIG_RTW_SDIO_PM_KEEP_POWER = y
 ###################### MP HW TX MODE FOR VHT #######################
 CONFIG_MP_VHT_HW_TX_MODE = n
 ###################### Platform Related #######################
-CONFIG_PLATFORM_ARM_NV_NANO = n 
+CONFIG_PLATFORM_ARM_NV_NANO = n
 CONFIG_PLATFORM_I386_PC = y
 CONFIG_PLATFORM_ARM_RPI = n
 CONFIG_PLATFORM_ANDROID_X86 = n
@@ -1199,7 +1198,7 @@ endif
 ifeq ($(CONFIG_LED_CONTROL), y)
 EXTRA_CFLAGS += -DCONFIG_LED_CONTROL
 ifeq ($(CONFIG_RTL8822B), y)
-EXTRA_CFLAGS += -DCONFIG_SW_LED 
+EXTRA_CFLAGS += -DCONFIG_SW_LED
 endif
 ifeq ($(CONFIG_LED_ENABLE), y)
 EXTRA_CFLAGS += -DCONFIG_LED_ENABLE

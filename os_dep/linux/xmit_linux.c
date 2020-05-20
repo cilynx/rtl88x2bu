@@ -65,7 +65,7 @@ sint rtw_endofpktfile(struct pkt_file *pfile)
 
 void rtw_set_tx_chksum_offload(_pkt *pkt, struct pkt_attrib *pattrib)
 {
-#ifdef CONFIG_TX_CSUM_OFFLOAD	
+#ifdef CONFIG_TX_CSUM_OFFLOAD
 	struct sk_buff *skb = (struct sk_buff *)pkt;
 	struct iphdr *iph = NULL;
 	struct ipv6hdr *i6ph = NULL;
@@ -305,12 +305,12 @@ void rtw_os_xmit_schedule(_adapter *padapter)
 		tasklet_hi_schedule(&pxmitpriv->xmit_tasklet);
 
 	_exit_critical_bh(&pxmitpriv->lock, &irqL);
-	
+
 #if defined(CONFIG_PCI_HCI) && defined(CONFIG_XMIT_THREAD_MODE)
 	if (_rtw_queue_empty(&padapter->xmitpriv.pending_xmitbuf_queue) == _FALSE)
 		_rtw_up_sema(&padapter->xmitpriv.xmit_sema);
 #endif
-	
+
 
 #endif
 }
@@ -451,7 +451,7 @@ int _rtw_xmit_entry(_pkt *pkt, _nic_hdl pnetdev)
 #ifdef CONFIG_TX_MCAST2UNI
 	extern int rtw_mc2u_disable;
 #endif /* CONFIG_TX_MCAST2UNI	 */
-#ifdef CONFIG_TX_CSUM_OFFLOAD	
+#ifdef CONFIG_TX_CSUM_OFFLOAD
 	struct sk_buff *skb = pkt;
 	struct sk_buff *segs, *nskb;
 	netdev_features_t features = padapter->pnetdev->features;

@@ -373,7 +373,7 @@ struct hal_ops {
 	void (*write_syson_reg)(_adapter *padapter, u32 RegAddr, u32 BitMask, u32 Data);
 #endif
 	void (*read_wmmedca_reg)(_adapter *padapter, u16 *vo_params, u16 *vi_params, u16 *be_params, u16 *bk_params);
-	
+
 #ifdef CONFIG_HOSTAPD_MLME
 	s32(*hostap_mgnt_xmit_entry)(_adapter *padapter, _pkt *pkt);
 #endif
@@ -583,9 +583,9 @@ typedef enum _HARDWARE_TYPE {
 #define IS_HARDWARE_TYPE_8192FS(_Adapter)\
 	(rtw_get_hw_type(_Adapter) == HARDWARE_TYPE_RTL8192FS)
 #define IS_HARDWARE_TYPE_8192FU(_Adapter)\
-	(rtw_get_hw_type(_Adapter) == HARDWARE_TYPE_RTL8192FU)	
+	(rtw_get_hw_type(_Adapter) == HARDWARE_TYPE_RTL8192FU)
 #define IS_HARDWARE_TYPE_8192FE(_Adapter)\
-	(rtw_get_hw_type(_Adapter) == HARDWARE_TYPE_RTL8192FE)	
+	(rtw_get_hw_type(_Adapter) == HARDWARE_TYPE_RTL8192FE)
 #define	IS_HARDWARE_TYPE_8192F(_Adapter)\
 	(IS_HARDWARE_TYPE_8192FS(_Adapter) ||\
 	 IS_HARDWARE_TYPE_8192FU(_Adapter) ||\

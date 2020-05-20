@@ -2377,8 +2377,9 @@ sint validate_recv_frame(_adapter *adapter, union recv_frame *precv_frame)
 					dump_rx_packet(ptr);
 			}
 			#endif
-		} else
+		} else {
 			DBG_COUNTER(adapter->rx_logs.core_rx_pre_data_handled);
+		}
 		break;
 	default:
 		DBG_COUNTER(adapter->rx_logs.core_rx_pre_unknown);
@@ -2922,7 +2923,7 @@ static int rtw_recv_indicatepkt_check(union recv_frame *rframe, u8 *ehdr_pos, u3
 					RTW_INFO("0x%x ",ehdr_pos[i+ETHERNET_HEADER_SIZE]);
 				RTW_INFO("\n");
 				}
-				
+
 			}
 		}
 	}
@@ -4871,7 +4872,7 @@ void rx_query_phy_status(
 						precvframe->u.hdr.psta = psta;
 					rx_process_phy_info(padapter, precvframe);
 				}
-			} else 
+			} else
 #endif
 			{
 					if (psta)
