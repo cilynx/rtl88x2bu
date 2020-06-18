@@ -29,7 +29,7 @@ important work by saving and such beforehand.
 
 ## DKMS installation
 
-If you want to have the driver available at startup, it will you convenient to
+If you want to have the driver available at startup, it will be convenient to
 register it in DKMS. This can be done completely automatically with the script
 `deploy.sh`.
 
