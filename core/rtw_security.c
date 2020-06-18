@@ -2132,6 +2132,13 @@ BIP_exit:
 
 #ifndef PLATFORM_FREEBSD
 #if defined(CONFIG_TDLS)
+
+struct sha256_state {
+    u64 length;
+    u32 state[8], curlen;
+    u8 buf[64];
+};
+
 /* compress 512-bits */
 static int sha256_compress(struct sha256_state *md, unsigned char *buf)
 {
