@@ -30,8 +30,9 @@ important work by saving and such beforehand.
 ## DKMS installation
 
 If you want to have the driver available at startup, it will be convenient to
-register it in DKMS. This can be done completely automatically with the script
-`deploy.sh`.
+register it in DKMS. An executable explanation of how to do so can be found in
+the script `deploy.sh`. Since registering a kernel module in DKMS is a major
+intervention, only execute it if you understand what the script does.
 
 ## Raspberry Pi Access Point
 
