@@ -52,6 +52,7 @@ CONFIG_GSPI_HCI = n
 CONFIG_LED_CONTROL = y
 CONFIG_LED_ENABLE = y
 ########################## Features ###########################
+CONFIG_NET_NS=y
 CONFIG_MP_INCLUDED = y
 CONFIG_POWER_SAVING = y
 CONFIG_USB_AUTOSUSPEND = n
