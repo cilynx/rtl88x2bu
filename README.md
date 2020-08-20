@@ -18,6 +18,9 @@ Build confirmed on:
 Linux 5.6.0-gentoo #1 SMP Tue Mar 31 09:56:02 JST 2020 GenuineIntel GNU/Linux gcc (Gentoo 9.3.0 p1) 9.3.0
 ```
 ```
+Linux DELL_XPS_UBUNTU_20.04 5.4.0-42-generic #46-Ubuntu SMP Fri Jul 10 00:24:02 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+```
+```
 Linux ThinkPad-P52 5.4.0-9-generic #12-Ubuntu SMP Mon Dec 16 22:34:19 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
 ```
 ```
