@@ -7,6 +7,7 @@ EXTRA_CFLAGS += -Werror
 #EXTRA_CFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
 
 EXTRA_CFLAGS += -Wno-cast-function-type
+EXTRA_CFLAGS += -Wno-enum-conversion
 EXTRA_CFLAGS += -Wno-type-limits
 EXTRA_CFLAGS += -Wno-unused-function
 EXTRA_CFLAGS += -Wno-unused-label
