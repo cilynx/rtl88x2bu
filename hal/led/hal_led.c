@@ -63,7 +63,7 @@ void rtw_led_set_strategy(_adapter *adapter, u8 strategy)
 	rtw_hal_sw_led_deinit(pri_adapter);
 #endif
 
-	rtw_led_control(pri_adapter, RTW_LED_OFF);
+	rtw_led_control(pri_adapter, LED_CTL_LINK);
 }
 
 #ifdef CONFIG_RTW_SW_LED
