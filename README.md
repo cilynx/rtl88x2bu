@@ -29,6 +29,11 @@ Linux version 5.3.0-050300-generic (kernel@sita) (gcc version 9.2.1 20190909 (Ub
 ```
 Linux version 5.2.0-2-amd64 (debian-kernel@lists.debian.org) (gcc version 8.3.0 (Debian 8.3.0-21)) #1 SMP Debian 5.2.9-2 (2019-08-21)
 ```
+```
+Linux version 5.8.0-3-amd64 (debian-kernel@lists.debian.org) (gcc-10 (Debian 10.2.0-13) 10.2.0, GNU ld (GNU Binutils for Debian) 2.35.1) #1 SMP Debian 5.8.14-1 (2020-10-10)
+```
+
+
 ## DKMS installation
 
 ```bash
