@@ -168,6 +168,10 @@ struct rtw_wdev_priv {
 	bool block_scan;
 	bool power_mgmt;
 
+	#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,8,0)
+	u32 mgmt_mask;
+	#endif
+
 	/* report mgmt_frame registered */
 	u16 report_mgmt;
 

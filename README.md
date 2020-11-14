@@ -110,7 +110,7 @@ If you want 802.11an speeds 144Mbps you could use this config below:
 ```
 # Configure hostapd
 sudo tee /etc/hostapd/hostapd.conf <<EOF
-nterface=wlx74ee2ae24062
+interface=wlx74ee2ae24062
 driver=nl80211
 ssid=borg
 
