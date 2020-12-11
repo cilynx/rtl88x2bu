@@ -4770,8 +4770,10 @@ int rtw_dev_nlo_info_set(struct pno_nlo_info *nlo_info, pno_ssid_t *ssid,
 		return 0;
 	}
 
-	fs = get_fs();
-	set_fs(KERNEL_DS);
+    #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+        fs = get_fs();
+        set_fs(KERNEL_DS);
+    #endif
 
 	source = rtw_zmalloc(2048);
 
@@ -4781,7 +4783,9 @@ int rtw_dev_nlo_info_set(struct pno_nlo_info *nlo_info, pno_ssid_t *ssid,
 		rtw_mfree(source, 2048);
 	}
 
-	set_fs(fs);
+    #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+        set_fs(fs);
+    #endif
 	filp_close(fp, NULL);
 
 	RTW_INFO("-%s-\n", __func__);
