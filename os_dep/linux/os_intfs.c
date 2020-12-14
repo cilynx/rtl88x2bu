@@ -4024,14 +4024,18 @@ static int route_dump(u32 *gw_addr , int *gw_index)
 	msg.msg_controllen = 0;
 	msg.msg_flags = MSG_DONTWAIT;
 
-	oldfs = get_fs();
-	set_fs(KERNEL_DS);
+    #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+        oldfs = get_fs();
+        set_fs(KERNEL_DS);
+    #endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 1, 0))
 	err = sock_sendmsg(sock, &msg);
 #else
 	err = sock_sendmsg(sock, &msg, sizeof(req));
 #endif
-	set_fs(oldfs);
+    #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+        set_fs(oldfs);
+    #endif
 
 	if (err < 0)
 		goto out_sock;
@@ -4056,14 +4060,18 @@ restart:
 		iov_iter_init(&msg.msg_iter, READ, &iov, 1, PAGE_SIZE);
 #endif
 
-		oldfs = get_fs();
-		set_fs(KERNEL_DS);
+        #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+            oldfs = get_fs();
+            set_fs(KERNEL_DS);
+        #endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 7, 0))
 		err = sock_recvmsg(sock, &msg, MSG_DONTWAIT);
 #else
 		err = sock_recvmsg(sock, &msg, PAGE_SIZE, MSG_DONTWAIT);
 #endif
-		set_fs(oldfs);
+        #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+            set_fs(oldfs);
+        #endif
 
 		if (err < 0)
 			goto out_sock_pg;
@@ -4134,14 +4142,18 @@ done:
 		msg.msg_controllen = 0;
 		msg.msg_flags = MSG_DONTWAIT;
 
-		oldfs = get_fs();
-		set_fs(KERNEL_DS);
+        #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+            oldfs = get_fs();
+            set_fs(KERNEL_DS);
+        #endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 1, 0))
 		err = sock_sendmsg(sock, &msg);
 #else
 		err = sock_sendmsg(sock, &msg, sizeof(req));
 #endif
-		set_fs(oldfs);
+        #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+            set_fs(oldfs);
+        #endif
 
 		if (err > 0)
 			goto restart;

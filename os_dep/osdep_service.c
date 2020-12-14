@@ -2200,12 +2200,14 @@ static int isFileReadable(const char *path, u32 *sz)
 	if (IS_ERR(fp))
 		ret = PTR_ERR(fp);
 	else {
-		oldfs = get_fs();
-		#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 1, 0))
-		set_fs(KERNEL_DS);
-		#else
-		set_fs(get_ds());
-		#endif
+        #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+            oldfs = get_fs();
+            #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 1, 0))
+                set_fs(KERNEL_DS);
+            #else
+                set_fs(get_ds());
+            #endif
+        #endif
 
 		if (1 != readFile(fp, &buf, 1))
 			ret = PTR_ERR(fp);
@@ -2218,7 +2220,9 @@ static int isFileReadable(const char *path, u32 *sz)
 			#endif
 		}
 
-		set_fs(oldfs);
+        #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+            set_fs(oldfs);
+        #endif
 		filp_close(fp, NULL);
 	}
 	return ret;
@@ -2242,14 +2246,18 @@ static int retriveFromFile(const char *path, u8 *buf, u32 sz)
 		if (0 == ret) {
 			RTW_INFO("%s openFile path:%s fp=%p\n", __FUNCTION__, path , fp);
 
-			oldfs = get_fs();
-			#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 1, 0))
-			set_fs(KERNEL_DS);
-			#else
-			set_fs(get_ds());
-			#endif
+            #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+                oldfs = get_fs();
+                #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 1, 0))
+                    set_fs(KERNEL_DS);
+                #else
+                    set_fs(get_ds());
+                #endif
+            #endif
 			ret = readFile(fp, buf, sz);
-			set_fs(oldfs);
+            #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+                set_fs(oldfs);
+            #endif
 			closeFile(fp);
 
 			RTW_INFO("%s readFile, ret:%d\n", __FUNCTION__, ret);
@@ -2281,14 +2289,18 @@ static int storeToFile(const char *path, u8 *buf, u32 sz)
 		if (0 == ret) {
 			RTW_INFO("%s openFile path:%s fp=%p\n", __FUNCTION__, path , fp);
 
-			oldfs = get_fs();
-			#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 1, 0))
-			set_fs(KERNEL_DS);
-			#else
-			set_fs(get_ds());
-			#endif
+            #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+                oldfs = get_fs();
+                #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 1, 0))
+                    set_fs(KERNEL_DS);
+                #else
+                    set_fs(get_ds());
+                #endif
+            #endif
 			ret = writeFile(fp, buf, sz);
-			set_fs(oldfs);
+            #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+                set_fs(oldfs);
+            #endif
 			closeFile(fp);
 
 			RTW_INFO("%s writeFile, ret:%d\n", __FUNCTION__, ret);
