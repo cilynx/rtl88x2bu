@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-VER="$(sed -n 's/\PACKAGE_VERSION="\(.*\)"/\1/p' dkms.conf)"
+VER="$(sed -En 's/^PACKAGE_VERSION="(.*)"/\1/p' dkms.conf)"
 DRV_NAME=rtl88x2bu
 
 if ! sudo -v
