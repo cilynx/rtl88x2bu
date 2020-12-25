@@ -11,7 +11,7 @@ then
     exit 1
 fi
 
-sudo rsync -rvhP ./ /usr/src/"${DRV_NAME}"-"${VER}"
+sudo rsync -rh ./ /usr/src/"${DRV_NAME}"-"${VER}"
 sudo dkms add -m "${DRV_NAME}" -v "${VER}"
 sudo dkms build -m "${DRV_NAME}" -v "${VER}"
 sudo dkms install -m "${DRV_NAME}" -v "${VER}"
