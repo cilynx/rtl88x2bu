@@ -32,6 +32,9 @@ Linux version 5.2.0-2-amd64 (debian-kernel@lists.debian.org) (gcc version 8.3.0 
 ```
 Linux version 5.8.0-3-amd64 (debian-kernel@lists.debian.org) (gcc-10 (Debian 10.2.0-13) 10.2.0, GNU ld (GNU Binutils for Debian) 2.35.1) #1 SMP Debian 5.8.14-1 (2020-10-10)
 ```
+```
+Linux 5.4.0-42-generic x86_64 (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34)
+```
 
 
 ## DKMS installation
