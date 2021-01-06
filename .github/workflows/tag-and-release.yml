@@ -36,11 +36,11 @@ jobs:
         run: |
           VER=$(sed -n 's/\PACKAGE_VERSION="\(.*\)"/\1/p' dkms.conf)
           cp .github/workflows/rtl88x2bu-dkms-mkrpm.spec ./
-          sudo rsync -rvhP ./ /usr/src/rtl88x2bu-${VER}
+          sudo rsync --exclude '.git' -rvhP ./ /usr/src/rtl88x2bu-${VER}
           sudo dkms add -m rtl88x2bu -v ${VER}
           sudo dkms build -m rtl88x2bu -v ${VER}
-          sudo dkms mkdeb -m rtl88x2bu -v ${VER}
-          sudo dkms mkrpm -m rtl88x2bu -v ${VER}
+          sudo dkms mkdeb -m rtl88x2bu -v ${VER} --source-only
+          sudo dkms mkrpm -m rtl88x2bu -v ${VER} --source-only
 
       # Creates a release draft with the attached package
       - name: Create release draft
@@ -50,7 +50,7 @@ jobs:
           name: ${{ env.TAG_NAME }}
           draft: true
           files: |
-            /var/lib/dkms/rtl88x2bu/*/deb/rtl88x2bu-dkms*.deb
+            /var/lib/dkms/rtl88x2bu/*/deb/rtl88x2bu-*.deb
             /var/lib/dkms/rtl88x2bu/*/rpm/rtl88x2bu-*.rpm
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
