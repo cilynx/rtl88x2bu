@@ -23,6 +23,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # Gets tags name
+      - name: Set env
+        run: echo "TAG_NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
       # Installs dependencies to build the package
       - name: Install dependencies
         run: sudo apt install dkms debhelper rpm
@@ -42,8 +46,8 @@ jobs:
       - name: Create release draft
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          tag_name: ${{ env.TAG_NAME }}
+          name: ${{ env.TAG_NAME }}
           draft: true
           files: |
             /var/lib/dkms/rtl88x2bu/*/deb/rtl88x2bu-dkms*.deb
