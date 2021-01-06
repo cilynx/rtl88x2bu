@@ -14,7 +14,7 @@ License:	%license
 Release:	1dkms
 BuildArch:	noarch
 Group:		System/Kernel
-Requires: 	dkms >= 1.95
+Requires: 	dkms >= 1.95, kernel-devel
 # -- Building dkms-rpm from ubuntu, turn off checking requirements (find-requires and find-provides), manually added in Requires
 Autoprov: 	0
 #BuildRequires: 	dkms
