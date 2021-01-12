@@ -1,0 +1,26 @@
+Source: rtl88x2bu
+Section: misc
+Priority: optional
+Maintainer: liuxin <liuxin@uniontech.com>
+Build-Depends: debhelper (>= 10),
+                dkms,
+                bc,
+                build-essential,
+Standards-Version: 4.3.0
+Vcs-Browser: https://github.com/cilynx/rtl88x2bu
+Vcs-Git: https://github.com/cilynx/rtl88x2bu.git
+
+Package: rtl88x2bu-dkms
+Architecture: amd64
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Provides: rtl88x2bu-module
+Description: DKMS files to build and install rtl88x2bu
+ The rtl88x2bu driver provides the driver for USB wifi adapter.
+ .
+ This package contains the DKMS files to build and install rtl88x2bu.
+ .
+ To install this package, you have to install the header files for your
+ current kernel manually (usually included in the "linux-headers-<your
+ architecture>").
+

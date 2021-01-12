@@ -1,0 +1,29 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+include /usr/share/dpkg/default.mk
+
+export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+VERSION ?= $(shell dpkg-parsechangelog | sed -rne 's/^Version: ([0-9.]+).*$$/\1/p')
+
+%:
+	dh $@ --with dkms
+
+override_dh_auto_install:
+	dh_install -prtl88x2bu-dkms -X.o -X.ko core/       usr/src/rtl88x2bu-$(VERSION)
+	dh_install -prtl88x2bu-dkms -X.o -X.ko hal/        usr/src/rtl88x2bu-$(VERSION)
+	dh_install -prtl88x2bu-dkms -X.o -X.ko os_dep/     usr/src/rtl88x2bu-$(VERSION)
+	dh_install -prtl88x2bu-dkms -X.o -X.ko platform/   usr/src/rtl88x2bu-$(VERSION)
+	dh_install -prtl88x2bu-dkms -X.o -X.ko include/    usr/src/rtl88x2bu-$(VERSION)
+	dh_install -prtl88x2bu-dkms Makefile               usr/src/rtl88x2bu-$(VERSION)
+	dh_install -prtl88x2bu-dkms rtl8822b.mk		   	   usr/src/rtl88x2bu-$(VERSION)
+	dh_install -prtl88x2bu-dkms dkms.conf              usr/src/rtl88x2bu-$(VERSION)
+	dh_install -prtl88x2bu-dkms halmac.mk              usr/src/rtl88x2bu-$(VERSION)
+
+override_dh_dkms:
+	dh_dkms -V
+
+override_dh_auto_build:
+	:
