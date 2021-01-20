@@ -204,6 +204,8 @@ void phydm_ra_debug(void *dm_void, char input[][16], u32 *_used, char *output,
 			 "{1} {100}: show offset\n");
 		PDM_SNPF(out_len, used, output + used, out_len - used,
 			 "{2} {en} {macid} {bw} {rate}: fw fix rate\n");
+		PDM_SNPF(out_len, used, output + used, out_len - used,
+			 "{3} {en}: Dynamic RRSR\n");
 
 	} else if (var[0] == 1) { /*@Adjust PCR offset*/
 
@@ -235,7 +237,10 @@ void phydm_ra_debug(void *dm_void, char input[][16], u32 *_used, char *output,
 			 var[1], macid, bw, rate);
 
 		phydm_fw_fix_rate(dm, (u8)var[1], macid, bw, rate);
-
+	} else if (var[0] == 3) { /*@FW fix rate*/
+		ra_tab->dynamic_rrsr_en = (boolean)var[1];
+		PDM_SNPF(out_len, used, output + used, out_len - used,
+			 "[Dynamic RRSR] enable=%d", ra_tab->dynamic_rrsr_en);
 	} else {
 		PDM_SNPF(out_len, used, output + used, out_len - used,
 			 "[Set] Error\n");
@@ -447,13 +452,12 @@ void phydm_c2h_ra_report_handler(void *dm_void, u8 *cmd_buf, u8 cmd_len)
 	phydm_print_rate_2_buff(dm, rate, dbg_buf, PHYDM_SNPRINT_SIZE);
 	PHYDM_DBG(dm, DBG_RA, "Tx Rate=%s (%d)", dbg_buf, rate);
 
-	if (macid >= 128) {
+#ifdef MU_EX_MACID
+	if (macid >= 128 && macid < (128 + MU_EX_MACID)) {
 		gid_index = macid - 128;
 		ra_tab->mu1_rate[gid_index] = rate;
 	}
-
-	/*@ra_tab->link_tx_rate[macid] = rate;*/
-
+#endif
 	if (is_sta_active(sta)) {
 		sta->ra_info.curr_tx_rate = rate;
 		sta->ra_info.curr_tx_bw = (enum channel_width)curr_bw;
@@ -812,6 +816,25 @@ void phydm_show_sta_info(void *dm_void, char input[][16], u32 *_used,
 	*_out_len = out_len;
 }
 
+u8 phydm_get_rx_stream_num(void *dm_void, enum rf_type type)
+{
+	struct dm_struct *dm = (struct dm_struct *)dm_void;
+	u8 rx_num = 1;
+
+	if (type == RF_1T1R)
+		rx_num = 1;
+	else if (type == RF_2T2R || type == RF_1T2R)
+		rx_num = 2;
+	else if (type == RF_3T3R || type == RF_2T3R)
+		rx_num = 3;
+	else if (type == RF_4T4R || type == RF_3T4R || type == RF_2T4R)
+		rx_num = 4;
+	else
+		pr_debug("[Warrning] %s\n", __func__);
+
+	return rx_num;
+}
+
 u8 phydm_get_tx_stream_num(void *dm_void, enum rf_type type)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
@@ -939,6 +962,9 @@ u64 phydm_get_bb_mod_ra_mask(void *dm_void, u8 sta_idx)
 		} else if (bw == CHANNEL_WIDTH_80) {
 		/* @AC 80MHz doesn't support 3SS MCS6*/
 			ra_mask_bitmap &= 0x000fffbffffff010;
+		} else if (bw == CHANNEL_WIDTH_160) {
+		/* @AC 80M+80M doesn't support 3SS & 4SS*/
+			ra_mask_bitmap &= 0xfffff010;
 		}
 	} else {
 		PHYDM_DBG(dm, DBG_RA, "[Warrning] RA mask is Not found\n");
@@ -1070,14 +1096,25 @@ u8 phydm_get_rate_id(void *dm_void, u8 sta_idx)
 		}
 	} else if (wrls_mode == (WIRELESS_OFDM | WIRELESS_VHT)) {
 	/*@AC mode*/
-		if (tx_stream_num == 1)
-			rate_id_idx = PHYDM_ARFR1_AC_1SS;
-		else if (tx_stream_num == 2)
-			rate_id_idx = PHYDM_ARFR0_AC_2SS;
-		else if (tx_stream_num == 3)
-			rate_id_idx = PHYDM_ARFR4_AC_3SS;
-		else if (tx_stream_num == 4)
-			rate_id_idx = PHYDM_ARFR6_AC_4SS;
+		if (bw == CHANNEL_WIDTH_160) {
+			if (tx_stream_num == 1)
+				rate_id_idx = PHYDM_ARFR1_AC_1SS;
+			else if (tx_stream_num == 2)
+				rate_id_idx = PHYDM_ARFR0_AC_2SS;
+			else if (tx_stream_num == 3)
+				rate_id_idx = PHYDM_ARFR0_AC_2SS;
+			else if (tx_stream_num == 4)
+				rate_id_idx = PHYDM_ARFR0_AC_2SS;
+		} else {
+			if (tx_stream_num == 1)
+				rate_id_idx = PHYDM_ARFR1_AC_1SS;
+			else if (tx_stream_num == 2)
+				rate_id_idx = PHYDM_ARFR0_AC_2SS;
+			else if (tx_stream_num == 3)
+				rate_id_idx = PHYDM_ARFR4_AC_3SS;
+			else if (tx_stream_num == 4)
+				rate_id_idx = PHYDM_ARFR6_AC_4SS;
+			}
 	} else if (wrls_mode == (WIRELESS_CCK | WIRELESS_OFDM | WIRELESS_VHT)) {
 	/*@AC 2.4G mode*/
 		if (bw >= CHANNEL_WIDTH_80) {
@@ -1268,6 +1305,7 @@ void phydm_ra_mask_watchdog(void *dm_void)
 	struct ra_table *ra_t = &dm->dm_ra_table;
 	struct cmn_sta_info *sta = NULL;
 	struct ra_sta_info *ra = NULL;
+	boolean force_ra_mask_en = false;
 	u8 sta_idx;
 	u64 ra_mask;
 	u8 rssi_lv_new;
@@ -1282,6 +1320,11 @@ void phydm_ra_mask_watchdog(void *dm_void)
 	PHYDM_DBG(dm, DBG_RA_MASK, "%s ======>\n", __func__);
 
 	ra_t->up_ramask_cnt++;
+
+	if (ra_t->up_ramask_cnt >= FORCED_UPDATE_RAMASK_PERIOD) {
+		ra_t->up_ramask_cnt = 0;
+		force_ra_mask_en = true;
+	}
 
 	for (sta_idx = 0; sta_idx < ODM_ASSOCIATE_ENTRY_NUM; sta_idx++) {
 		sta = dm->phydm_sta_info[sta_idx];
@@ -1310,7 +1353,7 @@ void phydm_ra_mask_watchdog(void *dm_void)
 				#if (DM_ODM_SUPPORT_TYPE == ODM_CE)
 				set_ra_ldpc_8812(sta, true);
 				#elif (DM_ODM_SUPPORT_TYPE == ODM_WIN)
-				MgntSet_TX_LDPC(sta->mac_id, true);
+				MgntSet_TX_LDPC(dm->adapter, sta->mac_id, true);
 				#elif (DM_ODM_SUPPORT_TYPE == ODM_AP)
 				/*to be added*/
 				#endif
@@ -1322,7 +1365,7 @@ void phydm_ra_mask_watchdog(void *dm_void)
 				#if (DM_ODM_SUPPORT_TYPE == ODM_CE)
 				set_ra_ldpc_8812(sta, false);
 				#elif (DM_ODM_SUPPORT_TYPE == ODM_WIN)
-				MgntSet_TX_LDPC(sta->mac_id, false);
+				MgntSet_TX_LDPC(dm->adapter, sta->mac_id, false);
 				#elif (DM_ODM_SUPPORT_TYPE == ODM_AP)
 				/*to be added*/
 				#endif
@@ -1335,12 +1378,11 @@ void phydm_ra_mask_watchdog(void *dm_void)
 		rssi_lv_new = phydm_rssi_lv_dec(dm, (u32)rssi, ra->rssi_level);
 
 		if (ra->rssi_level != rssi_lv_new ||
-		    ra_t->up_ramask_cnt >= FORCED_UPDATE_RAMASK_PERIOD) {
+		    (force_ra_mask_en && dm->number_linked_client < 10)) {
 			PHYDM_DBG(dm, DBG_RA_MASK, "RSSI LV:((%d))->((%d))\n",
 				  ra->rssi_level, rssi_lv_new);
 
 			ra->rssi_level = rssi_lv_new;
-			ra_t->up_ramask_cnt = 0;
 
 			ra_mask = phydm_get_bb_mod_ra_mask(dm, sta_idx);
 
@@ -1542,25 +1584,82 @@ u8 phydm_rssi_lv_dec(void *dm_void, u32 rssi, u8 ratr_state)
 	return new_rssi_lv;
 }
 
+enum phydm_qam_order phydm_get_ofdm_qam_order(void *dm_void, u8 rate_idx)
+{
+	u8 tmp_idx = rate_idx;
+	enum phydm_qam_order qam_order = PHYDM_QAM_BPSK;
+	enum phydm_qam_order qam[10] = {PHYDM_QAM_BPSK, PHYDM_QAM_QPSK,
+					PHYDM_QAM_QPSK, PHYDM_QAM_16QAM,
+					PHYDM_QAM_16QAM, PHYDM_QAM_64QAM,
+					PHYDM_QAM_64QAM, PHYDM_QAM_64QAM,
+					PHYDM_QAM_256QAM, PHYDM_QAM_256QAM};
+
+	if (rate_idx <= ODM_RATE11M)
+		return PHYDM_QAM_CCK;
+
+	if (rate_idx >= ODM_RATEVHTSS1MCS0) {
+		if (rate_idx >= ODM_RATEVHTSS4MCS0)
+			tmp_idx -= ODM_RATEVHTSS4MCS0;
+		else if (rate_idx >= ODM_RATEVHTSS3MCS0)
+			tmp_idx -= ODM_RATEVHTSS3MCS0;
+		else if (rate_idx >= ODM_RATEVHTSS2MCS0)
+			tmp_idx -= ODM_RATEVHTSS2MCS0;
+		else
+			tmp_idx -= ODM_RATEVHTSS1MCS0;
+
+		qam_order = qam[tmp_idx];
+	} else if (rate_idx >= ODM_RATEMCS0) {
+		if (rate_idx >= ODM_RATEMCS24)
+			tmp_idx -= ODM_RATEMCS24;
+		else if (rate_idx >= ODM_RATEMCS16)
+			tmp_idx -= ODM_RATEMCS16;
+		else if (rate_idx >= ODM_RATEMCS8)
+			tmp_idx -= ODM_RATEMCS8;
+		else
+			tmp_idx -= ODM_RATEMCS0;
+
+		qam_order = qam[tmp_idx];
+	} else {
+		if (rate_idx > ODM_RATE6M) {
+			tmp_idx -= ODM_RATE6M;
+			qam_order = qam[tmp_idx - 1];
+		} else {
+			qam_order = PHYDM_QAM_BPSK;
+		}
+	}
+
+	return qam_order;
+}
+
 u8 phydm_rate_order_compute(void *dm_void, u8 rate_idx)
 {
-	u8 rate_order = 0;
+	u8 rate_order = rate_idx & 0x7f;
+
+	rate_idx &= 0x7f;
 
 	if (rate_idx >= ODM_RATEVHTSS4MCS0)
-		rate_idx -= ODM_RATEVHTSS4MCS0;
+		rate_order -= ODM_RATEVHTSS4MCS0;
 	else if (rate_idx >= ODM_RATEVHTSS3MCS0)
-		rate_idx -= ODM_RATEVHTSS3MCS0;
+		rate_order -= ODM_RATEVHTSS3MCS0;
 	else if (rate_idx >= ODM_RATEVHTSS2MCS0)
-		rate_idx -= ODM_RATEVHTSS2MCS0;
+		rate_order -= ODM_RATEVHTSS2MCS0;
 	else if (rate_idx >= ODM_RATEVHTSS1MCS0)
-		rate_idx -= ODM_RATEVHTSS1MCS0;
+		rate_order -= ODM_RATEVHTSS1MCS0;
 	else if (rate_idx >= ODM_RATEMCS24)
-		rate_idx -= ODM_RATEMCS24;
+		rate_order -= ODM_RATEMCS24;
 	else if (rate_idx >= ODM_RATEMCS16)
-		rate_idx -= ODM_RATEMCS16;
+		rate_order -= ODM_RATEMCS16;
 	else if (rate_idx >= ODM_RATEMCS8)
-		rate_idx -= ODM_RATEMCS8;
-	rate_order = rate_idx;
+		rate_order -= ODM_RATEMCS8;
+	else if (rate_idx >= ODM_RATEMCS0)
+		rate_order -= ODM_RATEMCS0;
+	else if (rate_idx >= ODM_RATE6M)
+		rate_order -= ODM_RATE6M;
+	else
+		rate_order -= ODM_RATE1M;
+
+	if (rate_idx >= ODM_RATEMCS0)
+		rate_order++;
 
 	return rate_order;
 }
@@ -1676,17 +1775,107 @@ void phydm_ra_common_info_update(void *dm_void)
 		  ra_tab->highest_client_tx_order);
 }
 
+void phydm_rrsr_set_register(void *dm_void, u32 rrsr_val)
+{
+	struct dm_struct *dm = (struct dm_struct *)dm_void;
+
+	odm_set_mac_reg(dm, R_0x440, 0xfffff, rrsr_val);
+}
+
+void phydm_masked_rrsr_set_register(void *dm_void, u32 rrsr_val)
+{
+	struct dm_struct *dm = (struct dm_struct *)dm_void;
+	struct ra_table *ra_tab = &dm->dm_ra_table;
+
+	if (ra_tab->rrsr_val_curr == rrsr_val)
+		return;
+
+	ra_tab->rrsr_val_curr = rrsr_val;
+	odm_set_mac_reg(dm, R_0x440, 0xfffff, rrsr_val);
+}
+
+void phydm_rrsr_mask(void *dm_void)
+{
+	struct dm_struct *dm = (struct dm_struct *)dm_void;
+	struct ra_table *ra = &dm->dm_ra_table;
+	struct cmn_sta_info *sta = NULL;
+	u8 rate_order = 0;
+	u8 rate_order_min = 0xff;
+	u32 rrsr_mask = 0, rrsr_mask_ofdm = 0;
+	u8 tx_rate_idx = 0;
+	u8 i = 0, sta_cnt = 0;
+
+	if (!ra->dynamic_rrsr_en)
+		return;
+
+	if (!dm->is_linked) {
+		phydm_masked_rrsr_set_register(dm, ra->rrsr_val_init);
+		return;
+	}
+
+#if 1
+	for (i = 0; i < ODM_ASSOCIATE_ENTRY_NUM; i++) {
+		sta = dm->phydm_sta_info[i];
+		if (!is_sta_active(sta))
+			continue;
+
+		sta_cnt++;
+		tx_rate_idx = sta->ra_info.curr_tx_rate & 0x7f;
+		rate_order = phydm_rate_order_compute(dm, tx_rate_idx);
+		if (rate_order < rate_order_min)
+			rate_order_min = rate_order;
+
+		if (sta_cnt == dm->number_linked_client)
+			break;
+	}
+#else
+	sta = dm->phydm_sta_info[dm->rssi_min_macid];
+
+	if (!is_sta_active(sta)) {
+		PHYDM_DBG(dm, DBG_DYN_ARFR, "[Warning] %s invalid STA\n",
+			  __func__);
+		return;
+	}
+
+	rate_order = phydm_rate_order_compute(dm, sta->ra_info.curr_tx_rate);
+#endif
+	if (rate_order_min == 0) {
+		rrsr_mask = 0x1f;
+	} else {
+		rrsr_mask_ofdm = (u32)phydm_gen_bitmask(rate_order_min);
+		rrsr_mask = (rrsr_mask_ofdm << 4) | 0xf;
+	}
+
+	/*ra->rrsr_val_init = 0x15d;*/
+
+	phydm_masked_rrsr_set_register(dm, ra->rrsr_val_init & rrsr_mask);
+
+	PHYDM_DBG(dm, DBG_DYN_ARFR,
+		  "tx{rate, rate_order_min}={0x%x, %d}, rrsr_init=0x%x, ofdm_rrsr_mask=0x%x, rrsr_val=0x%x\n",
+		  tx_rate_idx, rate_order_min, ra->rrsr_val_init,
+		  rrsr_mask, ra->rrsr_val_curr);
+}
+
 void phydm_ra_info_watchdog(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 
 	phydm_ra_common_info_update(dm);
 	phydm_ra_dynamic_retry_count(dm);
+	phydm_rrsr_mask(dm);
 	phydm_ra_mask_watchdog(dm);
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	odm_refresh_basic_rate_mask(dm);
 #endif
+}
+
+void phydm_rrsr_en(void *dm_void, boolean en_rrsr)
+{
+	struct dm_struct *dm = (struct dm_struct *)dm_void;
+	struct ra_table *ra_tab = &dm->dm_ra_table;
+
+	ra_tab->dynamic_rrsr_en = en_rrsr;
 }
 
 void phydm_ra_info_init(void *dm_void)
@@ -1698,6 +1887,8 @@ void phydm_ra_info_init(void *dm_void)
 	ra_tab->highest_client_tx_order = 0;
 	ra_tab->ra_th_ofst = 0;
 	ra_tab->ra_ofst_direc = 0;
+	ra_tab->rrsr_val_init = odm_get_mac_reg(dm, R_0x440, MASKDWORD);
+	ra_tab->dynamic_rrsr_en = true;
 
 #if (RTL8822B_SUPPORT == 1)
 	if (dm->support_ic_type == ODM_RTL8822B) {
@@ -1914,11 +2105,11 @@ void phydm_reset_retry_limit_table(
 	};
 
 	memcpy(&ra_t->per_rate_retrylimit_20M[0],
-	       &per_rate_retrylimit_table_20M[0], ODM_NUM_RATE_IDX);
+	       &per_rate_retrylimit_table_20M[0], PHY_NUM_RATE_IDX);
 	memcpy(&ra_t->per_rate_retrylimit_40M[0],
-	       &per_rate_retrylimit_table_40M[0], ODM_NUM_RATE_IDX);
+	       &per_rate_retrylimit_table_40M[0], PHY_NUM_RATE_IDX);
 
-	for (i = 0; i < ODM_NUM_RATE_IDX; i++) {
+	for (i = 0; i < PHY_NUM_RATE_IDX; i++) {
 		phydm_retry_limit_table_bound(dm,
 					      &ra_t->per_rate_retrylimit_20M[i],
 					      0);
@@ -1962,7 +2153,7 @@ void phydm_ra_dynamic_retry_limit(
 		} else {
 			retry_offset = dm->number_active_client * ra_tab->retry_descend_num;
 
-			for (i = 0; i < ODM_NUM_RATE_IDX; i++) {
+			for (i = 0; i < PHY_NUM_RATE_IDX; i++) {
 				phydm_retry_limit_table_bound(dm,
 							      &ra_tab->per_rate_retrylimit_20M[i],
 							      retry_offset);

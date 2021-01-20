@@ -424,18 +424,17 @@ void get_delta_swing_table_8822b(void *dm_void,
 
 void aac_check_8822b(struct dm_struct *dm)
 {
+	struct _hal_rf_ *rf = &dm->rf_table;
 	u32 temp;
 
-	static boolean firstrun = true;
-
-	if (firstrun) {
+	if (!rf->aac_checked) {
 		RF_DBG(dm, DBG_RF_LCK, "[LCK]AAC check for 8822b\n");
 		temp = odm_get_rf_reg(dm, RF_PATH_A, 0xc9, 0xf8);
 		if (temp < 4 || temp > 7) {
 			odm_set_rf_reg(dm, RF_PATH_A, 0xca, BIT(19), 0x0);
 			odm_set_rf_reg(dm, RF_PATH_A, 0xb2, 0x7c000, 0x6);
 		}
-		firstrun = false;
+		rf->aac_checked = true;
 	}
 }
 
@@ -538,16 +537,18 @@ void phy_set_rf_path_switch_8822b(void *adapter, boolean is_main)
 	odm_set_bb_reg(dm, R_0x1704, MASKDWORD, 0x0000ff00);
 	odm_set_bb_reg(dm, R_0x1700, MASKDWORD, 0xc00f0038);
 
-	if (is_main) {
+	if (dm->rfe_type != 0x12) {
+		if (is_main) {
 #if 0
-		/*odm_set_bb_reg(dm, R_0xcbd, 0x3, 0x2); WiFi*/
+			/*odm_set_bb_reg(dm, R_0xcbd, 0x3, 0x2); WiFi*/
 #endif
-		odm_set_bb_reg(dm, R_0xcbc, (BIT(9) | BIT(8)), 0x2); /*WiFi*/
-	} else {
+			odm_set_bb_reg(dm, R_0xcbc, (BIT(9) | BIT(8)), 0x2); /*WiFi*/
+		} else {
 #if 0
-		/*odm_set_bb_reg(dm, R_0xcbd, 0x3, 0x1); BT*/
+			/*odm_set_bb_reg(dm, R_0xcbd, 0x3, 0x1); BT*/
 #endif
-		odm_set_bb_reg(dm, R_0xcbc, (BIT(9) | BIT(8)), 0x1); /*BT*/
+			odm_set_bb_reg(dm, R_0xcbc, (BIT(9) | BIT(8)), 0x1); /*BT*/
+		}
 	}
 }
 

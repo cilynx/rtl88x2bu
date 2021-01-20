@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -38,7 +38,7 @@ mac_pwr_switch_usb_8822b(struct halmac_adapter *adapter,
 
 	PLTFM_MSG_TRACE("[TRACE]%s\n", __func__);
 	PLTFM_MSG_TRACE("[TRACE]%x\n", pwr);
-	PLTFM_MSG_TRACE("[TRACE]8821C pwr seq ver = %s\n",
+	PLTFM_MSG_TRACE("[TRACE]8822B pwr seq ver = %s\n",
 			HALMAC_8822B_PWR_SEQ_VER);
 
 	adapter->rpwm = HALMAC_REG_R8(0xFE58);

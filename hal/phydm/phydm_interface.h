@@ -309,9 +309,8 @@ void odm_efuse_logical_map_read(struct dm_struct *dm, u8 type, u16 offset,
 enum hal_status
 odm_iq_calibrate_by_fw(struct dm_struct *dm, u8 clear, u8 segment);
 
-void odm_cmn_info_ptr_array_hook(struct dm_struct *dm,
-				 enum odm_cmninfo cmn_info, u16 index,
-				 void *value);
+enum hal_status
+odm_dpk_by_fw(struct dm_struct *dm);
 
 void phydm_cmn_sta_info_hook(struct dm_struct *dm, u8 index,
 			     struct cmn_sta_info *pcmn_sta_info);
@@ -333,11 +332,14 @@ phydm_get_txbf_en(
 #endif
 
 void phydm_iqk_wait(struct dm_struct *dm, u32 timeout);
-
 u8 phydm_get_hwrate_to_mrate(struct dm_struct *dm, u8 rate);
 
 void phydm_set_crystalcap(struct dm_struct *dm, u8 crystal_cap);
 void phydm_run_in_thread_cmd(struct dm_struct *dm, void (*func)(void *),
 			     void *context);
-u32 phydm_get_tx_rate(struct dm_struct *dm);
+u8 phydm_get_tx_rate(struct dm_struct *dm);
+u8 phydm_get_tx_power_dbm(struct dm_struct *dm, u8 rf_path,
+					u8 rate, u8 bandwidth, u8 channel);
+u64 phydm_division64(u64 x, u64 y);
+
 #endif /* @__ODM_INTERFACE_H__ */

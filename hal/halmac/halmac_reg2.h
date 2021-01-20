@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -95,6 +95,21 @@
      HALMAC_8881A_SUPPORT)
 
 #define REG_SYS_SWR_CTRL1 0x0010
+
+#endif
+
+#if (HALMAC_8812F_SUPPORT)
+
+#define REG_SDIO_CTRL_2 0x10250010
+
+#endif
+
+#if (HALMAC_8192E_SUPPORT || HALMAC_8192F_SUPPORT || HALMAC_8197F_SUPPORT ||   \
+     HALMAC_8197G_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8812F_SUPPORT ||   \
+     HALMAC_8814A_SUPPORT || HALMAC_8814AMP_SUPPORT || HALMAC_8814B_SUPPORT || \
+     HALMAC_8821C_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8822C_SUPPORT ||   \
+     HALMAC_8881A_SUPPORT)
+
 #define REG_SYS_SWR_CTRL2 0x0014
 
 #endif
@@ -6132,7 +6147,7 @@
 
 #if (HALMAC_8822C_SUPPORT)
 
-#define REG_XTAL_AAC_OUTPUT				0x1060
+#define REG_XTAL_AAC_OUTPUT 0x1060
 
 #endif
 
@@ -8009,6 +8024,12 @@
 #if (HALMAC_8812F_SUPPORT || HALMAC_8814B_SUPPORT || HALMAC_8822C_SUPPORT)
 
 #define REG_GENERAL_OPTION 0x1664
+
+#endif
+
+#if (HALMAC_8197G_SUPPORT || HALMAC_8812F_SUPPORT)
+
+#define REG_RXAI_CTRL 0x1668
 
 #endif
 

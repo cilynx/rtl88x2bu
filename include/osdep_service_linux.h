@@ -23,6 +23,7 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/module.h>
+#include <linux/namei.h>
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 5))
 	#include <linux/kref.h>
 #endif
@@ -217,6 +218,7 @@ typedef void *timer_hdl_context;
 #endif
 
 typedef unsigned long systime;
+typedef struct tasklet_struct _tasklet;
 
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 22))
 /* Porting from linux kernel, for compatible with old kernel. */
@@ -533,7 +535,21 @@ struct rtw_netdev_priv_indicator {
 struct net_device *rtw_alloc_etherdev_with_old_priv(int sizeof_priv, void *old_priv);
 extern struct net_device *rtw_alloc_etherdev(int sizeof_priv);
 
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 24))
+#define rtw_get_same_net_ndev_by_name(ndev, name) dev_get_by_name(name)
+#elif (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26))
+#define rtw_get_same_net_ndev_by_name(ndev, name) dev_get_by_name(ndev->nd_net, name)
+#else
+#define rtw_get_same_net_ndev_by_name(ndev, name) dev_get_by_name(dev_net(ndev), name)
+#endif
+
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 24))
+#define rtw_get_bridge_ndev_by_name(name) dev_get_by_name(name)
+#else
+#define rtw_get_bridge_ndev_by_name(name) dev_get_by_name(&init_net, name)
+#endif
+
 #define STRUCT_PACKED __attribute__ ((packed))
 
 
-#endif
+#endif /* __OSDEP_LINUX_SERVICE_H_ */

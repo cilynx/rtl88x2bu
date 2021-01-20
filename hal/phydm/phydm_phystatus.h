@@ -1134,4 +1134,7 @@ void odm_phy_status_query(struct dm_struct *dm,
 
 void phydm_rx_phy_status_init(void *dm_void);
 
+void phydm_physts_dbg(void *dm_void, char input[][16], u32 *_used,
+		      char *output, u32 *_out_len);
+
 #endif /*@#ifndef	__HALHWOUTSRC_H__*/

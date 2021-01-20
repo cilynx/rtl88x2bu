@@ -244,6 +244,8 @@ u8 rtw_mi_buddy_check_pending_xmitbuf(_adapter *padapter);
 #if defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)
 #ifdef CONFIG_RTL8822B
 	#include <rtl8822b_hal.h>
+#elif defined(CONFIG_RTL8822C)
+	#include <rtl8822c_hal.h>
 #else
 	extern s32 _dequeue_writeport(PADAPTER padapter);
 #endif
@@ -271,6 +273,9 @@ extern void sreset_start_adapter(_adapter *padapter);
 extern void sreset_stop_adapter(_adapter *padapter);
 u8 rtw_mi_sreset_adapter_hdl(_adapter *padapter, u8 bstart);
 u8 rtw_mi_buddy_sreset_adapter_hdl(_adapter *padapter, u8 bstart);
+#if defined(DBG_CONFIG_ERROR_RESET) && defined(CONFIG_CONCURRENT_MODE)
+void rtw_mi_ap_info_restore(_adapter *adapter);
+#endif
 
 u8 rtw_mi_tx_beacon_hdl(_adapter *padapter);
 u8 rtw_mi_buddy_tx_beacon_hdl(_adapter *padapter);

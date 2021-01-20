@@ -65,7 +65,7 @@ sint rtw_endofpktfile(struct pkt_file *pfile)
 
 void rtw_set_tx_chksum_offload(_pkt *pkt, struct pkt_attrib *pattrib)
 {
-#ifdef CONFIG_TX_CSUM_OFFLOAD
+#ifdef CONFIG_TCP_CSUM_OFFLOAD_TX
 	struct sk_buff *skb = (struct sk_buff *)pkt;
 	struct iphdr *iph = NULL;
 	struct ipv6hdr *i6ph = NULL;
@@ -81,6 +81,13 @@ void rtw_set_tx_chksum_offload(_pkt *pkt, struct pkt_attrib *pattrib)
 		protocol = i6ph->nexthdr;
 	} else
 		{}
+
+	/*	HW unable to compute CSUM if header & payload was be encrypted by SW(cause TXDMA error) */
+	if (pattrib->bswenc == _TRUE) {
+		if (skb->ip_summed == CHECKSUM_PARTIAL)
+			skb_checksum_help(skb);
+		return;
+	}
 
 	/*	For HW rule, clear ipv4_csum & UDP/TCP_csum if it is UDP/TCP packet	*/
 	switch (protocol) {
@@ -281,10 +288,11 @@ void rtw_os_xmit_complete(_adapter *padapter, struct xmit_frame *pxframe)
 void rtw_os_xmit_schedule(_adapter *padapter)
 {
 #if defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)
-	_adapter *pri_adapter = GET_PRIMARY_ADAPTER(padapter);
+	_adapter *pri_adapter;
 
 	if (!padapter)
 		return;
+	pri_adapter = GET_PRIMARY_ADAPTER(padapter);
 
 	if (_rtw_queue_empty(&padapter->xmitpriv.pending_xmitbuf_queue) == _FALSE)
 		_rtw_up_sema(&pri_adapter->xmitpriv.xmit_sema);
@@ -451,7 +459,7 @@ int _rtw_xmit_entry(_pkt *pkt, _nic_hdl pnetdev)
 #ifdef CONFIG_TX_MCAST2UNI
 	extern int rtw_mc2u_disable;
 #endif /* CONFIG_TX_MCAST2UNI	 */
-#ifdef CONFIG_TX_CSUM_OFFLOAD
+#ifdef CONFIG_TCP_CSUM_OFFLOAD_TX
 	struct sk_buff *skb = pkt;
 	struct sk_buff *segs, *nskb;
 	netdev_features_t features = padapter->pnetdev->features;
@@ -497,7 +505,7 @@ int _rtw_xmit_entry(_pkt *pkt, _nic_hdl pnetdev)
 	}
 #endif /* CONFIG_TX_MCAST2UNI	 */
 
-#ifdef CONFIG_TX_CSUM_OFFLOAD
+#ifdef CONFIG_TCP_CSUM_OFFLOAD_TX
 	if (skb_shinfo(skb)->gso_size) {
 	/*	split a big(65k) skb into several small(1.5k) skbs */
 		features &= ~(NETIF_F_TSO | NETIF_F_TSO6);
@@ -544,6 +552,68 @@ exit:
 	return 0;
 }
 
+#ifdef CONFIG_CUSTOMER_ALIBABA_GENERAL
+int check_alibaba_meshpkt(struct sk_buff *skb)
+{
+	u16 protocol;
+
+	if (skb)
+		return (htons(skb->protocol) == ETH_P_ALL);
+
+	return _FALSE;
+}
+
+s32 rtw_alibaba_mesh_xmit_entry(_pkt *pkt, struct net_device *ndev)
+{
+	u16 frame_ctl;
+
+	_adapter *padapter = (_adapter *)rtw_netdev_priv(ndev);
+	struct pkt_file pktfile;
+	struct rtw_ieee80211_hdr *pwlanhdr;
+	struct pkt_attrib		*pattrib;
+	struct xmit_frame		*pmgntframe;
+	struct mlme_ext_priv    *pmlmeext = &(padapter->mlmeextpriv);
+	struct xmit_priv		*pxmitpriv = &(padapter->xmitpriv);
+	unsigned char   *pframe;
+	struct sk_buff *skb =  (struct sk_buff *)pkt;
+	int len = skb->len;
+
+	rtw_mstat_update(MSTAT_TYPE_SKB, MSTAT_ALLOC_SUCCESS, skb->truesize);
+
+	pmgntframe = alloc_mgtxmitframe(pxmitpriv);
+	if (pmgntframe == NULL) {
+		goto fail;
+		return -1;
+	}
+
+	pattrib = &pmgntframe->attrib;
+	update_mgntframe_attrib(padapter, pattrib);
+	_rtw_memset(pmgntframe->buf_addr, 0, WLANHDR_OFFSET + TXDESC_OFFSET);
+	pframe = (u8 *)(pmgntframe->buf_addr) + TXDESC_OFFSET;
+	pwlanhdr = (struct rtw_ieee80211_hdr *)pframe;
+
+	_rtw_open_pktfile(pkt, &pktfile);
+	_rtw_pktfile_read(&pktfile, pframe, len);
+
+	pattrib->type = pframe[0] & 0x0C;
+	pattrib->subtype = pframe[0] & 0xF0;
+	pattrib->raid =  rtw_get_mgntframe_raid(padapter, WIRELESS_11G);
+	pattrib->rate = MGN_24M;
+	pattrib->pktlen = len;
+	SetSeqNum(pwlanhdr, pmlmeext->mgnt_seq);
+	pmlmeext->mgnt_seq++;
+
+	RTW_DBG_DUMP("rtw_alibaba_mesh_xmit_entry payload:", skb->data, len);
+
+	pattrib->last_txcmdsz = pattrib->pktlen;
+	dump_mgntframe(padapter, pmgntframe);
+
+fail:
+	rtw_skb_free(skb);
+	return 0;
+}
+#endif
+
 int rtw_xmit_entry(_pkt *pkt, _nic_hdl pnetdev)
 {
 	_adapter *padapter = (_adapter *)rtw_netdev_priv(pnetdev);
@@ -551,6 +621,11 @@ int rtw_xmit_entry(_pkt *pkt, _nic_hdl pnetdev)
 	int ret = 0;
 
 	if (pkt) {
+#ifdef CONFIG_CUSTOMER_ALIBABA_GENERAL
+		if (check_alibaba_meshpkt(pkt)) {
+			return rtw_alibaba_mesh_xmit_entry(pkt, pnetdev);
+		}
+#endif
 		if (check_fwstate(pmlmepriv, WIFI_MONITOR_STATE) == _TRUE) {
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 24))
 			rtw_monitor_xmit_entry((struct sk_buff *)pkt, pnetdev);

@@ -515,6 +515,220 @@ u32 cck_swing_table_ch1_ch14_8721d[CCK_TABLE_SIZE_8721D] = {
 	0x7FF,
 };
 
+u32 cck_swing_table_ch1_ch14_8710c[CCK_TABLE_SIZE_8710C] = {
+	0x0CD,          /*0 ,    -20dB*/
+	0x0D9,
+	0x0E6,
+	0x0F3,
+	0x102,
+	0x111,
+	0x121,
+	0x132,
+	0x144,
+	0x158,
+	0x16C,
+	0x182,
+	0x198,
+	0x1B1,
+	0x1CA,
+	0x1E5,
+	0x202,
+	0x221,
+	0x241,
+	0x263,
+	0x287,
+	0x2AE,
+	0x2D6,
+	0x301,
+	0x32F,
+	0x35F,
+	0x392,
+	0x3C9,
+	0x402,
+	0x43F,
+	0x47F,
+	0x4C3,
+	0x50C,
+	0x558,
+	0x5A9,
+	0x5FF,
+	0x65A,
+	0x6BA,
+	0x720,
+	0x78C,
+	0x7FF,
+};
+
+u32 cck_swing_table_03db_ch1_ch14_8710c[CCK_03DB_TABLE_SIZE_8710C] = {
+	0x143,		/*0 ,    -4dB*/
+	0x14C,		/*1 ,    -3.75dB*/
+	0x156,		/*2 ,    -3.5dB*/
+	0x160,
+	0x16A,
+	0x175,
+	0x17F,
+	0x18B,
+	0x196,
+	0x1A2,
+	0x1AE,
+	0x1BB,
+	0x1C8,
+	0x1D5,
+	0x1E3,
+	0x1F1,
+	0x200,
+	0x20F,
+	0x21E,
+	0x22F,
+	0x23F,
+	0x250,
+	0x261,
+	0x273,
+	0x285,
+	0x298,
+	0x2AB,
+	0x2BF,
+	0x2D6,
+	0x2E9,
+	0x2FF,
+	0x315,
+	0x32C,
+	0x344,
+	0x35C,
+	0x375,
+	0x390,
+	0x3AA,
+	0x3C5,
+	0x3E1,
+	0x402,		/*40 ,    +6dB	default*/
+	0x41C,
+	0x43B,
+	0x45A,
+	0x47C,
+	0x49C,
+	0x4BF,
+	0x4E2,
+	0x510,
+	0x52C,
+	0x553,
+	0x57B,
+	0x5A5,
+	0x5CE,
+	0x5F9,
+	0x626,
+	0x655,
+	0x683,
+	0x6B5,
+	0x6E6,
+	0x71E,
+	0x74E,
+	0x786,
+	0x7BD,
+	0x7F9,
+	0x832,
+	0x871,
+	0x8AF,
+	0x8F2,
+	0x932,
+	0x977,
+	0x9BE,
+	0xA0E,
+	0xA52,
+	0xAA1,
+	0xAEE,
+	0xB54,
+	0xB95,
+	0xBEB,
+	0xC43,
+	0xCA3		/*80 ,    +16dB*/
+};
+
+u32 ofdm_swing_table_03DB_8710c[OFDM_03DB_TABLE_SIZE_8710C] = {
+	0xE4,		/*0 ,    -7dB*/
+	0xEB,		/*1 ,    -6.75dB*/
+	0xF2,		/*2 ,    -6.5dB*/
+	0xF9,
+	0x100,
+	0x108,
+	0x110,
+	0x118,
+	0x11F,
+	0x128,
+	0x131,
+	0x13A,
+	0x143,
+	0x14C,
+	0x156,
+	0x160,
+	0x16A,
+	0x175,
+	0x180,
+	0x18B,
+	0x196,
+	0x1A2,
+	0x1AE,
+	0x1BB,
+	0x1C8,
+	0x1D5,
+	0x1E3,
+	0x1F1,
+	0x200,
+	0x20F,
+	0x21F,
+	0x22F,
+	0x23F,
+	0x250,
+	0x261,
+	0x273,
+	0x286,
+	0x298,
+	0x2AB,
+	0x2BF,
+	0x2D6,		/*40 ,    +3dB default*/
+	0x2E9,
+	0x2FF,
+	0x315,
+	0x32C,
+	0x344,
+	0x35C,
+	0x375,
+	0x390,
+	0x3AA,
+	0x3C5,
+	0x3E1,
+	0x3FF,
+	0x41C,
+	0x43B,
+	0x45A,
+	0x47B,
+	0x49C,
+	0x4BF,
+	0x4E2,
+	0x507,
+	0x52C,
+	0x553,
+	0x57B,
+	0x5A4,
+	0x5CE,
+	0x5F9,
+	0x626,
+	0x654,
+	0x683,
+	0x6B4,
+	0x6E6,
+	0x71B,
+	0x74E,
+	0x785,
+	0x7BD,
+	0x7F7,
+	0x832,
+	0x870,
+	0x8AF,
+	0x8F0		/*80 ,    +13dB*/
+};
+
+
+
 u32 tx_scaling_table_jaguar[TXSCALE_TABLE_SIZE] = {
 	0x081, /* 0,  -12.0dB*/
 	0x088, /* 1,  -11.5dB*/
@@ -570,25 +784,35 @@ get_swing_index(
 	void	*dm_void
 )
 {
-	struct dm_struct	*dm = (struct dm_struct *)dm_void;
+	struct dm_struct *dm = (struct dm_struct *)dm_void;
 
-	u8	i = 0;
-	u32	bb_swing;
-	u32	swing_table_size;
-	u32	*swing_table;
+	u8 i = 0;
+	u32 bb_swing;
+	u32 swing_table_size;
+	u32 *swing_table;
+	u32 table_value;
+
+	if (dm->support_ic_type == ODM_RTL8710C) {
+		bb_swing = odm_get_bb_reg(dm, R_0xcc8, 0x000007ff);
+
+		for (i = 0; i < OFDM_03DB_TABLE_SIZE_8710C; i++) {
+			if (bb_swing == ofdm_swing_table_03DB_8710c[i])
+				break;
+		}
+	}
 
 	if (dm->support_ic_type == ODM_RTL8195B) {
 		bb_swing = odm_get_bb_reg(dm, R_0xc1c, 0xFFE00000);
 		swing_table = tx_scaling_table_jaguar;
 		swing_table_size = TXSCALE_TABLE_SIZE;
-	}
 
-	for (i = 0; i < swing_table_size; i++) {
-		u32 table_value = swing_table[i];
+		for (i = 0; i < swing_table_size; i++) {
+			table_value = swing_table[i];
 
-		table_value = table_value;
-		if (bb_swing == table_value)
-			break;
+			table_value = table_value;
+			if (bb_swing == table_value)
+				break;
+		}
 	}
 
 	return i;
@@ -599,10 +823,10 @@ get_cck_swing_index(
 	void		*dm_void
 )
 {
-	struct dm_struct		*dm = (struct dm_struct *)dm_void;
+	struct dm_struct *dm = (struct dm_struct *)dm_void;
 
-	u8			i = 0;
-	u32			bb_cck_swing;
+	u8 i = 0;
+	u32 bb_cck_swing;
 
 	if (dm->support_ic_type == ODM_RTL8188E || dm->support_ic_type == ODM_RTL8723B ||
 	    dm->support_ic_type == ODM_RTL8192E) {
@@ -619,6 +843,16 @@ get_cck_swing_index(
 			if (bb_cck_swing == cck_swing_table_ch1_ch14_88f[i][0])
 				break;
 		}
+	} else if (dm->support_ic_type == ODM_RTL8710C) {
+		bb_cck_swing = odm_get_bb_reg(dm, R_0xab4, 0x7ff);
+
+		RF_DBG(dm, DBG_RF_TX_PWR_TRACK,
+		       "bb_cck_swing = 0x%x\n", bb_cck_swing);
+
+		for (i = 0; i < CCK_03DB_TABLE_SIZE_8710C; i++) {
+			if (bb_cck_swing == cck_swing_table_03db_ch1_ch14_8710c[i])
+				break;
+		}
 	}
 
 	return i;
@@ -630,7 +864,7 @@ odm_txpowertracking_thermal_meter_init(
 )
 {
 	struct dm_struct	*dm = (struct dm_struct *)dm_void;
-	u8 default_swing_index = get_swing_index(dm);
+	u8 default_swing_index;
 	u8 p = 0;
 	struct dm_rf_calibration_struct	*cali_info = &dm->rf_calibrate_info;
 	struct _hal_rf_ *rf = &dm->rf_table;
@@ -649,11 +883,15 @@ odm_txpowertracking_thermal_meter_init(
 
 	if (!cali_info->default_bb_swing_index_flag) {
 		if (dm->support_ic_type == ODM_RTL8195B) {
+			default_swing_index = get_swing_index(dm);
 			cali_info->default_ofdm_index = (default_swing_index >= TXSCALE_TABLE_SIZE) ? 24 : default_swing_index;
 			cali_info->default_cck_index = 24;
 		} else if (dm->support_ic_type == ODM_RTL8721D) {
-			cali_info->default_ofdm_index = 30;	/*OFDM: 0dB*/
+			cali_info->default_ofdm_index = 28;	/*OFDM: -1dB*/
 			cali_info->default_cck_index = 28;	/*CCK: -6dB*/
+		} else if (dm->support_ic_type == ODM_RTL8710C) {
+			cali_info->default_ofdm_index = get_swing_index(dm);
+			cali_info->default_cck_index = get_cck_swing_index(dm);
 		}
 		cali_info->default_bb_swing_index_flag = true;
 	}
@@ -697,7 +935,8 @@ odm_txpowertracking_check_iot(
 	if (!dm->rf_calibrate_info.tm_trigger) {
 		if (dm->support_ic_type == ODM_RTL8195B)
 			odm_set_rf_reg(dm, RF_PATH_A, RF_T_METER_NEW, (BIT(17) | BIT(16)), 0x03);
-		else if (dm->support_ic_type == ODM_RTL8721D)
+		else if (dm->support_ic_type == ODM_RTL8721D ||
+			dm->support_ic_type == ODM_RTL8710C)
 			odm_set_rf_reg(dm, RF_PATH_A, RF_T_METER_NEW,
 				       (BIT(12) | BIT(11)), 0x03);
 

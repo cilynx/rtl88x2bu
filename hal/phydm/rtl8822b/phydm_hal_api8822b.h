@@ -100,11 +100,16 @@ config_phydm_switch_channel_bw_8822b(struct dm_struct *dm,
 				     u8 central_ch,
 				     u8 primary_ch_idx,
 				     enum channel_width bw);
+void
+phydm_config_tx_path_8822b(struct dm_struct *dm, enum bb_path tx_path,
+			   enum bb_path tx_path_sel_1ss,
+			   enum bb_path tx_path_sel_cck);
 
 boolean
 config_phydm_trx_mode_8822b(struct dm_struct *dm,
-			    enum bb_path tx_path, enum bb_path rx_path,
-			    boolean is_tx2_path);
+			    enum bb_path tx_path_en,
+			    enum bb_path rx_path,
+			    enum bb_path tx_path_sel_1ss);
 
 boolean
 config_phydm_parameter_init_8822b(struct dm_struct *dm,
@@ -116,8 +121,6 @@ config_phydm_parameter_init_8822b(struct dm_struct *dm,
 boolean
 phydm_write_txagc_1byte_8822b(struct dm_struct *dm, u32 pw_idx,
 			      enum rf_path path, u8 hw_rate);
-
-void phydm_init_hw_info_by_rfe_type_8822b(struct dm_struct *dm);
 
 void phydm_get_condi_num_acc_8822b(void *dm_void);
 

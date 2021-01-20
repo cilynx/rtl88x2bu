@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2017 Realtek Corporation.
+ * Copyright(c) 2007 - 2019 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -168,10 +168,6 @@ struct rtw_wdev_priv {
 	bool block_scan;
 	bool power_mgmt;
 
-	#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,8,0)
-	u32 mgmt_mask;
-	#endif
-
 	/* report mgmt_frame registered */
 	u16 report_mgmt;
 
@@ -243,6 +239,9 @@ struct rtw_wiphy_data {
 #if defined(RTW_DEDICATED_P2P_DEVICE)
 	struct wireless_dev *pd_wdev; /* P2P device wdev */
 #endif
+
+	s16 txpwr_total_lmt_mbm;
+	s16 txpwr_total_target_mbm;
 };
 
 #define rtw_wiphy_priv(wiphy) ((struct rtw_wiphy_data *)wiphy_priv(wiphy))
@@ -286,6 +285,8 @@ int rtw_cfg80211_dev_res_alloc(struct dvobj_priv *dvobj);
 void rtw_cfg80211_dev_res_free(struct dvobj_priv *dvobj);
 int rtw_cfg80211_dev_res_register(struct dvobj_priv *dvobj);
 void rtw_cfg80211_dev_res_unregister(struct dvobj_priv *dvobj);
+s16 rtw_cfg80211_dev_get_total_txpwr_lmt_mbm(struct dvobj_priv *dvobj);
+s16 rtw_cfg80211_dev_get_total_txpwr_target_mbm(struct dvobj_priv *dvobj);
 
 void rtw_cfg80211_init_wdev_data(_adapter *padapter);
 void rtw_cfg80211_init_wiphy(_adapter *padapter);
@@ -295,7 +296,7 @@ void rtw_cfg80211_surveydone_event_callback(_adapter *padapter);
 struct cfg80211_bss *rtw_cfg80211_inform_bss(_adapter *padapter, struct wlan_network *pnetwork);
 int rtw_cfg80211_check_bss(_adapter *padapter);
 void rtw_cfg80211_ibss_indicate_connect(_adapter *padapter);
-void rtw_cfg80211_indicate_connect(_adapter *padapter);
+int rtw_cfg80211_indicate_connect(_adapter *padapter);
 void rtw_cfg80211_indicate_disconnect(_adapter *padapter, u16 reason, u8 locally_generated);
 void rtw_cfg80211_indicate_scan_done(_adapter *adapter, bool aborted);
 u32 rtw_cfg80211_wait_scan_req_empty(_adapter *adapter, u32 timeout_ms);
@@ -406,8 +407,10 @@ void rtw_cfg80211_deinit_rfkill(struct wiphy *wiphy);
 #endif
 #endif
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 0, 0))
-#define rtw_cfg80211_notify_new_peer_candidate(wdev, addr, ie, ie_len, gfp) cfg80211_notify_new_peer_candidate(wdev_to_ndev(wdev), addr, ie, ie_len, gfp)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 0, 0))
+#define rtw_cfg80211_notify_new_peer_candidate(wdev, addr, ie, ie_len, sig_dbm, gfp) cfg80211_notify_new_peer_candidate(wdev_to_ndev(wdev), addr, ie, ie_len, sig_dbm, gfp)
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 0, 0))
+#define rtw_cfg80211_notify_new_peer_candidate(wdev, addr, ie, ie_len, sig_dbm, gfp) cfg80211_notify_new_peer_candidate(wdev_to_ndev(wdev), addr, ie, ie_len, gfp)
 #endif
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 5, 0))
@@ -427,6 +430,13 @@ u8 rtw_cfg80211_ch_switch_notify(_adapter *adapter, u8 ch, u8 bw, u8 offset, u8 
 	(band == BAND_ON_2_4G) ? NL80211_BAND_2GHZ : \
 	(band == BAND_ON_5G) ? NL80211_BAND_5GHZ : NUM_NL80211_BANDS
 
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 36))
+#define NL80211_TX_POWER_AUTOMATIC	TX_POWER_AUTOMATIC
+#define NL80211_TX_POWER_LIMITED	TX_POWER_LIMITED
+#define NL80211_TX_POWER_FIXED		TX_POWER_FIXED
+#endif
+
+#include "wifi_regd.h"
 #include "rtw_cfgvendor.h"
 
 #endif /* __IOCTL_CFG80211_H__ */

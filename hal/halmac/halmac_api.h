@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -18,10 +18,10 @@
 
 #define HALMAC_SVN_VER  "11692M"
 
-#define HALMAC_MAJOR_VER        0x0001
-#define HALMAC_PROTOTYPE_VER    0x0005
-#define HALMAC_MINOR_VER        0x0014
-#define HALMAC_PATCH_VER        0x0015
+#define HALMAC_MAJOR_VER        1
+#define HALMAC_PROTOTYPE_VER    6
+#define HALMAC_MINOR_VER        5
+#define HALMAC_PATCH_VER        "6*"
 
 #define HALMAC_88XX_SUPPORT	(HALMAC_8821C_SUPPORT || \
 				 HALMAC_8822B_SUPPORT || \
@@ -71,6 +71,11 @@
 #include "halmac_bit_8822c.h"
 #endif
 
+#if HALMAC_8812F_SUPPORT
+#include "halmac_reg_8812f.h"
+#include "halmac_bit_8812f.h"
+#endif
+
 #if (HALMAC_PLATFORM_WINDOWS || HALMAC_PLATFORM_LINUX)
 #include "halmac_tx_desc_nic.h"
 #include "halmac_tx_desc_buffer_nic.h"
@@ -97,6 +102,9 @@
 #include "halmac_original_h2c_ap.h"
 #endif
 
+#if HALMAC_DBG_MONITOR_IO
+#include "halmac_dbg.h"
+#endif
 #include "halmac_tx_desc_chip.h"
 #include "halmac_rx_desc_chip.h"
 #include "halmac_tx_desc_buffer_chip.h"

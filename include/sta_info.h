@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2017 Realtek Corporation.
+ * Copyright(c) 2007 - 2019 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -477,6 +477,8 @@ struct sta_info {
 	u8 nonpeer_mps;
 
 	struct rtw_atlm_param metrics;
+	/* The reference for nexthop_lookup */
+	BOOLEAN alive;
 #endif
 
 #ifdef CONFIG_IOCTL_CFG80211
@@ -501,6 +503,14 @@ struct sta_info {
 #ifdef CONFIG_RTS_FULL_BW
 	bool vendor_8812;
 #endif
+
+	/*
+	 * Vaiables for queuing TX pkt a short period of time
+	 * to wait something ready.
+	 */
+	u8 tx_q_enable;
+	struct __queue tx_queue;
+	_workitem tx_q_work;
 };
 
 #ifdef CONFIG_RTW_MESH
@@ -647,6 +657,8 @@ struct	sta_priv {
 	_adapter *padapter;
 
 	u32 adhoc_expire_to;
+
+	int rx_chk_limit;
 
 #ifdef CONFIG_AP_MODE
 	_list asoc_list;

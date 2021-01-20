@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -588,10 +588,10 @@ cfg_bw_88xx(struct halmac_adapter *adapter, enum halmac_bw bw)
 
 	switch (bw) {
 	case HALMAC_BW_80:
-		value32 |= BIT(8);
+		value32 = value32 | BIT(8);
 		break;
 	case HALMAC_BW_40:
-		value32 |= BIT(7);
+		value32 = value32 | BIT(7);
 		break;
 	case HALMAC_BW_20:
 	case HALMAC_BW_10:

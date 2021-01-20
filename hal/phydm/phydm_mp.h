@@ -26,7 +26,7 @@
 #ifndef __PHYDM_MP_H__
 #define __PHYDM_MP_H__
 
-#define MP_VERSION "1.0"
+#define MP_VERSION "1.3"
 
 /* @1 ============================================================
  * 1  Definition
@@ -69,14 +69,6 @@ enum TX_MODE_OFDM {
  * 1  function prototype
  * 1 ============================================================
  */
-#ifdef PHYDM_IC_JGR3_SERIES_SUPPORT
-void phydm_mp_set_single_tone_jgr3(void *dm_void, boolean is_single_tone,
-				   u8 path);
-
-void phydm_mp_set_carrier_supp_jgr3(void *dm_void, boolean is_carrier_supp,
-				    u32 rate_index);
-#endif
-
 void phydm_mp_set_crystal_cap(void *dm_void, u8 crystal_cap);
 
 void phydm_mp_set_single_tone(void *dm_void, boolean is_single_tone, u8 path);

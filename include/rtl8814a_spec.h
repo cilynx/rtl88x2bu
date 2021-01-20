@@ -555,7 +555,7 @@
 /*
  * 9. Security Control Registers	(Offset: )
  *   */
-#define	RWCAM_8814A						REG_CAMCMD_8814A		/* IN 8190 Data Sheet is called CAMcmd */
+#define	RWCAM_8814A						REG_CAMCMD_8814A		/*  8190 Data Sheet is called CAMcmd */
 #define	WCAMI_8814A						REG_CAMWRITE_8814A		/* Software write CAM input content */
 #define	RCAMO_8814A						REG_CAMREAD_8814A		/* Software read/write CAM config */
 #define	CAMDBG_8814A						REG_CAMDBG_8814A

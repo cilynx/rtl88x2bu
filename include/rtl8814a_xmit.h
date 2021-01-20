@@ -297,14 +297,14 @@ void fill_txdesc_bmc_tx_rate(struct pkt_attrib *pattrib, u8 *ptxdesc);
 void _dbg_dump_tx_info(_adapter	*padapter, int frame_tag, u8 *ptxdesc);
 u8
 SCMapping_8814(
-	IN	PADAPTER		Adapter,
-	IN	struct pkt_attrib	*pattrib
+		PADAPTER		Adapter,
+		struct pkt_attrib	*pattrib
 );
 
 u8
 BWMapping_8814(
-	IN	PADAPTER		Adapter,
-	IN	struct pkt_attrib	*pattrib
+		PADAPTER		Adapter,
+		struct pkt_attrib	*pattrib
 );
 
 

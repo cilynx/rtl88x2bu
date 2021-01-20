@@ -29,7 +29,7 @@
 #if (RTL8822B_SUPPORT == 1)
 /*@--------------------------Define Parameters-------------------------------*/
 #define MAC_REG_NUM_8822B 2
-#define BB_REG_NUM_8822B 15
+#define BB_REG_NUM_8822B 21
 #define RF_REG_NUM_8822B 5
 #define LOK_delay_8822B 2
 #define GS_delay_8822B 2
@@ -50,6 +50,21 @@ void do_iqk_8822b(void *dm_void, u8 delta_thermal_index, u8 thermal_value,
 void phy_iq_calibrate_8822b(void *dm_void, boolean clear, boolean segment_iqk);
 
 void do_imr_test_8822b(void *dm_void);
+
+void phy_get_iqk_cfir_8822b(void *dm_void, u8 idx, u8 path, boolean debug);
+
+void phy_iqk_dbg_cfir_backup_8822b(void *dm_void);
+
+void phy_iqk_dbg_cfir_backup_update_8822b(void *dm_void);
+
+void phy_iqk_dbg_cfir_reload_8822b(void *dm_void);
+
+void phy_iqk_dbg_cfir_write_8822b(void *dm_void, u8 type, u32 path, u32 idx, u32 i, u32 data);
+
+void phy_iqk_dbg_cfir_backup_show_8822b(void *dm_void);
+
+
+
 
 #else /* (RTL8822B_SUPPORT == 0)*/
 

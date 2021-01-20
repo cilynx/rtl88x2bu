@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2015 - 2017 Realtek Corporation.
+ * Copyright(c) 2015 - 2019 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -76,21 +76,6 @@ exit:
 	return ret;
 }
 
-static u8 get_ra_vht_en(u32 wirelessMode, u32 bitmap)
-{
-	u8 ret = 0;
-
-	if (wirelessMode == WIRELESS_11_24AC) {
-		if (bitmap & 0xfff00000) /* 2SS */
-			ret = 3;
-		else					/* 1SS */
-			ret = 2;
-	} else if (wirelessMode == WIRELESS_11_5AC)
-		ret = 1;
-
-	return ret;
-}
-
 void rtl8822b_req_txrpt_cmd(PADAPTER adapter, u8 macid)
 {
 	u8 h2c[RTW_HALMAC_H2C_MAX_SIZE] = {0};
@@ -129,7 +114,7 @@ void rtl8822b_set_FwPwrMode_cmd(PADAPTER adapter, u8 psmode)
 	u8 h2c[RTW_HALMAC_H2C_MAX_SIZE] = {0};
 	u8 PowerState = 0, awake_intvl = 1, rlbm = 0;
 	u8 allQueueUAPSD = 0;
-	char *fw_psmode_str = "";
+	char *fw_psmode_str = "UNSPECIFIED";
 #ifdef CONFIG_P2P
 	struct wifidirect_info *wdinfo = &adapter->wdinfo;
 #endif /* CONFIG_P2P */
@@ -219,8 +204,6 @@ void rtl8822b_set_FwPwrMode_cmd(PADAPTER adapter, u8 psmode)
 		fw_psmode_str = "LPS";
 	else if (mode == 2)
 		fw_psmode_str = "WMMPS";
-	else
-		fw_psmode_str = "UNSPECIFIED";
 
 	RTW_INFO(FUNC_ADPT_FMT": fw ps mode = %s, drv ps mode = %d, rlbm = %d , smart_ps = %d, allQueueUAPSD = %d\n",
 				FUNC_ADPT_ARG(adapter), fw_psmode_str, psmode, rlbm, smart_ps, allQueueUAPSD);
@@ -354,10 +337,6 @@ void rtl8822b_set_fw_thermal_rpt_cmd(_adapter *adapter, u8 enable, u8 thermal_va
 }
 #endif
 
-static s32 rtl8822b_set_FwLowPwrLps_cmd(PADAPTER adapter, u8 enable)
-{
-	return _FALSE;
-}
 
 #ifdef CONFIG_BT_COEXIST
 void rtl8822b_download_BTCoex_AP_mode_rsvd_page(PADAPTER adapter)
@@ -386,11 +365,11 @@ static void c2h_ccx_rpt(PADAPTER adapter, u8 *pdata)
 #endif /* CONFIG_XMIT_ACK */
 }
 
-static VOID
+static void
 C2HTxRPTHandler_8822b(
-	IN	PADAPTER	Adapter,
-	IN	u8			*CmdBuf,
-	IN	u8			CmdLen
+		PADAPTER	Adapter,
+		u8			*CmdBuf,
+		u8			CmdLen
 )
 {
 	_irqL	 irqL;
@@ -433,11 +412,11 @@ C2HTxRPTHandler_8822b(
 
 }
 
-static VOID
+static void
 C2HSPC_STAT_8822b(
-	IN	PADAPTER	Adapter,
-	IN	u8			*CmdBuf,
-	IN	u8			CmdLen
+		PADAPTER	Adapter,
+		u8			*CmdBuf,
+		u8			CmdLen
 )
 {
 	_irqL	 irqL;

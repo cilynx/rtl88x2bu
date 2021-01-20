@@ -23,7 +23,7 @@
  *
  *****************************************************************************/
 
-/*Image2HeaderVersion: R3 1.5.3*/
+/*Image2HeaderVersion: R3 1.5.10*/
 #include "mp_precomp.h"
 #include "../phydm_precomp.h"
 
@@ -104,14 +104,6 @@ check_positive(struct dm_struct *dm,
 		return false;
 }
 
-static boolean
-check_negative(struct dm_struct *dm,
-	       const u32	condition1,
-	       const u32	condition2
-)
-{
-	return true;
-}
 
 /******************************************************************************
  *                           mac_reg.TXT
@@ -309,7 +301,7 @@ odm_read_and_config_mp_8822b_mac_reg(struct dm_struct *dm)
 u32
 odm_get_version_mp_8822b_mac_reg(void)
 {
-		return 113;
+		return 117;
 }
 
 #endif /* end of HWIMG_SUPPORT*/

@@ -2132,13 +2132,6 @@ BIP_exit:
 
 #ifndef PLATFORM_FREEBSD
 #if defined(CONFIG_TDLS)
-
-struct sha256_state {
-    u64 length;
-    u32 state[8], curlen;
-    u8 buf[64];
-};
-
 /* compress 512-bits */
 static int sha256_compress(struct sha256_state *md, unsigned char *buf)
 {
@@ -3090,7 +3083,7 @@ int aes_siv_decrypt(const u8 *key, const u8 *iv_crypt, size_t iv_c_len,
 #endif /* CONFIG_RTW_MESH_AEK */
 
 #ifdef CONFIG_TDLS
-void wpa_tdls_generate_tpk(_adapter *padapter, PVOID sta)
+void wpa_tdls_generate_tpk(_adapter *padapter, void *sta)
 {
 	struct sta_info *psta = (struct sta_info *)sta;
 	struct mlme_priv	*pmlmepriv = &padapter->mlmepriv;

@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2017 Realtek Corporation.
+ * Copyright(c) 2007 - 2019 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -526,20 +526,6 @@ enum {
 	RTW_ROAM_ACTIVE = BIT2,
 };
 
-struct beacon_keys {
-	u8 ssid[IW_ESSID_MAX_SIZE];
-	u32 ssid_len;
-	u8 ch;
-	u8 bw;
-	u8 offset;
-	u8 proto_cap; /* PROTO_CAP_XXX */
-	u8 rate_set[12];
-	u8 rate_num;
-	int encryp_protocol;
-	int pairwise_cipher;
-	int group_cipher;
-	u32 akm;
-};
 #ifdef CONFIG_RTW_80211R
 #define RTW_FT_ACTION_REQ_LMT	4
 #define RTW_FT_MAX_IE_SZ	256
@@ -777,6 +763,7 @@ struct mlme_priv {
 
 	NDIS_802_11_SSID	assoc_ssid;
 	u8	assoc_bssid[6];
+	u16	assoc_ch;		/* 0 reserved for no specific channel */
 
 	struct wlan_network	cur_network;
 	struct wlan_network *cur_network_scanned;
@@ -842,14 +829,6 @@ struct mlme_priv {
 #ifdef ROKU_PRIVATE
 	struct ht_priv_infra_ap htpriv_infra_ap;
 #endif /* ROKU_PRIVATE */
-
-#ifdef CONFIG_BEAMFORMING
-#ifndef RTW_BEAMFORMING_VERSION_2
-#if (BEAMFORMING_SUPPORT == 0)/*for driver beamforming*/
-	struct beamforming_info	beamforming_info;
-#endif
-#endif /* !RTW_BEAMFORMING_VERSION_2 */
-#endif
 
 #ifdef CONFIG_RTW_80211R
 	struct ft_roam_info ft_roam;
@@ -954,6 +933,8 @@ struct mlme_priv {
 	#ifdef CONFIG_80211AC_VHT
 	u8 ori_vht_en;
 	#endif
+
+	u8 ap_isolate;
 #endif /* #if defined (CONFIG_AP_MODE) && defined (CONFIG_NATIVEAP_MLME) */
 
 #if defined(CONFIG_WFD) && defined(CONFIG_IOCTL_CFG80211)
@@ -981,33 +962,6 @@ struct mlme_priv {
 	_workitem	Linkup_workitem;
 	_workitem	Linkdown_workitem;
 #endif
-
-#ifdef CONFIG_INTEL_WIDI
-	int	widi_state;
-	int	listen_state;
-	_timer	listen_timer;
-	ATOMIC_T	rx_probe_rsp; /* 1:receive probe respone from RDS source. */
-	u8	*l2sdTaBuffer;
-	u8	channel_idx;
-	u8	group_cnt;	/* In WiDi 3.5, they specified another scan algo. for WFD/RDS co-existed */
-	u8	sa_ext[L2SDTA_SERVICE_VE_LEN];
-
-	u8	widi_enable;
-	/**
-	 * For WiDi 4; upper layer would set
-	 * p2p_primary_device_type_category_id
-	 * p2p_primary_device_type_sub_category_id
-	 * p2p_secondary_device_type_category_id
-	 * p2p_secondary_device_type_sub_category_id
-	 */
-	u16	p2p_pdt_cid;
-	u16	p2p_pdt_scid;
-	u8	num_p2p_sdt;
-	u16	p2p_sdt_cid[MAX_NUM_P2P_SDT];
-	u16	p2p_sdt_scid[MAX_NUM_P2P_SDT];
-	u8	p2p_reject_disable;	/* When starting NL80211 wpa_supplicant/hostapd, it will call netdev_close */
-							/* such that it will cause p2p disabled. Use this flag to reject. */
-#endif /* CONFIG_INTEL_WIDI */
 	systime lastscantime;
 #ifdef CONFIG_CONCURRENT_MODE
 	u8	scanning_via_buddy_intf;
@@ -1056,7 +1010,7 @@ extern void hostapd_mode_unload(_adapter *padapter);
 #endif
 
 
-extern void rtw_joinbss_event_prehandle(_adapter *adapter, u8 *pbuf, u16 status);
+extern int rtw_joinbss_event_prehandle(_adapter *adapter, u8 *pbuf, u16 status);
 extern void rtw_survey_event_callback(_adapter *adapter, u8 *pbuf);
 extern void rtw_surveydone_event_callback(_adapter *adapter, u8 *pbuf);
 extern void rtw_joinbss_event_callback(_adapter *adapter, u8 *pbuf);
@@ -1196,7 +1150,7 @@ struct wlan_network *rtw_find_same_network(_queue *scanned_queue, struct wlan_ne
 
 extern void rtw_free_assoc_resources(_adapter *adapter, u8 lock_scanned_queue);
 extern void rtw_indicate_disconnect(_adapter *adapter, u16 reason, u8 locally_generated);
-extern void rtw_indicate_connect(_adapter *adapter);
+extern int rtw_indicate_connect(_adapter *adapter);
 void rtw_indicate_scan_done(_adapter *padapter, bool aborted);
 
 void rtw_drv_scan_by_self(_adapter *padapter, u8 reason);
@@ -1245,6 +1199,7 @@ enum {
 #ifdef DBG_LA_MODE
 	SS_DENY_LA_MODE,
 #endif
+	SS_DENY_ADAPTIVITY,
 };
 
 u8 _rtw_sitesurvey_condition_check(const char *caller, _adapter *adapter, bool check_sc_interval);
@@ -1358,12 +1313,6 @@ u8 rtw_sta_media_status_rpt_cmd(_adapter *adapter, struct sta_info *sta, bool co
 void rtw_sta_media_status_rpt_cmd_hdl(_adapter *adapter, struct sta_media_status_rpt_cmd_parm *parm);
 void rtw_sta_traffic_info(void *sel, _adapter *adapter);
 
-#ifdef CONFIG_INTEL_PROXIM
-void rtw_proxim_enable(_adapter *padapter);
-void rtw_proxim_disable(_adapter *padapter);
-void rtw_proxim_send_packet(_adapter *padapter, u8 *pbuf, u16 len, u8 m_rate);
-#endif /* CONFIG_INTEL_PROXIM */
-
 #define GET_ARP_HTYPE(_arp)	BE_BITS_TO_2BYTE(((u8 *)(_arp)) + 0, 0, 16)
 #define GET_ARP_PTYPE(_arp)	BE_BITS_TO_2BYTE(((u8 *)(_arp)) + 2, 0, 16)
 #define GET_ARP_HLEN(_arp)	BE_BITS_TO_1BYTE(((u8 *)(_arp)) + 4, 0, 8)
@@ -1407,6 +1356,8 @@ void dump_arp_pkt(void *sel, u8 *da, u8 *sa, u8 *arp, bool tx);
 
 #define GET_UDP_SRC(_udphdr)			BE_BITS_TO_2BYTE(((u8 *)(_udphdr)) + 0, 0, 16)
 #define GET_UDP_DST(_udphdr)			BE_BITS_TO_2BYTE(((u8 *)(_udphdr)) + 2, 0, 16)
+#define GET_UDP_SIG1(_udphdr)			BE_BITS_TO_1BYTE(((u8 *)(_udphdr)) + 8, 0, 8)
+#define GET_UDP_SIG2(_udphdr)			BE_BITS_TO_1BYTE(((u8 *)(_udphdr)) + 23, 0, 8)
 
 #define TCP_SRC(_tcphdr)				(((u8 *)(_tcphdr)) + 0)
 #define TCP_DST(_tcphdr)				(((u8 *)(_tcphdr)) + 2)

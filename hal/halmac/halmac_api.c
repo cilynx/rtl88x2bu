@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -32,6 +32,10 @@
 
 #if HALMAC_8822C_SUPPORT
 #include "halmac_88xx/halmac_init_win8822c.h"
+#endif
+
+#if HALMAC_8812F_SUPPORT
+#include "halmac_88xx/halmac_init_win8812f.h"
 #endif
 
 #else
@@ -126,10 +130,10 @@ halmac_init_adapter(void *drv_adapter, struct halmac_platform_api *pltfm_api,
 
 	pltfm_api->MSG_PRINT(drv_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ALWAYS,
 			     HALMAC_SVN_VER "\n"
-			     "HALMAC_MAJOR_VER = %x\n"
-			     "HALMAC_PROTOTYPE_VER = %x\n"
-			     "HALMAC_MINOR_VER = %x\n"
-			     "HALMAC_PATCH_VER = %x\n",
+			     "HALMAC_MAJOR_VER = %d\n"
+			     "HALMAC_PROTOTYPE_VER = %d\n"
+			     "HALMAC_MINOR_VER = %d\n"
+			     "HALMAC_PATCH_VER = %s\n",
 			     HALMAC_MAJOR_VER, HALMAC_PROTOTYPE_VER,
 			     HALMAC_MINOR_VER, HALMAC_PATCH_VER);
 
@@ -234,6 +238,9 @@ halmac_init_adapter(void *drv_adapter, struct halmac_platform_api *pltfm_api,
 #endif
 	*halmac_api = (struct halmac_api *)adapter->halmac_api;
 
+#if HALMAC_DBG_MONITOR_IO
+	mount_api_dbg(adapter);
+#endif
 	PLTFM_MSG_TRACE("[TRACE]%s <===\n", __func__);
 
 	return status;
@@ -449,7 +456,18 @@ chk_pltfm_api(void *drv_adapter, enum halmac_interface intf,
 				     HALMAC_DBG_ERR, "[ERR]event-indication\n");
 		return HALMAC_RET_PLATFORM_API_NULL;
 	}
-
+#if HALMAC_DBG_MONITOR_IO
+	if (!pltfm_api->READ_MONITOR) {
+		pltfm_api->MSG_PRINT(drv_adapter, HALMAC_MSG_INIT,
+				     HALMAC_DBG_ERR, "[ERR]read-monitor\n");
+		return HALMAC_RET_PLATFORM_API_NULL;
+	}
+	if (!pltfm_api->WRITE_MONITOR) {
+		pltfm_api->MSG_PRINT(drv_adapter, HALMAC_MSG_INIT,
+				     HALMAC_DBG_ERR, "[ERR]write-monitor\n");
+		return HALMAC_RET_PLATFORM_API_NULL;
+	}
+#endif
 	return HALMAC_RET_SUCCESS;
 }
 

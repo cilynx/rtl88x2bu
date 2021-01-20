@@ -19,8 +19,8 @@
 ******************************************************************************/
 
 
-u2Byte EFUSE_GetArrayLen_MP_8822B_MPCIE(VOID);
+u16 EFUSE_GetArrayLen_MP_8822B_MPCIE(void);
 
-VOID EFUSE_GetMaskArray_MP_8822B_MPCIE(pu1Byte Array);
+void EFUSE_GetMaskArray_MP_8822B_MPCIE(u8 *Array);
 
-BOOLEAN EFUSE_IsAddressMasked_MP_8822B_MPCIE(u2Byte  Offset);
+BOOLEAN EFUSE_IsAddressMasked_MP_8822B_MPCIE(u16 Offset);

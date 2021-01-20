@@ -282,12 +282,28 @@ void phydm_1rcca_setting(struct dm_struct *dm, boolean enable_1rcca)
 	/* @Enable or disable 1RCCA setting accrodding to the control from driver */
 	if (enable_1rcca) {
 		if (reg_32 == 0x0)
-			odm_set_bb_reg(dm, R_0x808, MASKBYTE0, 0x13); /* @CCK path-a */
+			/* @CCK path-a */
+			odm_set_bb_reg(dm, R_0x808, MASKBYTE0, 0x13);
 		else if (reg_32 == 0x5)
-			odm_set_bb_reg(dm, R_0x808, MASKBYTE0, 0x23); /* @CCK path-b */
+			/* @CCK path-b */
+			odm_set_bb_reg(dm, R_0x808, MASKBYTE0, 0x23);
 	} else {
-		odm_set_bb_reg(dm, R_0x808, MASKBYTE0, 0x33); /* @disable 1RCCA */
-		odm_set_bb_reg(dm, R_0xa04, 0x0f000000, 0x0); /* @CCK default is at path-a */
+		if (dm->valid_path_set == BB_PATH_A) {
+			/* @disable 1RCCA */
+			/* @CCK default is at path-a */
+			odm_set_bb_reg(dm, R_0x808, MASKBYTE0, 0x31);
+			odm_set_bb_reg(dm, R_0xa04, 0x0f000000, 0x0);
+		} else if (dm->valid_path_set == BB_PATH_B) {
+			/* @disable 1RCCA */
+			/* @CCK default is at path-a */
+			odm_set_bb_reg(dm, R_0x808, MASKBYTE0, 0x32);
+			odm_set_bb_reg(dm, R_0xa04, 0x0f000000, 0x5);
+		} else {
+			/* @disable 1RCCA */
+			/* @CCK default is at path-a */
+			odm_set_bb_reg(dm, R_0x808, MASKBYTE0, 0x33);
+			odm_set_bb_reg(dm, R_0xa04, 0x0f000000, 0x0);
+		}
 	}
 }
 
@@ -333,12 +349,8 @@ void phydm_somlrxhp_setting(struct dm_struct *dm, boolean switch_soml)
 	if (switch_soml) {
 		odm_set_bb_reg(dm, R_0x19a8, MASKDWORD, 0xd90a0000);
 		/* @Following are RxHP settings for T2R as always low, workaround for OTA test, required to classify */
-		odm_set_bb_reg(dm, R_0xc04, (BIT(21) | BIT(18)), 0x0);
-		odm_set_bb_reg(dm, R_0xe04, (BIT(21) | BIT(18)), 0x0);
 	} else {
 		odm_set_bb_reg(dm, R_0x19a8, MASKDWORD, 0x090a0000);
-		odm_set_bb_reg(dm, R_0xc04, (BIT(21) | BIT(18)), 0x0);
-		odm_set_bb_reg(dm, R_0xe04, (BIT(21) | BIT(18)), 0x0);
 	}
 
 	/* @Dynamic RxHP setting with SoML on/off apply on all RFE type */
@@ -454,279 +466,7 @@ void phydm_dynamic_ant_weighting_8822b(void *dm_void)
 	}
 }
 #endif
-#ifdef CONFIG_MCC_DM
-#ifdef DYN_ANT_WEIGHTING_SUPPORT
-void phydm_set_weighting_cmn(struct dm_struct *dm)
-{
-	PHYDM_DBG(dm, DBG_COMP_MCC, "phydm_set_weighting_cmn\n");
-	odm_set_bb_reg(dm, 0xc04, (BIT(18)|BIT(21)), 0x0);
-	odm_set_bb_reg(dm, 0xe04, (BIT(18)|BIT(21)), 0x0);
-}
-void phydm_set_weighting_mcc(u8 b_equal_weighting, void *dm_void, u8 port)
-{
-	/*u8 reg_8;*/
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _phydm_mcc_dm_ *mcc_dm = &dm ->mcc_dm;
-	u8	val_0x98e, val_0x98f, val_0x81b;
-	PHYDM_DBG(dm , DBG_COMP_MCC, "ant_weighting_mcc ,port = %d\n", port);
-	if (b_equal_weighting) {
-		val_0x98e = (u8)(odm_get_bb_reg(dm , 0x98c, 0x00ff0000)>>16) & 0xc0;
-		val_0x98f = (u8)(odm_get_bb_reg(dm , 0x98c, 0xff000000)>>24) & 0x7f;
-		val_0x81b = (u8)(odm_get_bb_reg(dm , 0x818, 0xff000000)>>24) & 0xfd;
-		PHYDM_DBG(dm , DBG_COMP_MCC, "Equal weighting ,rssi_min = %d\n",
-			dm ->rssi_min);
-		/*equal weighting*/
-		/*
-		odm_set_bb_reg(p_dm_odm, 0x98c, 0x7fc0000, 0x0);
-		odm_set_bb_reg(p_dm_odm, 0x818, BIT(26), 0x0);
-		reg_8 = odm_get_bb_reg(p_dm_odm, 0xf94, BIT(0)|BIT(1)|BIT(2));
-		ODM_RT_TRACE(p_dm_odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("Equal weighting ,rssi_min = %d\n, 0xf94[2:0] = 0x%x\n", p_dm_odm->rssi_min, reg_8));*/
-	}
-	else
-	{
-		val_0x98e = 0x44;
-		val_0x98f = 0x43;
-		val_0x81b = (u8)(odm_get_bb_reg(dm , 0x818, 0xff000000)>>24) | BIT(2);
-		PHYDM_DBG(dm , DBG_COMP_MCC, "AGC weighting ,rssi_min = %d\n",
-			dm ->rssi_min);
-		/*fix sec_min_wgt = 1/2*/
-		/*
-		odm_set_bb_reg(p_dm_odm, 0x98c, MASKDWORD, 0x43440000);
-		odm_set_bb_reg(p_dm_odm, 0x818, BIT(26), 0x1);
-		reg_8 = odm_get_bb_reg(p_dm_odm, 0xf94, BIT(0)|BIT(1)|BIT(2));
-		ODM_RT_TRACE(p_dm_odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("AGC weighting ,rssi_min = %d\n, 0xf94[2:0] = 0x%x\n", p_dm_odm->rssi_min, reg_8));*/
-	}
-	mcc_dm->mcc_reg_id[2] = 0x2;
-	mcc_dm->mcc_dm_reg[2] = 0x98e;
-	mcc_dm->mcc_dm_val[2][port] = val_0x98e;
 
-	mcc_dm->mcc_reg_id[3] = 0x3;
-	mcc_dm->mcc_dm_reg[3] = 0x98f;
-	mcc_dm->mcc_dm_val[3][port] = val_0x98f;
-
-	mcc_dm->mcc_reg_id[4] = 0x4;
-	mcc_dm->mcc_dm_reg[4] = 0x81b;
-	mcc_dm->mcc_dm_val[4][port] = val_0x81b;
-
-}
-void phydm_dyn_ant_dec_mcc(u8 port, u8 rssi_in, void *dm_void)
-{
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	u8 rssi_l2h = 43, rssi_h2l = 37;
-	if (rssi_in == 0xff) {
-		phydm_set_weighting_mcc(FALSE, dm, port);
-	}
-	else if (rssi_in >= rssi_l2h) {
-		phydm_set_weighting_mcc(TRUE, dm, port);
-	}
-	else if (rssi_in <= rssi_h2l) {
-		phydm_set_weighting_mcc(FALSE, dm, port);
-	}
-}
-
-void phydm_dynamic_ant_weighting_mcc_8822b(void *dm_void)
-{
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _phydm_mcc_dm_ *mcc_dm = &dm->mcc_dm;
-	u8	i;
-	phydm_set_weighting_cmn(dm);
-	for (i = 0; i <= 1; i++)
-		phydm_dyn_ant_dec_mcc(i, mcc_dm->mcc_rssi[i], dm);
-}
-#endif /*#ifdef DYN_ANT_WEIGHTING_SUPPORT*/
-
-void phydm_mcc_init (void *dm_void)
-{
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _phydm_mcc_dm_ *mcc_dm = &dm->mcc_dm;
-	u8	i;
-	/*PHYDM_DBG(dm, DBG_COMP_MCC, ("MCC init\n"));*/
-	PHYDM_DBG(dm, DBG_COMP_MCC, "MCC init\n");
-	for (i = 0; i < MCC_DM_REG_NUM; i++ ) {
-		mcc_dm->mcc_reg_id[i] = 0xff;
-		mcc_dm->mcc_dm_reg[i] = 0;
-		mcc_dm->mcc_dm_val[i][0] = 0;
-		mcc_dm->mcc_dm_val[i][1] = 0;
-	}
-	for (i = 0; i < NUM_STA; i++ ) {
-		mcc_dm->sta_macid[0][i] = 0xff;
-		mcc_dm->sta_macid[1][i] = 0xff;
-	}
-	/* Function init */
-	dm->is_stop_dym_ant_weighting = 0;
-}
-
-u8 phydm_check(void *dm_void)
-{
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _phydm_mcc_dm_ *mcc_dm = &dm->mcc_dm;
-	struct cmn_sta_info			*p_entry = NULL;
-	u8	shift = 0;
-	u8	i = 0;
-	u8	j = 0;
-	u8	rssi_tmp_min[2] = {0xff, 0xff};
-	u8	sta_num = 8;
-	u8 mcc_macid = 0;
-	for (i = 0;i <= 1;i++) {
-		for (j = 0;j < sta_num;j++) {
-			if (mcc_dm->sta_macid[i][j] != 0xff) {
-				mcc_macid = mcc_dm->sta_macid[i][j];
-				p_entry = dm->phydm_sta_info[mcc_macid];
-				if (p_entry == NULL) {
-					PHYDM_DBG(dm, DBG_COMP_MCC, "Pentry == NULL(mac=%d)\n",
-						mcc_dm->sta_macid[i][j]);
-					return _FAIL;
-				}
-				PHYDM_DBG(dm, DBG_COMP_MCC, "undecorated_smoothed_pwdb=%d\n",
-					p_entry->rssi_stat.rssi);
-				if (p_entry->rssi_stat.rssi < rssi_tmp_min[i])
-					rssi_tmp_min[i] = p_entry->rssi_stat.rssi;
-			}
-		}
-	}
-	mcc_dm->mcc_rssi[0] = (u8)rssi_tmp_min[0];
-	mcc_dm->mcc_rssi[1] = (u8)rssi_tmp_min[1];
-	return _SUCCESS;
-}
-
-void phydm_mcc_h2ccmd_rst(void *dm_void)
-{
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _phydm_mcc_dm_ *mcc_dm = &dm->mcc_dm;
-	u8 i;
-	u8 regid;
-	u8 h2c_mcc[H2C_MAX_LENGTH];
-
-	/* RST MCC */
-	for (i = 0; i < H2C_MAX_LENGTH; i++ ) {
-		h2c_mcc[i] = 0xff;
-	}
-	h2c_mcc[0] = 0x00;
-	odm_fill_h2c_cmd(dm, PHYDM_H2C_MCC, H2C_MAX_LENGTH, h2c_mcc);
-	PHYDM_DBG(dm, DBG_COMP_MCC, "MCC H2C RST\n");
-}
-
-void phydm_mcc_h2ccmd(void *dm_void)
-{
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _phydm_mcc_dm_ *mcc_dm = &dm->mcc_dm;
-	u8 i;
-	u8 regid;
-	u8 h2c_mcc[H2C_MAX_LENGTH];
-
-	if (mcc_dm->mcc_rf_channel[0] == 0xff && mcc_dm->mcc_rf_channel[1] == 0xff) {
-		PHYDM_DBG(dm, DBG_COMP_MCC, "MCC channel Error\n");
-		return;
-	}
-	/* Set Channel number */
-	for (i = 0; i < H2C_MAX_LENGTH; i++ ) {
-		h2c_mcc[i] = 0xff;
-	}
-	h2c_mcc[0] = 0xe0;
-	h2c_mcc[1] = (u8)(mcc_dm->mcc_rf_channel[0]);
-	h2c_mcc[2] = (u8)(mcc_dm->mcc_rf_channel[0] >> 8);
-	h2c_mcc[3] = (u8)(mcc_dm->mcc_rf_channel[1]);
-	h2c_mcc[4] = (u8)(mcc_dm->mcc_rf_channel[1] >> 8);
-	h2c_mcc[5] = 0xff;
-	h2c_mcc[6] = 0xff;
-	odm_fill_h2c_cmd(dm, PHYDM_H2C_MCC, H2C_MAX_LENGTH, h2c_mcc);
-	PHYDM_DBG(dm, DBG_COMP_MCC, "MCC H2C SetCH: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",
-					h2c_mcc[0], h2c_mcc[1], h2c_mcc[2], h2c_mcc[3], h2c_mcc[4],
-					h2c_mcc[5], h2c_mcc[6]);
-
-	/* Set Reg and value*/
-	for (i = 0; i < H2C_MAX_LENGTH; i++ ) {
-		h2c_mcc[i] = 0xff;
-	}
-
-	for (i = 0; i < MCC_DM_REG_NUM; i++ ) {
-		regid = mcc_dm->mcc_reg_id[i];
-		if (regid!=0xff) {
-			h2c_mcc[0] = 0xa0 | (regid & 0x1f);
-			h2c_mcc[1] = (u8)(mcc_dm->mcc_dm_reg[i]);
-			h2c_mcc[2] = (u8)(mcc_dm->mcc_dm_reg[i] >> 8);
-			h2c_mcc[3] = mcc_dm->mcc_dm_val[i][0];
-			h2c_mcc[4] = mcc_dm->mcc_dm_val[i][1];
-			h2c_mcc[5] = 0xff;
-			h2c_mcc[6] = 0xff;
-			odm_fill_h2c_cmd(dm, PHYDM_H2C_MCC, H2C_MAX_LENGTH, h2c_mcc);
-			PHYDM_DBG(dm, DBG_COMP_MCC, "MCC H2C: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",
-					h2c_mcc[0], h2c_mcc[1], h2c_mcc[2], h2c_mcc[3], h2c_mcc[4],
-					h2c_mcc[5], h2c_mcc[6]);
-		}
-	}
-
-
-}
-
-void phydm_mcc_ctrl(void *dm_void)
-{
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _phydm_mcc_dm_ *mcc_dm = &dm->mcc_dm;
-	struct phydm_dig_struct *dig_t = &dm->dm_dig_table;
-	PHYDM_DBG(dm, DBG_COMP_MCC, "MCC status: %x\n", mcc_dm->mcc_status);
-	/*MCC stage no change*/
-	if (mcc_dm->mcc_status == mcc_dm->mcc_pre_status)
-		return;
-	/*Not in MCC stage*/
-	if (mcc_dm->mcc_status == 0)
-	{
-		/* Enable normal Ant-weighting */
-		dm->is_stop_dym_ant_weighting = 0;
-		/* Enable normal DIG */
-		odm_pause_dig(dm, PHYDM_RESUME, PHYDM_PAUSE_LEVEL_1, 0x20);
-	}
-	else
-	{
-		/* Disable normal Ant-weighting */
-		dm->is_stop_dym_ant_weighting = 1;
-		/* Enable normal DIG */
-		odm_pause_dig(dm, PHYDM_PAUSE_NO_SET, PHYDM_PAUSE_LEVEL_1, 0x20);
-	}
-	if (mcc_dm->mcc_status == 0 && mcc_dm->mcc_pre_status != 0)
-		phydm_mcc_init(dm);
-	mcc_dm->mcc_pre_status = mcc_dm->mcc_status;
-	}
-
-void phydm_fill_mcccmd( void *dm_void, u8 regid, u16 reg_add,	u8 val0,	u8 val1)
-{
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _phydm_mcc_dm_ *mcc_dm = &dm->mcc_dm;
-	mcc_dm->mcc_reg_id[regid] = regid;
-	mcc_dm->mcc_dm_reg[regid] = reg_add;
-	mcc_dm->mcc_dm_val[regid][0] = val0;
-	mcc_dm->mcc_dm_val[regid][1] = val1;
-}
-
-void phydm_mcc_switch(void *dm_void)
-{
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _phydm_mcc_dm_ *mcc_dm = &dm->mcc_dm;
-	s8 ret;
-	phydm_mcc_ctrl(dm);
-	if (mcc_dm->mcc_status == 0) {/*Not in MCC stage*/
-		phydm_mcc_h2ccmd_rst(dm);
-		return;
-	}
-	PHYDM_DBG(dm, DBG_COMP_MCC, "MCC switch\n");
-	ret = phydm_check(dm);
-	if (ret == _FAIL) {
-		PHYDM_DBG(dm, DBG_COMP_MCC, "MCC check fail\n");
-		return;
-	}
-	/* Set IGI*/
-	phydm_mcc_igi_cal(dm);
-
-	/* Set Antenna Gain*/
-#if (RTL8822B_SUPPORT == 1)
-	phydm_dynamic_ant_weighting_mcc_8822b(dm);
-#endif
-	/* Set H2C Cmd*/
-	phydm_mcc_h2ccmd(dm);
-
-}
-
-#endif
 
 #ifdef CONFIG_DYNAMIC_BYPASS
 void

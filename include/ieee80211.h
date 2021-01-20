@@ -15,16 +15,6 @@
 #ifndef __IEEE80211_H
 #define __IEEE80211_H
 
-
-#ifndef CONFIG_RTL8711FW
-
-	#if defined PLATFORM_OS_XP
-		#include <ntstrsafe.h>
-	#endif
-#else
-
-#endif
-
 #define MGMT_QUEUE_NUM 5
 
 #define ETH_ALEN	6
@@ -251,6 +241,8 @@ typedef enum _RATEID_IDX_ {
 	RATEID_IDX_MIX2 = 12,
 	RATEID_IDX_VHT_3SS = 13,
 	RATEID_IDX_BGN_3SS = 14,
+	RATEID_IDX_BGN_4SS = 15,
+	RATEID_IDX_VHT_4SS = 16,
 } RATEID_IDX, *PRATEID_IDX;
 
 typedef enum _RATR_TABLE_MODE {
@@ -423,7 +415,7 @@ struct ieee_ibss_seq {
 	_list	list;
 };
 
-#if defined(PLATFORM_LINUX) || defined(CONFIG_RTL8711FW) || defined(PLATFORM_FREEBSD)
+#if defined(PLATFORM_LINUX) || defined(PLATFORM_FREEBSD)
 
 struct rtw_ieee80211_hdr {
 	u16 frame_ctl;
@@ -497,54 +489,6 @@ struct rtw_ieee80211s_hdr {
 	u32 rann_metric;
 } __attribute__((packed));
 #endif
-
-
-
-#ifdef PLATFORM_WINDOWS
-
-#pragma pack(1)
-struct rtw_ieee80211_hdr {
-	u16 frame_ctl;
-	u16 duration_id;
-	u8 addr1[ETH_ALEN];
-	u8 addr2[ETH_ALEN];
-	u8 addr3[ETH_ALEN];
-	u16 seq_ctl;
-	u8 addr4[ETH_ALEN];
-};
-
-struct rtw_ieee80211_hdr_3addr {
-	u16 frame_ctl;
-	u16 duration_id;
-	u8 addr1[ETH_ALEN];
-	u8 addr2[ETH_ALEN];
-	u8 addr3[ETH_ALEN];
-	u16 seq_ctl;
-};
-
-
-struct rtw_ieee80211_hdr_qos {
-	struct rtw_ieee80211_hdr wlan_hdr;
-	u16	qc;
-};
-
-struct rtw_ieee80211_hdr_3addr_qos {
-	struct  rtw_ieee80211_hdr_3addr wlan_hdr;
-	u16     qc;
-};
-
-struct eapol {
-	u8 snap[6];
-	u16 ethertype;
-	u8 version;
-	u8 type;
-	u16 length;
-};
-#pragma pack()
-
-#endif
-
-
 
 enum eap_type {
 	EAP_PACKET = 0,
@@ -654,7 +598,7 @@ enum eap_type {
 
 #define P80211_OUI_LEN 3
 
-#if defined(PLATFORM_LINUX) || defined(CONFIG_RTL8711FW) || defined(PLATFORM_FREEBSD)
+#if defined(PLATFORM_LINUX) || defined(PLATFORM_FREEBSD)
 
 struct ieee80211_snap_hdr {
 
@@ -666,22 +610,6 @@ struct ieee80211_snap_hdr {
 } __attribute__((packed));
 
 #endif
-
-#ifdef PLATFORM_WINDOWS
-
-#pragma pack(1)
-struct ieee80211_snap_hdr {
-
-	u8    dsap;   /* always 0xAA */
-	u8    ssap;   /* always 0xAA */
-	u8    ctrl;   /* always 0x03 */
-	u8    oui[P80211_OUI_LEN];    /* organizational universal id */
-
-};
-#pragma pack()
-
-#endif
-
 
 #define SNAP_SIZE sizeof(struct ieee80211_snap_hdr)
 
@@ -1109,6 +1037,8 @@ typedef enum _RATE_SECTION {
 	RATE_SECTION_NUM,
 } RATE_SECTION;
 
+RATE_SECTION mgn_rate_to_rs(enum MGN_RATE rate);
+
 const char *rate_section_str(u8 section);
 
 #define IS_CCK_RATE_SECTION(section) ((section) == CCK)
@@ -1242,8 +1172,7 @@ struct ieee80211_softmac_stats {
 #define BIP_MAX_KEYID 5
 #define BIP_AAD_SIZE  20
 
-#if defined(PLATFORM_LINUX) || defined(CONFIG_RTL8711FW)
-
+#if defined(PLATFORM_LINUX)
 struct ieee80211_security {
 	u16 active_key:2,
 	    enabled:1,
@@ -1255,24 +1184,6 @@ struct ieee80211_security {
 	u8 level;
 	u16 flags;
 } __attribute__((packed));
-
-#endif
-
-#ifdef PLATFORM_WINDOWS
-
-#pragma pack(1)
-struct ieee80211_security {
-	u16 active_key:2,
-	    enabled:1,
-	    auth_mode:2,
-	    auth_algo:4,
-	    unicast_uses_group:1;
-	u8 key_sizes[WEP_KEYS];
-	u8 keys[WEP_KEYS][WEP_KEY_LEN];
-	u8 level;
-	u16 flags;
-} ;
-#pragma pack()
 
 #endif
 
@@ -1316,8 +1227,7 @@ struct ieee80211_header_data {
 #define MFIE_TYPE_RATES_EX   50
 #define MFIE_TYPE_GENERIC    221
 
-#if defined(PLATFORM_LINUX) || defined(CONFIG_RTL8711FW)
-
+#if defined(PLATFORM_LINUX)
 struct ieee80211_info_element_hdr {
 	u8 id;
 	u8 len;
@@ -1328,23 +1238,6 @@ struct ieee80211_info_element {
 	u8 len;
 	u8 data[0];
 } __attribute__((packed));
-#endif
-
-#ifdef PLATFORM_WINDOWS
-
-#pragma pack(1)
-struct ieee80211_info_element_hdr {
-	u8 id;
-	u8 len;
-} ;
-
-struct ieee80211_info_element {
-	u8 id;
-	u8 len;
-	u8 data[0];
-} ;
-#pragma pack()
-
 #endif
 
 
@@ -1369,9 +1262,7 @@ struct ieee80211_info_element {
 #define IEEE80211_DEFAULT_BASIC_RATE 10
 
 
-#if defined(PLATFORM_LINUX) || defined(CONFIG_RTL8711FW)
-
-
+#if defined(PLATFORM_LINUX)
 struct ieee80211_authentication {
 	struct ieee80211_header_data header;
 	u16 algorithm;
@@ -1410,57 +1301,6 @@ struct ieee80211_assoc_response_frame {
 	/*	struct ieee80211_info_element info_element;  supported rates  */
 } __attribute__((packed));
 #endif
-
-
-
-#ifdef PLATFORM_WINDOWS
-
-#pragma pack(1)
-
-struct ieee80211_authentication {
-	struct ieee80211_header_data header;
-	u16 algorithm;
-	u16 transaction;
-	u16 status;
-	/* struct ieee80211_info_element_hdr info_element; */
-} ;
-
-
-struct ieee80211_probe_response {
-	struct ieee80211_header_data header;
-	u32 time_stamp[2];
-	u16 beacon_interval;
-	u16 capability;
-	struct ieee80211_info_element info_element;
-} ;
-
-struct ieee80211_probe_request {
-	struct ieee80211_header_data header;
-	/*struct ieee80211_info_element info_element;*/
-} ;
-
-struct ieee80211_assoc_request_frame {
-	struct rtw_ieee80211_hdr_3addr header;
-	u16 capability;
-	u16 listen_interval;
-	/* u8 current_ap[ETH_ALEN]; */
-	struct ieee80211_info_element_hdr info_element;
-} ;
-
-struct ieee80211_assoc_response_frame {
-	struct rtw_ieee80211_hdr_3addr header;
-	u16 capability;
-	u16 status;
-	u16 aid;
-	/*	struct ieee80211_info_element info_element;  supported rates  */
-};
-
-#pragma pack()
-
-#endif
-
-
-
 
 struct ieee80211_txb {
 	u8 nr_frags;
@@ -1610,29 +1450,13 @@ enum ieee80211_state {
 #define PORT_FMT "%u"
 #define PORT_ARG(x) ntohs(*((u16 *)(x)))
 
-#ifdef PLATFORM_FREEBSD /* Baron change func to macro */
 #define is_multicast_mac_addr(Addr) ((((Addr[0]) & 0x01) == 0x01) && ((Addr[0]) != 0xff))
 #define is_broadcast_mac_addr(Addr) ((((Addr[0]) & 0xff) == 0xff) && (((Addr[1]) & 0xff) == 0xff) && \
 	(((Addr[2]) & 0xff) == 0xff) && (((Addr[3]) & 0xff) == 0xff) && (((Addr[4]) & 0xff) == 0xff) && \
 				     (((Addr[5]) & 0xff) == 0xff))
-#else
-extern __inline int is_multicast_mac_addr(const u8 *addr)
-{
-	return (addr[0] != 0xff) && (0x01 & addr[0]);
-}
+#define is_zero_mac_addr(Addr)	((Addr[0] == 0x00) && (Addr[1] == 0x00) && (Addr[2] == 0x00) &&   \
+                (Addr[3] == 0x00) && (Addr[4] == 0x00) && (Addr[5] == 0x00))
 
-extern __inline int is_broadcast_mac_addr(const u8 *addr)
-{
-	return ((addr[0] == 0xff) && (addr[1] == 0xff) && (addr[2] == 0xff) &&   \
-		(addr[3] == 0xff) && (addr[4] == 0xff) && (addr[5] == 0xff));
-}
-
-extern __inline int is_zero_mac_addr(const u8 *addr)
-{
-	return ((addr[0] == 0x00) && (addr[1] == 0x00) && (addr[2] == 0x00) &&   \
-		(addr[3] == 0x00) && (addr[4] == 0x00) && (addr[5] == 0x00));
-}
-#endif /* PLATFORM_FREEBSD */
 
 #define CFG_IEEE80211_RESERVE_FCS (1<<0)
 #define CFG_IEEE80211_COMPUTE_FCS (1<<1)
@@ -2072,7 +1896,8 @@ u8 *rtw_set_ie_secondary_ch_offset(u8 *buf, u32 *buf_len, u8 secondary_ch_offset
 u8 *rtw_set_ie_mesh_ch_switch_parm(u8 *buf, u32 *buf_len, u8 ttl, u8 flags, u16 reason, u16 precedence);
 
 u8 *rtw_get_ie(const u8 *pbuf, sint index, sint *len, sint limit);
-int rtw_remove_ie_g_rate(u8 *ie, uint *ie_len, uint offset, u8 eid);
+u8 rtw_update_rate_bymode(WLAN_BSSID_EX *pbss_network, u32 mode);
+
 u8 *rtw_get_ie_ex(const u8 *in_ie, uint in_len, u8 eid, const u8 *oui, u8 oui_len, u8 *ie, uint *ielen);
 int rtw_ies_remove_ie(u8 *ies, uint *ies_len, uint offset, u8 eid, u8 *oui, u8 oui_len);
 
@@ -2187,7 +2012,7 @@ int rtw_check_network_type(unsigned char *rate, int ratelen, int channel);
 u8 rtw_check_invalid_mac_address(u8 *mac_addr, u8 check_local_bit);
 void rtw_macaddr_cfg(u8 *out, const u8 *hw_mac_addr);
 
-u16 rtw_mcs_rate(u8 rf_type, u8 bw_40MHz, u8 short_GI, unsigned char *MCS_rate);
+u16 rtw_ht_mcs_rate(u8 bw_40MHz, u8 short_GI, unsigned char *MCS_rate);
 u8	rtw_ht_mcsset_to_nss(u8 *supp_mcs_set);
 u32	rtw_ht_mcs_set_to_bitmap(u8 *mcs_set, u8 nss);
 

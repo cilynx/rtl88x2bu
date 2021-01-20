@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -28,6 +28,7 @@
 #define CMD_ID_C2H_CUR_CHANNEL 0X10
 #define CMD_ID_C2H_GPIO_WAKEUP 0X14
 #define CMD_ID_C2H_DROPID_RPT 0X2D
+#define CMD_ID_C2H_LPS_STATUS_RPT 0X32
 #define C2H_GET_CMD_ID(c2h_pkt) LE_BITS_TO_4BYTE(c2h_pkt + 0X00, 0, 8)
 #define C2H_SET_CMD_ID(c2h_pkt, value)                                         \
 	SET_BITS_TO_LE_4BYTE(c2h_pkt + 0X00, 0, 8, value)
@@ -430,5 +431,29 @@
 #define C2H_DROPID_RPT_GET_TRIGGER(c2h_pkt)                                    \
 	LE_BITS_TO_4BYTE(c2h_pkt + 0X0C, 24, 8)
 #define C2H_DROPID_RPT_SET_TRIGGER(c2h_pkt, value)                             \
+	SET_BITS_TO_LE_4BYTE(c2h_pkt + 0X0C, 24, 8, value)
+#define C2H_LPS_STATUS_RPT_GET_CMD_ID(c2h_pkt)                                 \
+	LE_BITS_TO_4BYTE(c2h_pkt + 0X00, 0, 8)
+#define C2H_LPS_STATUS_RPT_SET_CMD_ID(c2h_pkt, value)                          \
+	SET_BITS_TO_LE_4BYTE(c2h_pkt + 0X00, 0, 8, value)
+#define C2H_LPS_STATUS_RPT_GET_SEQ(c2h_pkt)                                    \
+	LE_BITS_TO_4BYTE(c2h_pkt + 0X00, 8, 8)
+#define C2H_LPS_STATUS_RPT_SET_SEQ(c2h_pkt, value)                             \
+	SET_BITS_TO_LE_4BYTE(c2h_pkt + 0X00, 8, 8, value)
+#define C2H_LPS_STATUS_RPT_GET_ACTION(c2h_pkt)                                 \
+	LE_BITS_TO_4BYTE(c2h_pkt + 0X00, 16, 8)
+#define C2H_LPS_STATUS_RPT_SET_ACTION(c2h_pkt, value)                          \
+	SET_BITS_TO_LE_4BYTE(c2h_pkt + 0X00, 16, 8, value)
+#define C2H_LPS_STATUS_RPT_GET_STATUSCODE(c2h_pkt)                             \
+	LE_BITS_TO_4BYTE(c2h_pkt + 0X00, 24, 8)
+#define C2H_LPS_STATUS_RPT_SET_STATUSCODE(c2h_pkt, value)                      \
+	SET_BITS_TO_LE_4BYTE(c2h_pkt + 0X00, 24, 8, value)
+#define C2H_LPS_STATUS_RPT_GET_LEN(c2h_pkt)                                    \
+	LE_BITS_TO_4BYTE(c2h_pkt + 0X0C, 16, 8)
+#define C2H_LPS_STATUS_RPT_SET_LEN(c2h_pkt, value)                             \
+	SET_BITS_TO_LE_4BYTE(c2h_pkt + 0X0C, 16, 8, value)
+#define C2H_LPS_STATUS_RPT_GET_TRIGGER(c2h_pkt)                                \
+	LE_BITS_TO_4BYTE(c2h_pkt + 0X0C, 24, 8)
+#define C2H_LPS_STATUS_RPT_SET_TRIGGER(c2h_pkt, value)                         \
 	SET_BITS_TO_LE_4BYTE(c2h_pkt + 0X0C, 24, 8, value)
 #endif

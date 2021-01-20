@@ -354,7 +354,6 @@ static bool rtw_mesh_acnode_candidate_exist(_adapter *adapter)
 
 	_exit_critical_bh(&(mlme->scanned_queue.lock), &irqL);
 
-exit:
 	return need;
 }
 
@@ -456,7 +455,7 @@ static void rtw_mesh_acnode_rsvd_chk(_adapter *adapter)
 	if (plink_ctl->acnode_rsvd != acnode_rsvd) {
 		plink_ctl->acnode_rsvd = acnode_rsvd;
 		RTW_INFO(FUNC_ADPT_FMT" acnode_rsvd = %d\n", FUNC_ADPT_ARG(adapter), plink_ctl->acnode_rsvd);
-		update_beacon(adapter, WLAN_EID_MESH_CONFIG, NULL, 1);
+		update_beacon(adapter, WLAN_EID_MESH_CONFIG, NULL, 1, 0);
 	}
 }
 
@@ -707,6 +706,7 @@ void rtw_chk_candidate_peer_notify(_adapter *adapter, struct wlan_network *scann
 		, scanned->network.MacAddress
 		, BSS_EX_TLV_IES(&scanned->network)
 		, BSS_EX_TLV_IES_LEN(&scanned->network)
+		, scanned->network.Rssi
 		, GFP_ATOMIC
 	);
 #endif
@@ -999,6 +999,7 @@ u8 rtw_mesh_select_operating_ch(_adapter *adapter)
 			int ch_set_idx = rtw_chset_search_ch(rfctl->channel_set, scanned->network.Configuration.DSConfig);
 
 			if (ch_set_idx >= 0
+				&& rfctl->channel_set[ch_set_idx].ScanType != SCAN_PASSIVE
 				&& !CH_IS_NON_OCP(&rfctl->channel_set[ch_set_idx])
 			) {
 				u8 nop, accept;
@@ -1791,7 +1792,6 @@ static int rtw_mesh_check_frames(_adapter *adapter, const u8 **buf, size_t *len,
 		};
 	}
 
-exit:
 	return is_mesh_frame;
 }
 
@@ -2028,7 +2028,6 @@ struct mesh_plink_ent *_rtw_mesh_plink_get(_adapter *adapter, const u8 *hwaddr)
 		}
 	}
 
-exit:
 	return ent;
 }
 
@@ -2043,7 +2042,6 @@ struct mesh_plink_ent *rtw_mesh_plink_get(_adapter *adapter, const u8 *hwaddr)
 	ent = _rtw_mesh_plink_get(adapter, hwaddr);
 	_exit_critical_bh(&(plink_ctl->lock), &irqL);
 
-exit:
 	return ent;
 }
 
@@ -2117,7 +2115,6 @@ int _rtw_mesh_plink_add(_adapter *adapter, const u8 *hwaddr)
 		plink_ctl->num++;
 	}
 
-exit:
 	return exist == _TRUE ? RTW_ALREADY : (ent ? _SUCCESS : _FAIL);
 }
 
@@ -2148,7 +2145,6 @@ int rtw_mesh_plink_set_state(_adapter *adapter, const u8 *hwaddr, u8 state)
 		ent->plink_state = state;
 	_exit_critical_bh(&(plink_ctl->lock), &irqL);
 
-exit:
 	return ent ? _SUCCESS : _FAIL;
 }
 
@@ -2168,7 +2164,6 @@ int rtw_mesh_plink_set_aek(_adapter *adapter, const u8 *hwaddr, const u8 *aek)
 	}
 	_exit_critical_bh(&(plink_ctl->lock), &irqL);
 
-exit:
 	return ent ? _SUCCESS : _FAIL;
 }
 #endif
@@ -2190,7 +2185,6 @@ int rtw_mesh_plink_set_peer_conf_timeout(_adapter *adapter, const u8 *hwaddr)
 	}
 	_exit_critical_bh(&(plink_ctl->lock), &irqL);
 
-exit:
 	return ent ? _SUCCESS : _FAIL;
 }
 #endif
@@ -2241,7 +2235,6 @@ int rtw_mesh_plink_del(_adapter *adapter, const u8 *hwaddr)
 
 	_exit_critical_bh(&(plink_ctl->lock), &irqL);
 
-exit:
 	return exist == _TRUE ? _SUCCESS : RTW_ALREADY;
 }
 
@@ -2465,6 +2458,7 @@ int rtw_mesh_peer_establish(_adapter *adapter, struct mesh_plink_ent *plink, str
 	rtw_ewma_err_rate_add(&sta->metrics.err_rate, 1);
 	/* init data_rate to 1M */
 	sta->metrics.data_rate = 10;
+	sta->alive = _TRUE;
 
 	_enter_critical_bh(&stapriv->asoc_list_lock, &irqL);
 	if (rtw_is_list_empty(&sta->asoc_list)) {
@@ -2495,11 +2489,11 @@ void rtw_mesh_expire_peer_notify(_adapter *adapter, const u8 *peer_addr)
 		, peer_addr
 		, null_ssid
 		, 2
+		, 0
 		, GFP_ATOMIC
 	);
 #endif
 
-exit:
 	return;
 }
 
@@ -3208,6 +3202,9 @@ int rtw_mesh_nexthop_lookup(_adapter *adapter,
 	struct sta_info *next_hop;
 	const u8 *target_addr = mda;
 	int err = -ENOENT;
+	struct registry_priv  *registry_par = &adapter->registrypriv;
+	u8 peer_alive_based_preq = registry_par->peer_alive_based_preq;
+	BOOLEAN nexthop_alive = _TRUE;
 
 	rtw_rcu_read_lock();
 	mpath = rtw_mesh_path_lookup(adapter, target_addr);
@@ -3215,19 +3212,39 @@ int rtw_mesh_nexthop_lookup(_adapter *adapter,
 	if (!mpath || !(mpath->flags & RTW_MESH_PATH_ACTIVE))
 		goto endlookup;
 
-	if (rtw_time_after(rtw_get_current_time(),
-		       mpath->exp_time -
-		       rtw_ms_to_systime(adapter->mesh_cfg.path_refresh_time)) &&
-	    _rtw_memcmp(adapter_mac_addr(adapter), msa, ETH_ALEN) == _TRUE &&
-	    !(mpath->flags & RTW_MESH_PATH_RESOLVING) &&
-	    !(mpath->flags & RTW_MESH_PATH_FIXED)) {
-		rtw_mesh_queue_preq(mpath, RTW_PREQ_Q_F_START | RTW_PREQ_Q_F_REFRESH);
-	}
-
 	next_hop = rtw_rcu_dereference(mpath->next_hop);
 	if (next_hop) {
 		_rtw_memcpy(ra, next_hop->cmn.mac_addr, ETH_ALEN);
 		err = 0;
+	}
+
+	if (peer_alive_based_preq && next_hop)
+		nexthop_alive = next_hop->alive;
+
+	if (_rtw_memcmp(adapter_mac_addr(adapter), msa, ETH_ALEN) == _TRUE &&
+	    !(mpath->flags & RTW_MESH_PATH_RESOLVING) &&
+	    !(mpath->flags & RTW_MESH_PATH_FIXED)) {
+		u8 flags = RTW_PREQ_Q_F_START | RTW_PREQ_Q_F_REFRESH;
+
+		if (peer_alive_based_preq && nexthop_alive == _FALSE) {
+			flags |= RTW_PREQ_Q_F_BCAST_PREQ;
+			rtw_mesh_queue_preq(mpath, flags);
+		} else if (rtw_time_after(rtw_get_current_time(),
+			mpath->exp_time -
+			rtw_ms_to_systime(adapter->mesh_cfg.path_refresh_time))) {
+			rtw_mesh_queue_preq(mpath, flags);
+		}
+	/* Avoid keeping trying unicast PREQ toward root,
+	   when next_hop leaves */
+	} else if (peer_alive_based_preq &&
+		   _rtw_memcmp(adapter_mac_addr(adapter), msa, ETH_ALEN) == _TRUE &&
+		   (mpath->flags & RTW_MESH_PATH_RESOLVING) &&
+		   !(mpath->flags & RTW_MESH_PATH_FIXED) &&
+		   !(mpath->flags & RTW_MESH_PATH_BCAST_PREQ) &&
+		   mpath->is_root && nexthop_alive == _FALSE) {
+		enter_critical_bh(&mpath->state_lock);
+		mpath->flags |= RTW_MESH_PATH_BCAST_PREQ;
+		exit_critical_bh(&mpath->state_lock);
 	}
 
 endlookup:

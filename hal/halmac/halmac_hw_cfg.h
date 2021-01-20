@@ -150,11 +150,6 @@
 #define HALMAC_8197G_SUPPORT	0
 #endif
 
-#ifdef CONFIG_RTL8812F
-#define HALMAC_8812F_SUPPORT	1
-#else
-#define HALMAC_8812F_SUPPORT	0
-#endif
 
 
 /* Halmac support IC version */
@@ -181,6 +176,12 @@
 #define HALMAC_8822C_SUPPORT	1
 #else
 #define HALMAC_8822C_SUPPORT	0
+#endif
+
+#ifdef CONFIG_RTL8812F
+#define HALMAC_8812F_SUPPORT	1
+#else
+#define HALMAC_8812F_SUPPORT	0
 #endif
 
 

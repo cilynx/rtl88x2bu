@@ -30,17 +30,6 @@
 void phydm_dynamic_ant_weighting_8822b(void *dm_void);
 #endif
 
-#ifdef CONFIG_MCC_DM
-#ifdef DYN_ANT_WEIGHTING_SUPPORT
-void phydm_dynamic_ant_weighting_mcc_8822b(void *dm_void);
-#endif /*#ifdef DYN_ANT_WEIGHTING_SUPPORT*/
-void phydm_fill_mcccmd( void *dm_void, u8 regid, u16 reg_add,	u8 val0,	u8 val1);
-u8 phydm_check(void *dm_void);
-void phydm_mcc_init (void *dm_void);
-void phydm_mcc_switch(void *dm_void);
-#endif /*#ifdef CONFIG_MCC_DM*/
-
-
 void phydm_1rcca_setting(struct dm_struct *dm, boolean enable_1rcca);
 
 void phydm_somlrxhp_setting(struct dm_struct *dm, boolean switch_soml);

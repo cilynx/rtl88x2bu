@@ -26,11 +26,13 @@
 #ifndef __ODM_DBG_H__
 #define __ODM_DBG_H__
 
-/*@#define DEBUG_VERSION	"1.1"*/ /*@2015.07.29 YuChen*/
-/*@#define DEBUG_VERSION	"1.2"*/ /*@2015.08.28 Dino*/
-/*@#define DEBUG_VERSION	"1.3"*/ /*@2016.04.28 YuChen*/
-/*@#define DEBUG_VERSION	"1.4"*/ /*@2017.03.13 Dino*/
-#define DEBUG_VERSION "2.0" /*@2018.01.10 Dino*/
+/*#define DEBUG_VERSION	"1.1"*/ /*2015.07.29 YuChen*/
+/*#define DEBUG_VERSION	"1.2"*/ /*2015.08.28 Dino*/
+/*#define DEBUG_VERSION	"1.3"*/ /*2016.04.28 YuChen*/
+/*#define DEBUG_VERSION	"1.4"*/ /*2017.03.13 Dino*/
+/*#define DEBUG_VERSION "2.0"*/ /*2018.01.10 Dino*/
+/* 2019.03.25 fix nhm_r[11] debug msg error*/
+#define DEBUG_VERSION "2.6"
 
 /*@
  * ============================================================
@@ -424,6 +426,8 @@ void phydm_init_debug_setting(struct dm_struct *dm);
 
 void phydm_bb_dbg_port_header_sel(void *dm_void, u32 header_idx);
 
+u32 phydm_get_bb_dbg_port_idx(void *dm_void);
+
 u8 phydm_set_bb_dbg_port(void *dm_void, u8 curr_dbg_priority, u32 debug_port);
 
 void phydm_release_bb_dbg_port(void *dm_void);
@@ -433,6 +437,8 @@ u32 phydm_get_bb_dbg_port_val(void *dm_void);
 void phydm_reset_rx_rate_distribution(struct dm_struct *dm);
 
 void phydm_rx_rate_distribution(void *dm_void);
+
+u16 phydm_rx_avg_phy_rate(void *dm_void);
 
 void phydm_show_phy_hitogram(void *dm_void);
 

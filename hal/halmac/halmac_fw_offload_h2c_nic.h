@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -34,13 +34,16 @@
 #define CMD_ID_FW_FWCTRL 0XFF
 #define CMD_ID_H2C_LOOPBACK 0XFF
 #define CMD_ID_FWCMD_LOOPBACK 0XFF
-#define CMD_ID_UPDATE_SCAN_PKT 0XFF
+#define CMD_ID_SEND_SCAN_PKT 0XFF
 #define CMD_ID_BCN_OFFLOAD 0XFF
+#define CMD_ID_DROP_SCAN_PKT 0XFF
 #define CMD_ID_P2PPS 0XFF
 #define CMD_ID_BT_COEX 0XFF
+#define CMD_ID_ACT_SCHEDULE_REQ 0XFF
 #define CMD_ID_NAN_CTRL 0XFF
 #define CMD_ID_NAN_CHANNEL_PLAN_0 0XFF
 #define CMD_ID_NAN_CHANNEL_PLAN_1 0XFF
+#define CMD_ID_NAN_FUNC_CTRL 0XFF
 #define CATEGORY_H2C_CMD_HEADER 0X00
 #define CATEGORY_FW_OFFLOAD_H2C 0X01
 #define CATEGORY_FW_ACCESS_TEST 0X01
@@ -61,13 +64,16 @@
 #define CATEGORY_FW_FWCTRL 0X01
 #define CATEGORY_H2C_LOOPBACK 0X01
 #define CATEGORY_FWCMD_LOOPBACK 0X01
-#define CATEGORY_UPDATE_SCAN_PKT 0X01
+#define CATEGORY_SEND_SCAN_PKT 0X01
 #define CATEGORY_BCN_OFFLOAD 0X01
+#define CATEGORY_DROP_SCAN_PKT 0X01
 #define CATEGORY_P2PPS 0X01
 #define CATEGORY_BT_COEX 0X01
+#define CATEGORY_ACT_SCHEDULE_REQ 0X01
 #define CATEGORY_NAN_CTRL 0X01
 #define CATEGORY_NAN_CHANNEL_PLAN_0 0X01
 #define CATEGORY_NAN_CHANNEL_PLAN_1 0X01
+#define CATEGORY_NAN_FUNC_CTRL 0X01
 #define SUB_CMD_ID_FW_ACCESS_TEST 0X00
 #define SUB_CMD_ID_CH_SWITCH 0X02
 #define SUB_CMD_ID_DUMP_PHYSICAL_EFUSE 0X03
@@ -86,13 +92,16 @@
 #define SUB_CMD_ID_FW_FWCTRL 0X13
 #define SUB_CMD_ID_H2C_LOOPBACK 0X14
 #define SUB_CMD_ID_FWCMD_LOOPBACK 0X15
-#define SUB_CMD_ID_UPDATE_SCAN_PKT 0X16
+#define SUB_CMD_ID_SEND_SCAN_PKT 0X16
 #define SUB_CMD_ID_BCN_OFFLOAD 0X17
+#define SUB_CMD_ID_DROP_SCAN_PKT 0X18
 #define SUB_CMD_ID_P2PPS 0X24
 #define SUB_CMD_ID_BT_COEX 0X60
+#define SUB_CMD_ID_ACT_SCHEDULE_REQ 0X70
 #define SUB_CMD_ID_NAN_CTRL 0XB2
 #define SUB_CMD_ID_NAN_CHANNEL_PLAN_0 0XB4
 #define SUB_CMD_ID_NAN_CHANNEL_PLAN_1 0XB5
+#define SUB_CMD_ID_NAN_FUNC_CTRL 0XB6
 #define H2C_CMD_HEADER_GET_CATEGORY(h2c_pkt)                                   \
 	LE_BITS_TO_4BYTE(h2c_pkt + 0X00, 0, 7)
 #define H2C_CMD_HEADER_SET_CATEGORY(h2c_pkt, value)                            \
@@ -454,6 +463,16 @@
 	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 28, 4)
 #define PHYDM_INFO_SET_TX_ANT_STATUS(h2c_pkt, value)                           \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 28, 4, value)
+#define PHYDM_INFO_GET_EXT_PA(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0XC, 0, 8)
+#define PHYDM_INFO_SET_EXT_PA(h2c_pkt, value)                                  \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0XC, 0, 8, value)
+#define PHYDM_INFO_GET_PACKAGE_TYPE(h2c_pkt)                                   \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0XC, 8, 8)
+#define PHYDM_INFO_SET_PACKAGE_TYPE(h2c_pkt, value)                            \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0XC, 8, 8, value)
+#define PHYDM_INFO_GET_MP_MODE(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0XC, 16, 1)
+#define PHYDM_INFO_SET_MP_MODE(h2c_pkt, value)                                 \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0XC, 16, 1, value)
 #define FW_SNDING_GET_SU0(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 0, 1)
 #define FW_SNDING_SET_SU0(h2c_pkt, value)                                      \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 0, 1, value)
@@ -510,16 +529,14 @@
 #define FW_FWCTRL_GET_CONTENT(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X0C, 0, 32)
 #define FW_FWCTRL_SET_CONTENT(h2c_pkt, value)                                  \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X0C, 0, 32, value)
-#define UPDATE_SCAN_PKT_GET_SIZE(h2c_pkt)                                      \
-	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 0, 16)
-#define UPDATE_SCAN_PKT_SET_SIZE(h2c_pkt, value)                               \
+#define SEND_SCAN_PKT_GET_SIZE(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 0, 16)
+#define SEND_SCAN_PKT_SET_SIZE(h2c_pkt, value)                                 \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 0, 16, value)
-#define UPDATE_SCAN_PKT_GET_INDEX(h2c_pkt)                                     \
-	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 16, 8)
-#define UPDATE_SCAN_PKT_SET_INDEX(h2c_pkt, value)                              \
+#define SEND_SCAN_PKT_GET_INDEX(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 16, 8)
+#define SEND_SCAN_PKT_SET_INDEX(h2c_pkt, value)                                \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 16, 8, value)
-#define UPDATE_SCAN_PKT_GET_LOC(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 24, 8)
-#define UPDATE_SCAN_PKT_SET_LOC(h2c_pkt, value)                                \
+#define SEND_SCAN_PKT_GET_LOC(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 24, 8)
+#define SEND_SCAN_PKT_SET_LOC(h2c_pkt, value)                                  \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 24, 8, value)
 #define BCN_OFFLOAD_GET_REQUEST_VERSION(h2c_pkt)                               \
 	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 0, 1)
@@ -548,6 +565,18 @@
 	LE_BITS_TO_4BYTE(h2c_pkt + 0X0C, 0, 8)
 #define BCN_OFFLOAD_SET_RULE_CONTENT(h2c_pkt, value)                           \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X0C, 0, 8, value)
+#define DROP_SCAN_PKT_GET_DROP_ALL(h2c_pkt)                                    \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 0, 1)
+#define DROP_SCAN_PKT_SET_DROP_ALL(h2c_pkt, value)                             \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 0, 1, value)
+#define DROP_SCAN_PKT_GET_DROP_SINGLE(h2c_pkt)                                 \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 1, 1)
+#define DROP_SCAN_PKT_SET_DROP_SINGLE(h2c_pkt, value)                          \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 1, 1, value)
+#define DROP_SCAN_PKT_GET_DROP_IDX(h2c_pkt)                                    \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 8, 8)
+#define DROP_SCAN_PKT_SET_DROP_IDX(h2c_pkt, value)                             \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 8, 8, value)
 #define P2PPS_GET_OFFLOAD_EN(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 0, 1)
 #define P2PPS_SET_OFFLOAD_EN(h2c_pkt, value)                                   \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 0, 1, value)
@@ -605,6 +634,45 @@
 #define BT_COEX_GET_DATA_START(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 0, 8)
 #define BT_COEX_SET_DATA_START(h2c_pkt, value)                                 \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 0, 8, value)
+#define ACT_SCHEDULE_REQ_GET_MODULE_ID(h2c_pkt)                                \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 0, 8)
+#define ACT_SCHEDULE_REQ_SET_MODULE_ID(h2c_pkt, value)                         \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 0, 8, value)
+#define ACT_SCHEDULE_REQ_GET_PRIORITY(h2c_pkt)                                 \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 8, 8)
+#define ACT_SCHEDULE_REQ_SET_PRIORITY(h2c_pkt, value)                          \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 8, 8, value)
+#define ACT_SCHEDULE_REQ_GET_RSVD1(h2c_pkt)                                    \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 16, 16)
+#define ACT_SCHEDULE_REQ_SET_RSVD1(h2c_pkt, value)                             \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 16, 16, value)
+#define ACT_SCHEDULE_REQ_GET_START_TIME(h2c_pkt)                               \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0XC, 0, 32)
+#define ACT_SCHEDULE_REQ_SET_START_TIME(h2c_pkt, value)                        \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0XC, 0, 32, value)
+#define ACT_SCHEDULE_REQ_GET_DURATION(h2c_pkt)                                 \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X10, 0, 32)
+#define ACT_SCHEDULE_REQ_SET_DURATION(h2c_pkt, value)                          \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X10, 0, 32, value)
+#define ACT_SCHEDULE_REQ_GET_PERIOD(h2c_pkt)                                   \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X14, 0, 32)
+#define ACT_SCHEDULE_REQ_SET_PERIOD(h2c_pkt, value)                            \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X14, 0, 32, value)
+#define ACT_SCHEDULE_REQ_GET_TSF_IDX(h2c_pkt)                                  \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X18, 0, 8)
+#define ACT_SCHEDULE_REQ_SET_TSF_IDX(h2c_pkt, value)                           \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X18, 0, 8, value)
+#define ACT_SCHEDULE_REQ_GET_CHANNEL(h2c_pkt)                                  \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X18, 8, 8)
+#define ACT_SCHEDULE_REQ_SET_CHANNEL(h2c_pkt, value)                           \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X18, 8, 8, value)
+#define ACT_SCHEDULE_REQ_GET_BW(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X18, 16, 8)
+#define ACT_SCHEDULE_REQ_SET_BW(h2c_pkt, value)                                \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X18, 16, 8, value)
+#define ACT_SCHEDULE_REQ_GET_PRIMART_CH_IDX(h2c_pkt)                           \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X18, 24, 9)
+#define ACT_SCHEDULE_REQ_SET_PRIMART_CH_IDX(h2c_pkt, value)                    \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X18, 24, 9, value)
 #define NAN_CTRL_GET_NAN_EN(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 0, 2)
 #define NAN_CTRL_SET_NAN_EN(h2c_pkt, value)                                    \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 0, 2, value)
@@ -738,4 +806,47 @@
 	LE_BITS_TO_4BYTE(h2c_pkt + 0X1C, 16, 16)
 #define NAN_CHANNEL_PLAN_1_SET_DURATION_5(h2c_pkt, value)                      \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X1C, 16, 16, value)
+#define NAN_FUNC_CTRL_GET_PORT_IDX(h2c_pkt)                                    \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 0, 8)
+#define NAN_FUNC_CTRL_SET_PORT_IDX(h2c_pkt, value)                             \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 0, 8, value)
+#define NAN_FUNC_CTRL_GET_MAC_ID(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 8, 8)
+#define NAN_FUNC_CTRL_SET_MAC_ID(h2c_pkt, value)                               \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 8, 8, value)
+#define NAN_FUNC_CTRL_GET_MASTER_PREF(h2c_pkt)                                 \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 16, 8)
+#define NAN_FUNC_CTRL_SET_MASTER_PREF(h2c_pkt, value)                          \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 16, 8, value)
+#define NAN_FUNC_CTRL_GET_RANDOM_FACTOR(h2c_pkt)                               \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X08, 24, 8)
+#define NAN_FUNC_CTRL_SET_RANDOM_FACTOR(h2c_pkt, value)                        \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X08, 24, 8, value)
+#define NAN_FUNC_CTRL_GET_OP_CH_24G(h2c_pkt)                                   \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X0C, 0, 8)
+#define NAN_FUNC_CTRL_SET_OP_CH_24G(h2c_pkt, value)                            \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X0C, 0, 8, value)
+#define NAN_FUNC_CTRL_GET_OP_CH_5G(h2c_pkt)                                    \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X0C, 8, 8)
+#define NAN_FUNC_CTRL_SET_OP_CH_5G(h2c_pkt, value)                             \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X0C, 8, 8, value)
+#define NAN_FUNC_CTRL_GET_OPTIONS(h2c_pkt)                                     \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X0C, 16, 16)
+#define NAN_FUNC_CTRL_SET_OPTIONS(h2c_pkt, value)                              \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X0C, 16, 16, value)
+#define NAN_FUNC_CTRL_GET_SYNC_BCN_RSVD_OFFSET(h2c_pkt)                        \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X10, 0, 8)
+#define NAN_FUNC_CTRL_SET_SYNC_BCN_RSVD_OFFSET(h2c_pkt, value)                 \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X10, 0, 8, value)
+#define NAN_FUNC_CTRL_GET_DISC_BCN_RSVD_OFFSET(h2c_pkt)                        \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X10, 8, 8)
+#define NAN_FUNC_CTRL_SET_DISC_BCN_RSVD_OFFSET(h2c_pkt, value)                 \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X10, 8, 8, value)
+#define NAN_FUNC_CTRL_GET_DW_SCHDL_PRIORITY(h2c_pkt)                           \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X10, 16, 8)
+#define NAN_FUNC_CTRL_SET_DW_SCHDL_PRIORITY(h2c_pkt, value)                    \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X10, 16, 8, value)
+#define NAN_FUNC_CTRL_GET_TIME_INDICATE_PERIOD(h2c_pkt)                        \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X10, 24, 8)
+#define NAN_FUNC_CTRL_SET_TIME_INDICATE_PERIOD(h2c_pkt, value)                 \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X10, 24, 8, value)
 #endif

@@ -129,6 +129,7 @@ void phydm_set_single_tone_jgr3(void *dm_void, boolean is_single_tone,
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct phydm_pmac_tx *pmac_tx = &dm->dm_pmac_tx_table;
 	u8 start = RF_PATH_A, end = RF_PATH_A;
+	u8 i = 0;
 
 	switch (path) {
 	case RF_PATH_A:
@@ -196,13 +197,13 @@ void phydm_set_single_tone_jgr3(void *dm_void, boolean is_single_tone,
 
 		odm_set_bb_reg(dm, R_0x1c68, BIT(24), 0x1); /* @Disable CCA */
 
-		for (start; start <= end; start++) {
+		for (i = start; i <= end; i++) {
 			/* @Tx mode: RF0x00[19:16]=4'b0010 */
-			/* odm_set_rf_reg(dm, start, RF_0x0, 0xF0000, 0x2); */
+			/* @odm_set_rf_reg(dm, i, RF_0x0, 0xF0000, 0x2); */
 			/* @Lowest RF gain index: RF_0x0[4:0] = 0*/
-			odm_set_rf_reg(dm, start, RF_0x0, 0x1F, 0x0);
+			odm_set_rf_reg(dm, i, RF_0x0, 0x1F, 0x0);
 			/* @RF LO enabled */
-			odm_set_rf_reg(dm, start, RF_0x58, BIT(1), 0x1);
+			odm_set_rf_reg(dm, i, RF_0x58, BIT(1), 0x1);
 		}
 		#if (RTL8814B_SUPPORT == 1)
 		if (dm->support_ic_type & ODM_RTL8814B) {
@@ -220,9 +221,9 @@ void phydm_set_single_tone_jgr3(void *dm_void, boolean is_single_tone,
 		#endif
 		odm_set_bb_reg(dm, R_0x81c, 0x001FC000, 0);
 	} else {
-		for (start; start <= end; start++) {
+		for (i = start; i <= end; i++) {
 			/* @RF LO disabled */
-			odm_set_rf_reg(dm, start, RF_0x58, BIT(1), 0x0);
+			odm_set_rf_reg(dm, i, RF_0x58, BIT(1), 0x0);
 		}
 		odm_set_bb_reg(dm, R_0x1c68, BIT(24), 0x0); /* @Enable CCA */
 
@@ -275,9 +276,15 @@ void phydm_set_mac_phy_txinfo_jgr3(void *dm_void,
 
 	/* @0x900[1] ndp_sound */
 	odm_set_bb_reg(dm, R_0x900, 0x2, tx_info->ndp_sound);
+
 	/* @0x900[27:24] txsc [29:28] bw [31:30] m_stbc */
-	tmp = (tx_info->tx_sc) | ((tx_info->bw) << 4) |
-	      ((tx_info->m_stbc - 1) << 6);
+	if (dm->support_ic_type & (ODM_RTL8812F | ODM_RTL8197G)) {
+		tmp = (tx_info->tx_sc) | ((tx_info->bw) << 4) |
+			((tx_info->m_stbc) << 6);
+	} else {
+		tmp = (tx_info->tx_sc) | ((tx_info->bw) << 4) |
+			((tx_info->m_stbc - 1) << 6);
+	}
 	odm_set_bb_reg(dm, R_0x900, 0xFF000000, tmp);
 
 	if (pmac_tx->is_ofdm_rate) {
@@ -415,10 +422,10 @@ void phydm_set_pmac_txon_jgr3(void *dm_void, struct phydm_pmac_info *tx_info)
 	odm_set_bb_reg(dm, R_0x1d08, BIT(0), 1); /* Turn on PMAC */
 
 	/* mac scramble seed setting, only in 8198F */
-	#if (RTL8198F_SUPPORT == 1)
+	#if (RTL8198F_SUPPORT)
 		if (dm->support_ic_type & ODM_RTL8198F)
-			if ~(odm_get_bb_reg(dm, R_0x1d10, BIT(16)))
-			     odm_set_bb_reg(dm, R_0x1d10, BIT(16), 1);
+			if (!odm_get_bb_reg(dm, R_0x1d10, BIT(16)))
+				odm_set_bb_reg(dm, R_0x1d10, BIT(16), 1);
 	#endif
 
 	if (pmac_tx->is_cck_rate) {

@@ -32,11 +32,12 @@ void rtl8822b_init_hal_spec(PADAPTER adapter)
 	hal_spec->macid_num = 128;
 	/* hal_spec->sec_cam_ent_num follow halmac setting */
 	hal_spec->sec_cap = SEC_CAP_CHK_BMC;
+
 	hal_spec->rfpath_num_2g = 2;
 	hal_spec->rfpath_num_5g = 2;
-	hal_spec->txgi_max = 63;
-	hal_spec->txgi_pdbm = 2;
+	hal_spec->rf_reg_path_num = 2;
 	hal_spec->max_tx_cnt = 2;
+
 	hal_spec->tx_nss_num = 2;
 	hal_spec->rx_nss_num = 2;
 	hal_spec->band_cap = BAND_CAP_2G | BAND_CAP_5G;
@@ -44,11 +45,18 @@ void rtl8822b_init_hal_spec(PADAPTER adapter)
 	hal_spec->port_num = 5;
 	hal_spec->proto_cap = PROTO_CAP_11B | PROTO_CAP_11G | PROTO_CAP_11N | PROTO_CAP_11AC;
 
+	hal_spec->txgi_max = 63;
+	hal_spec->txgi_pdbm = 2;
+
 	hal_spec->wl_func = 0
 			    | WL_FUNC_P2P
 			    | WL_FUNC_MIRACAST
 			    | WL_FUNC_TDLS
 			    ;
+
+#if CONFIG_TX_AC_LIFETIME
+	hal_spec->tx_aclt_unit_factor = 8;
+#endif
 
 	hal_spec->rx_tsf_filter = 1;
 
@@ -229,11 +237,6 @@ void rtl8822b_init_misc(PADAPTER adapter)
 			}
 		}
 	}
-
-	/* Modify to make sure first time change channel(band) would be done properly */
-	hal->current_channel = 0;
-	hal->current_channel_bw = CHANNEL_WIDTH_MAX;
-	hal->current_band_type = BAND_MAX;
 
 	/* initial security setting */
 	invalidate_cam_all(adapter);

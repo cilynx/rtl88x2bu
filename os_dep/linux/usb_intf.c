@@ -23,10 +23,6 @@
 #error "CONFIG_USB_HCI shall be on!\n"
 #endif
 
-#if defined(PLATFORM_LINUX) && defined (PLATFORM_WINDOWS)
-#error "Shall be Linux or Windows, but not both!\n"
-#endif
-
 #ifdef CONFIG_80211N_HT
 extern int rtw_ht_enable;
 extern int rtw_bw_mode;
@@ -243,15 +239,6 @@ static struct usb_device_id rtw_usb_id_tbl[] = {
 	/*=== Customer ID ===*/
 	{USB_DEVICE_AND_INTERFACE_INFO(0x13b1, 0x0043, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* Alpha - Alpha*/
 	{USB_DEVICE_AND_INTERFACE_INFO(0x2001, 0x331c, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* Dlink DWA-182*/
-	{USB_DEVICE_AND_INTERFACE_INFO(0x2001, 0x331e, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* Dlink DWA-181-A1*/
-	{USB_DEVICE_AND_INTERFACE_INFO(0x2357, 0x012d, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* TP-Link Archer T3U V1 */
-	{USB_DEVICE_AND_INTERFACE_INFO(0x2357, 0x0138, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* TP-Link Archer T3U Plus V1 */
-	{USB_DEVICE_AND_INTERFACE_INFO(0x2357, 0x0115, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* TP-Link Archer T4U V3 */
-	{USB_DEVICE_AND_INTERFACE_INFO(0x7392, 0xB822, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* Edimax EW-7822ULC */
-	{USB_DEVICE_AND_INTERFACE_INFO(0x7392, 0xC822, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* Edimax EW-7822UTC */
-	{USB_DEVICE_AND_INTERFACE_INFO(0x0b05, 0x1841, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* ASUS AC1300 USB-AC55 B1 */
-	{USB_DEVICE_AND_INTERFACE_INFO(0x0b05, 0x184c, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* ASUS USB-AC53 Nano */
-	{USB_DEVICE_AND_INTERFACE_INFO(0x0846, 0x9055, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* NeatGear A6150 - AC1200 Dual Band WiFi USB Mini Adapter */
 #endif /* CONFIG_RTL8822B */
 
 #ifdef CONFIG_RTL8723D
@@ -262,6 +249,7 @@ static struct usb_device_id rtw_usb_id_tbl[] = {
 #ifdef CONFIG_RTL8192F
 	/*=== Realtek demoboard ===*/
 	{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDER_ID_REALTEK, 0xF192, 0xff, 0xff, 0xff), .driver_info = RTL8192F}, /* 8192FU 2*2 */
+	{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDER_ID_REALTEK, 0xA725, 0xff, 0xff, 0xff), .driver_info = RTL8192F}, /* 8725AU 2*2 */
 #endif
 
 #ifdef CONFIG_RTL8821C
@@ -281,6 +269,19 @@ static struct usb_device_id rtw_usb_id_tbl[] = {
 	/*=== Realtek dongle ===*/
 	{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDER_ID_REALTEK, 0xB711, 0xff, 0xff, 0xff), .driver_info = RTL8710B}, /* 8710B = 8188GU 1*1 */
 #endif
+
+#ifdef CONFIG_RTL8822C
+	/*=== Realtek demoboard ===*/
+	{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDER_ID_REALTEK, 0xC82C, 0xff, 0xff, 0xff), .driver_info = RTL8822C}, /* Default ID for USB multi-function */
+	{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDER_ID_REALTEK, 0xC812, 0xff, 0xff, 0xff), .driver_info = RTL8822C}, /* Default ID for USB Single-function, WiFi only */
+	/*=== Customer ID ===*/
+	{USB_DEVICE_AND_INTERFACE_INFO(0x13b1, 0x0043, 0xff, 0xff, 0xff), .driver_info = RTL8822C}, /* Alpha - Alpha*/
+#endif /* CONFIG_RTL8822C */
+
+#ifdef CONFIG_RTL8814B
+	/*=== Realtek demoboard ===*/
+	{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDER_ID_REALTEK, 0xB814, 0xff, 0xff, 0xff), .driver_info = RTL8814B}, /* Default ID for USB multi-function */
+#endif /* CONFIG_RTL8814B */
 
 	{}	/* Terminating entry */
 };
@@ -477,6 +478,16 @@ static void rtw_decide_chip_type_by_usb_info(struct dvobj_priv *pdvobjpriv, cons
 	if (pdvobjpriv->chip_type == RTL8192F)
 		rtl8192fu_set_hw_type(pdvobjpriv);
 #endif /* CONFIG_RTL8192F */
+
+#ifdef CONFIG_RTL8822C
+	if (pdvobjpriv->chip_type == RTL8822C)
+		rtl8822cu_set_hw_type(pdvobjpriv);
+#endif /* CONFIG_RTL8822C */
+
+#ifdef CONFIG_RTL8814B
+	if (pdvobjpriv->chip_type == RTL8814B)
+		rtl8814bu_set_hw_type(pdvobjpriv);
+#endif /* CONFIG_RTL8814B */
 }
 
 static struct dvobj_priv *usb_dvobj_init(struct usb_interface *usb_intf, const struct usb_device_id *pdid)
@@ -533,38 +544,12 @@ static struct dvobj_priv *usb_dvobj_init(struct usb_interface *usb_intf, const s
 	phost_conf = pusbd->actconfig;
 	pconf_desc = &phost_conf->desc;
 
-#if 0
-	RTW_INFO("\n8712_usb_configuration_descriptor:\n");
-	RTW_INFO("bLength=%x\n", pconf_desc->bLength);
-	RTW_INFO("bDescriptorType=%x\n", pconf_desc->bDescriptorType);
-	RTW_INFO("wTotalLength=%x\n", pconf_desc->wTotalLength);
-	RTW_INFO("bNumInterfaces=%x\n", pconf_desc->bNumInterfaces);
-	RTW_INFO("bConfigurationValue=%x\n", pconf_desc->bConfigurationValue);
-	RTW_INFO("iConfiguration=%x\n", pconf_desc->iConfiguration);
-	RTW_INFO("bmAttributes=%x\n", pconf_desc->bmAttributes);
-	RTW_INFO("bMaxPower=%x\n", pconf_desc->bMaxPower);
-#endif
 
 	/* RTW_INFO("\n***** num of altsetting = (%d) *****\n", pusb_interface->num_altsetting); */
 
 	phost_iface = &usb_intf->altsetting[0];
 	piface_desc = &phost_iface->desc;
 
-#if 0
-	RTW_INFO("\n8712_usb_interface_descriptor:\n");
-	RTW_INFO("bLength=%x\n", piface_desc->bLength);
-	RTW_INFO("bDescriptorType=%x\n", piface_desc->bDescriptorType);
-	RTW_INFO("bInterfaceNumber=%x\n", piface_desc->bInterfaceNumber);
-	RTW_INFO("bAlternateSetting=%x\n", piface_desc->bAlternateSetting);
-	RTW_INFO("bNumEndpoints=%x\n", piface_desc->bNumEndpoints);
-	RTW_INFO("bInterfaceClass=%x\n", piface_desc->bInterfaceClass);
-	RTW_INFO("bInterfaceSubClass=%x\n", piface_desc->bInterfaceSubClass);
-	RTW_INFO("bInterfaceProtocol=%x\n", piface_desc->bInterfaceProtocol);
-	RTW_INFO("iInterface=%x\n", piface_desc->iInterface);
-#endif
-
-	pdvobjpriv->NumInterfaces = pconf_desc->bNumInterfaces;
-	pdvobjpriv->InterfaceNumber = piface_desc->bInterfaceNumber;
 	pdvobjpriv->nr_endpoint = piface_desc->bNumEndpoints;
 
 	/* RTW_INFO("\ndump usb_endpoint_descriptor:\n"); */
@@ -668,19 +653,7 @@ static void usb_dvobj_deinit(struct usb_interface *usb_intf)
 
 	usb_set_intfdata(usb_intf, NULL);
 	if (dvobj) {
-		/* Modify condition for 92DU DMDP 2010.11.18, by Thomas */
-		if ((dvobj->NumInterfaces != 2 && dvobj->NumInterfaces != 3)
-		    || (dvobj->InterfaceNumber == 1)) {
-			if (interface_to_usbdev(usb_intf)->state != USB_STATE_NOTATTACHED) {
-				/* If we didn't unplug usb dongle and remove/insert modlue, driver fails on sitesurvey for the first time when device is up . */
-				/* Reset usb port for sitesurvey fail issue. 2009.8.13, by Thomas */
-				RTW_INFO("usb attached..., try to reset usb device\n");
-				usb_reset_device(interface_to_usbdev(usb_intf));
-			}
-		}
-
 		rtw_deinit_intf_priv(dvobj);
-
 		devobj_deinit(dvobj);
 	}
 
@@ -781,6 +754,17 @@ u8 rtw_set_hal_ops(_adapter *padapter)
 	if (rtw_get_chip_type(padapter) == RTL8192F)
 		rtl8192fu_set_hal_ops(padapter);
 #endif
+
+#ifdef CONFIG_RTL8822C
+	if (rtw_get_chip_type(padapter) == RTL8822C)
+		rtl8822cu_set_hal_ops(padapter);
+#endif /* CONFIG_RTL8822C */
+
+#ifdef CONFIG_RTL8814B
+	if (rtw_get_chip_type(padapter) == RTL8814B)
+		rtl8814bu_set_hal_ops(padapter);
+#endif /* CONFIG_RTL8814B */
+
 
 	if (_FAIL == rtw_hal_ops_check(padapter))
 		return _FAIL;
@@ -905,7 +889,7 @@ int rtw_hw_suspend(_adapter *padapter)
 
 #ifdef CONFIG_LPS
 			/* donnot enqueue cmd */
-			rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_DISCONNECT, 0);
+			rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_DISCONNECT, RTW_CMDF_DIRECTLY);
 #endif
 		}
 	}
@@ -1259,9 +1243,6 @@ extern void rtd2885_wlan_netlink_sendMsg(char *action_string, char *name);
  * notes: drv_init() is called when the bus driver has located a card for us to support.
  *        We accept the new device by returning 0.
 */
-
-_adapter  *rtw_sw_export = NULL;
-
 _adapter *rtw_usb_primary_adapter_init(struct dvobj_priv *dvobj,
 	struct usb_interface *pusb_intf)
 {
@@ -1507,10 +1488,6 @@ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device
 	}
 #endif
 
-#ifdef CONFIG_INTEL_PROXIM
-	rtw_sw_export = padapter;
-#endif
-
 #ifdef CONFIG_GLOBAL_UI_PID
 	if (ui_pid[1] != 0) {
 		RTW_INFO("ui_pid[1]:%d\n", ui_pid[1]);
@@ -1622,12 +1599,6 @@ static void rtw_dev_remove(struct usb_interface *pusb_intf)
 
 	RTW_INFO("-r871xu_dev_remove, done\n");
 
-
-#ifdef CONFIG_INTEL_PROXIM
-	rtw_sw_export = NULL;
-#endif
-
-
 	return;
 
 }
@@ -1697,14 +1668,5 @@ static void __exit rtw_drv_halt(void)
 	rtw_mstat_dump(RTW_DBGDUMP);
 }
 
-
 module_init(rtw_drv_entry);
 module_exit(rtw_drv_halt);
-
-#ifdef CONFIG_INTEL_PROXIM
-_adapter  *rtw_usb_get_sw_pointer(void)
-{
-	return rtw_sw_export;
-}
-EXPORT_SYMBOL(rtw_usb_get_sw_pointer);
-#endif /* CONFIG_INTEL_PROXIM */

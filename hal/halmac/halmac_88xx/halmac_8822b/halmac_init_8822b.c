@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -359,6 +359,8 @@ mount_api_8822b(struct halmac_adapter *adapter)
 
 	if (adapter->intf == HALMAC_INTERFACE_SDIO) {
 #if HALMAC_SDIO_SUPPORT
+		api->halmac_init_interface_cfg = init_sdio_cfg_8822b;
+		api->halmac_init_sdio_cfg = init_sdio_cfg_8822b;
 		api->halmac_mac_power_switch = mac_pwr_switch_sdio_8822b;
 		api->halmac_phy_cfg = phy_cfg_sdio_8822b;
 		api->halmac_pcie_switch = pcie_switch_sdio_8822b;
@@ -417,6 +419,8 @@ init_trx_cfg_8822b(struct halmac_adapter *adapter, enum halmac_trx_mode mode)
 	u8 value8;
 	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+	u8 en_fwff;
+	u16 value16;
 
 	adapter->trx_mode = mode;
 
@@ -428,10 +432,22 @@ init_trx_cfg_8822b(struct halmac_adapter *adapter, enum halmac_trx_mode mode)
 		return status;
 	}
 
+	en_fwff = HALMAC_REG_R8(REG_WMAC_FWPKT_CR) & BIT_FWEN;
+	if (en_fwff) {
+		HALMAC_REG_W8_CLR(REG_WMAC_FWPKT_CR, BIT_FWEN);
+		if (fwff_is_empty_88xx(adapter) != HALMAC_RET_SUCCESS)
+			PLTFM_MSG_ERR("[ERR]fwff is not empty\n");
+	}
 	value8 = 0;
 	HALMAC_REG_W8(REG_CR, value8);
+	value16 = HALMAC_REG_R16(REG_FWFF_PKT_INFO);
+	HALMAC_REG_W16(REG_FWFF_CTRL, value16);
+
 	value8 = MAC_TRX_ENABLE;
 	HALMAC_REG_W8(REG_CR, value8);
+	if (en_fwff)
+		HALMAC_REG_W8_SET(REG_WMAC_FWPKT_CR, BIT_FWEN);
+
 	HALMAC_REG_W32(REG_H2CQ_CSR, BIT(31));
 
 	status = priority_queue_cfg_8822b(adapter, mode);
@@ -701,13 +717,15 @@ init_system_cfg_8822b(struct halmac_adapter *adapter)
 	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 	u32 tmp = 0;
 	u32 value32;
+	u8 value8;
 
 	PLTFM_MSG_TRACE("[TRACE]%s ===>\n", __func__);
 
 	value32 = HALMAC_REG_R32(REG_CPU_DMEM_CON) | BIT_WL_PLATFORM_RST;
 	HALMAC_REG_W32(REG_CPU_DMEM_CON, value32);
 
-	HALMAC_REG_W8(REG_SYS_FUNC_EN + 1, SYS_FUNC_EN);
+	value8 = HALMAC_REG_R8(REG_SYS_FUNC_EN + 1) | SYS_FUNC_EN;
+	HALMAC_REG_W8(REG_SYS_FUNC_EN + 1, value8);
 
 	/*disable boot-from-flash for driver's DL FW*/
 	tmp = HALMAC_REG_R32(REG_MCUFW_CTRL);
@@ -889,6 +907,10 @@ init_wmac_cfg_8822b(struct halmac_adapter *adapter)
 
 	HALMAC_REG_W8(REG_TCR + 2, WLAN_TX_FUNC_CFG2);
 	HALMAC_REG_W8(REG_TCR + 1, WLAN_TX_FUNC_CFG1);
+
+	HALMAC_REG_W8_SET(REG_WMAC_TRXPTCL_CTL + 4, BIT(1));
+
+	HALMAC_REG_W8_SET(REG_SND_PTCL_CTRL, BIT_R_DISABLE_CHECK_VHTSIGB_CRC);
 
 	HALMAC_REG_W32(REG_WMAC_OPTION_FUNCTION + 8, WLAN_MAC_OPT_FUNC2);
 

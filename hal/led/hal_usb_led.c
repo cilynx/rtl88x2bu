@@ -97,13 +97,9 @@ SwLedBlink(
 			_set_timer(&(pLed->BlinkTimer), LED_BLINK_SLOWLY_INTERVAL);
 			break;
 
-		case LED_BLINK_WPS: {
-			if (pLed->BlinkingLedState == RTW_LED_ON)
-				_set_timer(&(pLed->BlinkTimer), LED_BLINK_LONG_INTERVAL);
-			else
-				_set_timer(&(pLed->BlinkTimer), LED_BLINK_LONG_INTERVAL);
-		}
-		break;
+		case LED_BLINK_WPS:
+			_set_timer(&(pLed->BlinkTimer), LED_BLINK_LONG_INTERVAL);
+		        break;
 
 		default:
 			_set_timer(&(pLed->BlinkTimer), LED_BLINK_SLOWLY_INTERVAL);
@@ -548,6 +544,7 @@ SwLedBlink4(
 		pLed->BlinkTimes--;
 		if (pLed->BlinkTimes == 0)
 			bStopBlinking = _FALSE;
+#if 0
 
 		if (bStopBlinking) {
 			if (adapter_to_pwrctl(padapter)->rf_pwrstate != rf_on && adapter_to_pwrctl(padapter)->rfoff_reason > RF_CHANGE_BY_PS)
@@ -562,7 +559,9 @@ SwLedBlink4(
 				_set_timer(&(pLed->BlinkTimer), LED_BLINK_NO_LINK_INTERVAL_ALPHA);
 			}
 			pLed->bLedScanBlinkInProgress = _FALSE;
-		} else {
+		} else
+#endif
+		{
 			if (adapter_to_pwrctl(padapter)->rf_pwrstate != rf_on && adapter_to_pwrctl(padapter)->rfoff_reason > RF_CHANGE_BY_PS)
 				SwLedOff(padapter, pLed);
 			else {
@@ -573,6 +572,7 @@ SwLedBlink4(
 				_set_timer(&(pLed->BlinkTimer), LED_BLINK_SCAN_INTERVAL_ALPHA);
 			}
 		}
+
 		break;
 
 	case LED_BLINK_TXRX:
@@ -1479,9 +1479,9 @@ SwLedBlink12(
 
 }
 
-VOID
+void
 SwLedBlink13(
-	IN PLED_USB			pLed
+	PLED_USB			pLed
 )
 {
 	PADAPTER Adapter = pLed->padapter;
@@ -1540,9 +1540,9 @@ SwLedBlink13(
 
 }
 
-VOID
+void
 SwLedBlink14(
-	IN PLED_USB			pLed
+	PLED_USB			pLed
 )
 {
 	PADAPTER Adapter = pLed->padapter;
@@ -1597,9 +1597,9 @@ SwLedBlink14(
 
 }
 
-VOID
+void
 SwLedBlink15(
-	IN PLED_USB			pLed
+	PLED_USB			pLed
 )
 {
 	PADAPTER Adapter = pLed->padapter;
@@ -1843,7 +1843,7 @@ void BlinkTimerCallback(void *data)
 	}
 
 #ifdef CONFIG_RTW_LED_HANDLED_BY_CMD_THREAD
-	rtw_led_blink_cmd(padapter, (PVOID)pLed);
+	rtw_led_blink_cmd(padapter, (void *)pLed);
 #else
 	_set_workitem(&(pLed->BlinkWorkItem));
 #endif
@@ -3086,8 +3086,8 @@ SwLedControlMode8(
 /* page added for Belkin AC950, 20120813 */
 void
 SwLedControlMode9(
-	IN	PADAPTER			Adapter,
-	IN	LED_CTL_MODE		LedAction
+		PADAPTER			Adapter,
+		LED_CTL_MODE		LedAction
 )
 {
 	struct led_priv	*ledpriv = adapter_to_led(Adapter);
@@ -3683,7 +3683,7 @@ SwLedControlMode11(
 
 /* page added for NEC */
 
-VOID
+void
 SwLedControlMode12(
 	PADAPTER			Adapter,
 	LED_CTL_MODE		LedAction
@@ -3764,10 +3764,10 @@ SwLedControlMode12(
 
 /* Maddest add for NETGEAR R6100 */
 
-VOID
+void
 SwLedControlMode13(
-	IN	PADAPTER			Adapter,
-	IN	LED_CTL_MODE		LedAction
+		PADAPTER			Adapter,
+		LED_CTL_MODE		LedAction
 )
 {
 	struct led_priv	*ledpriv = adapter_to_led(Adapter);
@@ -3910,10 +3910,10 @@ SwLedControlMode13(
 
 /* Maddest add for DNI Buffalo */
 
-VOID
+void
 SwLedControlMode14(
-	IN	PADAPTER			Adapter,
-	IN	LED_CTL_MODE		LedAction
+		PADAPTER			Adapter,
+		LED_CTL_MODE		LedAction
 )
 {
 	struct led_priv	*ledpriv = adapter_to_led(Adapter);
@@ -3969,10 +3969,10 @@ SwLedControlMode14(
 
 /* Maddest add for Dlink */
 
-VOID
+void
 SwLedControlMode15(
-	IN	PADAPTER			Adapter,
-	IN	LED_CTL_MODE		LedAction
+		PADAPTER			Adapter,
+		LED_CTL_MODE		LedAction
 )
 {
 	struct led_priv	*ledpriv = adapter_to_led(Adapter);

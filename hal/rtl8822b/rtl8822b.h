@@ -158,9 +158,7 @@ u32 rtl8822b_read_rf_reg(PADAPTER adapter, enum rf_path path, u32 addr, u32 mask
 void rtl8822b_write_rf_reg(PADAPTER adapter, enum rf_path path, u32 addr, u32 mask, u32 val);
 void rtl8822b_set_channel_bw(PADAPTER adapter, u8 center_ch, enum channel_width, u8 offset40, u8 offset80);
 void rtl8822b_set_tx_power_level(PADAPTER, u8 channel);
-void rtl8822b_get_tx_power_level(PADAPTER, s32 *power);
 void rtl8822b_set_tx_power_index(PADAPTER adapter, u32 powerindex, enum rf_path rfpath, u8 rate);
-u8 rtl8822b_get_tx_power_index(PADAPTER adapter, enum rf_path rfpath, u8 rate, u8 bandwidth, u8 channel, struct txpwr_idx_comp *tic);
 void rtl8822b_notch_filter_switch(PADAPTER, bool enable);
 #ifdef CONFIG_BEAMFORMING
 void rtl8822b_phy_bf_init(PADAPTER);

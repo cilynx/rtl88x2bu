@@ -183,6 +183,8 @@ void sreset_restore_network_station(_adapter *padapter)
 
 		rtw_hal_rcr_set_chk_bssid(padapter, MLME_STA_CONNECTING);
 		rtw_hal_set_hwreg(padapter, HW_VAR_MLME_JOIN, (u8 *)(&join_type));
+
+		rtw_btcoex_connect_notify(padapter, join_type);
 	}
 
 	Set_MSR(padapter, (pmlmeinfo->state & 0x3));
@@ -295,6 +297,9 @@ void sreset_reset(_adapter *padapter)
 #ifdef CONFIG_IPS
 	_ips_enter(padapter);
 	_ips_leave(padapter);
+#endif
+#ifdef CONFIG_CONCURRENT_MODE
+	rtw_mi_ap_info_restore(padapter);
 #endif
 	rtw_mi_sreset_adapter_hdl(padapter, _TRUE);/*sreset_start_adapter*/
 
