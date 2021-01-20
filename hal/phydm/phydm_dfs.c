@@ -1447,8 +1447,6 @@ void phydm_dfs_histogram_radar_distinguish(
 	}
 	dfs->hist_idx++;
 	dfs->hist_long_idx++;
-	if (dfs->hist_long_idx == 300)
-		dfs->hist_long_idx = 0;
 	if (region_domain == 1 || region_domain == 3) {
 		if (dfs->hist_idx == 3)
 			dfs->hist_idx = 0;
