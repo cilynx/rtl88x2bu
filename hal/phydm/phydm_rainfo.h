@@ -26,7 +26,8 @@
 #ifndef __PHYDMRAINFO_H__
 #define __PHYDMRAINFO_H__
 
-#define RAINFO_VERSION "8.0"
+/* 2019.3.5 add dynamic RRSR en API*/
+#define RAINFO_VERSION "8.2"
 
 #define	FORCED_UPDATE_RAMASK_PERIOD	5
 
@@ -106,6 +107,15 @@ enum phydm_rateid_idx {
 	PHYDM_ARFR6_AC_4SS	= 16
 };
 
+enum phydm_qam_order {
+	PHYDM_QAM_CCK	= 0,
+	PHYDM_QAM_BPSK	= 1,
+	PHYDM_QAM_QPSK	= 2,
+	PHYDM_QAM_16QAM	= 3,
+	PHYDM_QAM_64QAM	= 4,
+	PHYDM_QAM_256QAM = 5
+};
+
 #if (RATE_ADAPTIVE_SUPPORT == 1)/* @88E RA */
 
 struct _phydm_txstatistic_ {
@@ -166,9 +176,9 @@ struct _odm_ra_info_ {
 
 
 struct ra_table {
-	u8	firstconnect;
-	/*@u8	link_tx_rate[ODM_ASSOCIATE_ENTRY_NUM];*/
-	u8	mu1_rate[30];
+	#ifdef MU_EX_MACID
+	u8	mu1_rate[MU_EX_MACID];
+	#endif
 	u8	highest_client_tx_order;
 	u16	highest_client_tx_rate_order;
 	u8	power_tracking_flag;
@@ -176,9 +186,12 @@ struct ra_table {
 	u8	ra_ofst_direc; /*RA_offset_direction*/
 	u8	up_ramask_cnt; /*@force update_ra_mask counter*/
 	u8	up_ramask_cnt_tmp; /*@Just for debug, should be removed latter*/
+	u32	rrsr_val_init; /*0x440*/
+	u32	rrsr_val_curr; /*0x440*/
+	boolean dynamic_rrsr_en;
 #if 0	/*@CONFIG_RA_DYNAMIC_RTY_LIMIT*/
-	u8	per_rate_retrylimit_20M[ODM_NUM_RATE_IDX];
-	u8	per_rate_retrylimit_40M[ODM_NUM_RATE_IDX];
+	u8	per_rate_retrylimit_20M[PHY_NUM_RATE_IDX];
+	u8	per_rate_retrylimit_40M[PHY_NUM_RATE_IDX];
 	u8	retry_descend_num;
 	u8	retrylimit_low;
 	u8	retrylimit_high;
@@ -212,9 +225,6 @@ void phydm_ra_debug(void *dm_void, char input[][16], u32 *_used, char *output,
 
 void odm_c2h_ra_para_report_handler(void *dm_void, u8 *cmd_buf, u8 cmd_len);
 
-void phydm_ra_dynamic_retry_count(void *dm_void);
-
-
 void phydm_print_rate(void *dm_void, u8 rate, u32 dbg_component);
 
 void phydm_print_rate_2_buff(void *dm_void, u8 rate, char *buf, u16 buf_size);
@@ -223,7 +233,11 @@ void phydm_c2h_ra_report_handler(void *dm_void, u8 *cmd_buf, u8 cmd_len);
 
 u8 phydm_rate_order_compute(void *dm_void, u8 rate_idx);
 
+void phydm_rrsr_set_register(void *dm_void, u32 rrsr_val);
+
 void phydm_ra_info_watchdog(void *dm_void);
+
+void phydm_rrsr_en(void *dm_void, boolean en_rrsr);
 
 void phydm_ra_info_init(void *dm_void);
 
@@ -251,6 +265,8 @@ u8 phydm_get_plcp(void *dm_void, u16 macid);
 #endif
 
 void phydm_refresh_rate_adaptive_mask(void *dm_void);
+
+u8 phydm_get_rx_stream_num(void *dm_void, enum rf_type type);
 
 u8 phydm_rssi_lv_dec(void *dm_void, u32 rssi, u8 ratr_state);
 

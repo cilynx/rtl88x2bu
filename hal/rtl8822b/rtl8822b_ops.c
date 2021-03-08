@@ -20,7 +20,7 @@
 #include <rtw_sreset.h>
 #endif /* DBG_CONFIG_ERROR_DETECT */
 #include <hal_data.h>		/* PHAL_DATA_TYPE, GET_HAL_DATA() */
-#include <hal_com.h>		/* rtw_hal_config_rftype(), dump_chip_info() and etc. */
+#include <hal_com.h>		/* dump_chip_info() and etc. */
 #include "../hal_halmac.h"	/* GET_RX_DESC_XXX_8822B() */
 #include "rtl8822b.h"
 #include "rtl8822b_hal.h"
@@ -121,6 +121,7 @@ exit:
 	return addr;
 }
 
+#ifdef CONFIG_CLIENT_PORT_CFG
 static void hw_bcn_ctrl_set(_adapter *adapter, u8 hw_port, u8 bcn_ctl_val)
 {
 	u32 bcn_ctl_addr = 0;
@@ -134,6 +135,7 @@ static void hw_bcn_ctrl_set(_adapter *adapter, u8 hw_port, u8 bcn_ctl_val)
 	bcn_ctl_addr = port_cfg[hw_port].bcn_ctl;
 	rtw_write8(adapter, bcn_ctl_addr, bcn_ctl_val);
 }
+#endif
 
 static void hw_bcn_ctrl_add(_adapter *adapter, u8 hw_port, u8 bcn_ctl_val)
 {
@@ -195,8 +197,6 @@ static void read_chip_version(PADAPTER adapter)
 	}
 
 	hal->version_id.RFType = ((value32 & BIT_RF_TYPE_ID_8822B) ? RF_TYPE_2T2R : RF_TYPE_1T1R);
-	if (adapter->registrypriv.special_rf_path == 1)
-		hal->version_id.RFType = RF_TYPE_1T1R;	/* RF_1T1R; */
 
 	hal->RegulatorMode = ((value32 & BIT_SPSLDO_SEL_8822B) ? RT_LDO_REGULATOR : RT_SWITCHING_REGULATOR);
 
@@ -209,8 +209,6 @@ static void read_chip_version(PADAPTER adapter)
 	hal->MultiFunc |= ((value32 & BIT_WL_FUNC_EN_8822B) ? RT_MULTI_FUNC_WIFI : 0);
 	hal->MultiFunc |= ((value32 & BIT_BT_FUNC_EN_8822B) ? RT_MULTI_FUNC_BT : 0);
 	hal->PolarityCtl = ((value32 & BIT_WL_HWPDN_SL_8822B) ? RT_POLARITY_HIGH_ACT : RT_POLARITY_LOW_ACT);
-
-	rtw_hal_config_rftype(adapter);
 
 	dump_chip_info(hal->version_id);
 }
@@ -251,10 +249,8 @@ static void Hal_EfuseParseEEPROMVer(PADAPTER adapter, u8 *map, u8 mapvalid)
 static void Hal_EfuseParseTxPowerInfo(PADAPTER adapter, u8 *map, u8 mapvalid)
 {
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
-	TxPowerInfo24G tbl2G4;
-	TxPowerInfo5G tbl5g;
 
-	hal_load_txpwr_info(adapter, &tbl2G4, &tbl5g, map);
+	hal->txpwr_pg_mode = TXPWR_PG_WITH_PWR_IDX;
 
 	if ((_TRUE == mapvalid) && (map[EEPROM_RF_BOARD_OPTION_8822B] != 0xFF))
 		hal->EEPROMRegulatory = map[EEPROM_RF_BOARD_OPTION_8822B] & 0x7; /* bit0~2 */
@@ -306,7 +302,6 @@ static void Hal_EfuseParseBTCoexistInfo(PADAPTER adapter, u8 *map, u8 mapvalid)
 		hal->ant_path = RF_PATH_A;
 	}
 
-exit:
 	RTW_INFO("EEPROM %s BT-coex, ant_num=%d\n",
 		 hal->EEPROMBluetoothCoexist == _TRUE ? "Enable" : "Disable",
 		 hal->EEPROMBluetoothAntNum == Ant_x2 ? 2 : 1);
@@ -320,7 +315,6 @@ static void Hal_EfuseParseChnlPlan(PADAPTER adapter, u8 *map, u8 autoloadfail)
 		map ? map[EEPROM_ChannelPlan_8822B] : 0xFF,
 		adapter->registrypriv.alpha2,
 		adapter->registrypriv.channel_plan,
-		RTW_CHPLAN_REALTEK_DEFINE,
 		autoloadfail
 	);
 }
@@ -684,7 +678,6 @@ u8 rtl8822b_read_efuse(PADAPTER adapter)
 	/* set coex. ant info once efuse parsing is done */
 	rtw_btcoex_set_ant_info(adapter);
 
-#ifdef CONFIG_RTW_MAC_HIDDEN_RPT
 	hal_read_mac_hidden_rpt(adapter);
 	{
 		struct hal_spec_t *hal_spec = GET_HAL_SPEC(adapter);
@@ -695,7 +688,7 @@ u8 rtl8822b_read_efuse(PADAPTER adapter)
 			rtw_btcoex_wifionly_AntInfoSetting(adapter);
 		}
 	}
-#endif
+
 	rtw_phydm_read_efuse(adapter);
 
 	ret = _SUCCESS;
@@ -900,7 +893,7 @@ static void xmit_status_check(PADAPTER p)
 		return;
 	}
 }
-
+#ifdef CONFIG_USB_HCI
 static void check_rx_count(PADAPTER p)
 {
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(p);
@@ -933,7 +926,7 @@ exit:
 		rtw_hal_sreset_reset(p);
 	}
 }
-
+#endif/*#ifdef CONFIG_USB_HCI*/
 static void linked_status_check(PADAPTER p)
 {
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(p);
@@ -1305,75 +1298,6 @@ static void hw_var_set_opmode(PADAPTER adapter, u8 mode)
 #endif
 }
 
-static void hw_var_set_basic_rate(PADAPTER adapter, u8 *ratetbl)
-{
-#define RATE_1M		BIT(0)
-#define RATE_2M		BIT(1)
-#define RATE_5_5M	BIT(2)
-#define RATE_11M	BIT(3)
-#define RATE_6M		BIT(4)
-#define RATE_9M		BIT(5)
-#define RATE_12M	BIT(6)
-#define RATE_18M	BIT(7)
-#define RATE_24M	BIT(8)
-#define RATE_36M	BIT(9)
-#define RATE_48M	BIT(10)
-#define RATE_54M	BIT(11)
-#define RATE_MCS0	BIT(12)
-#define RATE_MCS1	BIT(13)
-#define RATE_MCS2	BIT(14)
-#define RATE_MCS3	BIT(15)
-#define RATE_MCS4	BIT(16)
-#define RATE_MCS5	BIT(17)
-#define RATE_MCS6	BIT(18)
-#define RATE_MCS7	BIT(19)
-
-#define RATES_CCK	(RATE_11M | RATE_5_5M | RATE_2M | RATE_1M)
-#define RATES_OFDM	(RATE_54M | RATE_48M | RATE_36M | RATE_24M | RATE_18M | RATE_12M | RATE_9M | RATE_6M)
-
-	struct mlme_ext_info *mlmext_info = &adapter->mlmeextpriv.mlmext_info;
-	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
-	u16 input_b = 0, masked = 0, ioted = 0, BrateCfg = 0;
-	u16 rrsr_2g_force_mask = RATES_CCK;
-	u16 rrsr_2g_allow_mask = RATE_24M | RATE_12M | RATE_6M | RATES_CCK;
-	u16 rrsr_5g_force_mask = RATE_6M;
-	u16 rrsr_5g_allow_mask = RATES_OFDM;
-	u32 val32;
-
-	HalSetBrateCfg(adapter, ratetbl, &BrateCfg);
-	input_b = BrateCfg;
-
-	/* apply force and allow mask */
-	if (hal->current_band_type == BAND_ON_2_4G) {
-		BrateCfg |= rrsr_2g_force_mask;
-		BrateCfg &= rrsr_2g_allow_mask;
-	} else {
-		BrateCfg |= rrsr_5g_force_mask;
-		BrateCfg &= rrsr_5g_allow_mask;
-	}
-
-	masked = BrateCfg;
-
-	/* IOT consideration */
-	if (mlmext_info->assoc_AP_vendor == HT_IOT_PEER_CISCO) {
-		/* if peer is cisco and didn't use ofdm rate, we enable 6M ack */
-		if ((BrateCfg & (RATE_24M | RATE_12M | RATE_6M)) == 0)
-			BrateCfg |= RATE_6M;
-	}
-
-	ioted = BrateCfg;
-
-	hal->BasicRateSet = BrateCfg;
-
-	RTW_INFO("[HW_VAR_BASIC_RATE] %#x->%#x->%#x\n", input_b, masked, ioted);
-
-	/* Set RRSR rate table. */
-	val32 = rtw_read32(adapter, REG_RRSR_8822B);
-	val32 &= ~(BIT_MASK_RRSC_BITMAP << BIT_SHIFT_RRSC_BITMAP);
-	val32 |= BIT_RRSC_BITMAP(BrateCfg);
-	val32 = rtw_write32(adapter, REG_RRSR_8822B, val32);
-}
-
 static void hw_var_hw_port_cfg(_adapter *adapter, u8 enable)
 {
 	if (enable)
@@ -1540,9 +1464,6 @@ static void hw_var_set_mlme_sitesurvey(PADAPTER adapter, u8 enable)
 
 		rtw_hal_rcr_set_chk_bssid(adapter, MLME_SCAN_ENTER);
 
-		/* Save orignal RRSR setting. */
-		hal->RegRRSR = rtw_read16(adapter, REG_RRSR_8822B);
-
 		if (rtw_mi_get_ap_num(adapter) || rtw_mi_get_mesh_num(adapter))
 			StopTxBeacon(adapter);
 	} else {
@@ -1557,28 +1478,10 @@ static void hw_var_set_mlme_sitesurvey(PADAPTER adapter, u8 enable)
 
 		rtw_hal_rcr_set_chk_bssid(adapter, MLME_SCAN_DONE);
 
-		/* Restore orignal RRSR setting. */
-		rtw_write16(adapter, REG_RRSR_8822B, hal->RegRRSR);
-
 		if (rtw_mi_get_ap_num(adapter) || rtw_mi_get_mesh_num(adapter)) {
 			ResumeTxBeacon(adapter);
 			rtw_mi_tx_beacon_hdl(adapter);
 		}
-	}
-}
-
-static void clear_macid_drop(struct _ADAPTER *a)
-{
-	u16 offset;
-	u32 drop;
-	u8 i;
-
-
-	for (i = 0; i < 4; i++) {
-		offset = REG_MACID_DROP0_8822B + (i * 4);
-		drop = rtw_read32(a, offset);
-		if (drop)
-			rtw_write32(a, offset, 0);
 	}
 }
 
@@ -1696,10 +1599,6 @@ static void hw_var_set_mlme_join(PADAPTER adapter, u8 type)
 	val16 = BIT_LRL_8822B(RetryLimit) | BIT_SRL_8822B(RetryLimit);
 	rtw_write16(adapter, REG_RETRY_LIMIT_8822B, val16);
 #endif /* !CONFIG_CONCURRENT_MODE */
-
-	if (type == 0)
-		/* Clear macid drop to avoid lost data frame */
-		clear_macid_drop(adapter);
 }
 
 static void hw_var_set_acm_ctrl(PADAPTER adapter, u8 ctrl)
@@ -1758,29 +1657,6 @@ static void hw_var_set_bcn_valid(PADAPTER adapter)
 	val8 = rtw_read8(adapter, REG_FIFOPAGE_CTRL_2_8822B + 1);
 	val8 = val8 | BIT(7);
 	rtw_write8(adapter, REG_FIFOPAGE_CTRL_2_8822B + 1, val8);
-}
-
-static void hw_var_set_cam_empty_entry(PADAPTER adapter, u8 ucIndex)
-{
-	u8 i;
-	u32 ulCommand = 0;
-	u32 ulContent = 0;
-	u32 ulEncAlgo = CAM_AES;
-
-	for (i = 0; i < CAM_CONTENT_COUNT; i++) {
-		/* filled id in CAM config 2 byte */
-		if (i == 0)
-			ulContent |= (ucIndex & 0x03) | ((u16)(ulEncAlgo) << 2);
-		else
-			ulContent = 0;
-
-		/* polling bit, and No Write enable, and address */
-		ulCommand = CAM_CONTENT_COUNT * ucIndex + i;
-		ulCommand |= BIT_SECCAM_POLLING_8822B | BIT_SECCAM_WE_8822B;
-		/* write content 0 is equall to mark invalid */
-		rtw_write32(adapter, REG_CAMWRITE_8822B, ulContent);
-		rtw_write32(adapter, REG_CAMCMD_8822B, ulCommand);
-	}
 }
 
 static void hw_var_set_ack_preamble(PADAPTER adapter, u8 bShortPreamble)
@@ -2065,7 +1941,7 @@ u8 rtl8822b_sethwreg(PADAPTER adapter, u8 variable, u8 *val)
 		break;
 */
 	case HW_VAR_BASIC_RATE:
-		hw_var_set_basic_rate(adapter, val);
+		rtw_var_set_basic_rate(adapter, val);
 		break;
 
 	case HW_VAR_TXPAUSE:
@@ -2096,12 +1972,6 @@ u8 rtl8822b_sethwreg(PADAPTER adapter, u8 variable, u8 *val)
 
 	case HW_VAR_MLME_JOIN:
 		hw_var_set_mlme_join(adapter, *val);
-#ifdef CONFIG_BT_COEXIST
-		if (hal->EEPROMBluetoothCoexist)
-			rtw_btcoex_ConnectNotify(adapter, *val ? _FALSE : _TRUE);
-		else
-#endif /* CONFIG_BT_COEXIST */
-		rtw_btcoex_wifionly_connect_notify(adapter);
 		break;
 
 	case HW_VAR_RCR:
@@ -2140,13 +2010,6 @@ u8 rtl8822b_sethwreg(PADAPTER adapter, u8 variable, u8 *val)
 
 	case HW_VAR_BCN_VALID:
 		hw_var_set_bcn_valid(adapter);
-		break;
-/*
-	case HW_VAR_RF_TYPE:
-		break;
-*/
-	case HW_VAR_CAM_EMPTY_ENTRY:
-		hw_var_set_cam_empty_entry(adapter, *val);
 		break;
 
 	case HW_VAR_CAM_INVALID_ALL:
@@ -2707,9 +2570,7 @@ void rtl8822b_gethwreg(PADAPTER adapter, u8 variable, u8 *val)
 		*val = hw_var_get_bcn_valid(adapter);
 		break;
 /*
-	case HW_VAR_RF_TYPE:
 	case HW_VAR_FREECNT:
-	case HW_VAR_CAM_EMPTY_ENTRY:
 	case HW_VAR_CAM_INVALID_ALL:
 */
 	case HW_VAR_AC_PARAM_VO:
@@ -3033,18 +2894,6 @@ u8 rtl8822b_gethaldefvar(PADAPTER adapter, HAL_DEF_VARIABLE variable, void *pval
 		*(u8 *)pval = _TRUE;
 		break;
 
-	/* support 1T STBC under 2TX */
-	case HAL_DEF_TX_STBC:
-#ifdef CONFIG_ALPHA_SMART_ANTENNA
-		*(u8 *)pval = 0;
-#else
-		if (hal->rf_type == RF_1T2R || hal->rf_type == RF_1T1R)
-			*(u8 *)pval = 0;
-		else
-			*(u8 *)pval = 1;
-#endif
-		break;
-
 	/* support 1RX for STBC */
 	case HAL_DEF_RX_STBC:
 		*(u8 *)pval = 1;
@@ -3059,18 +2908,8 @@ u8 rtl8822b_gethaldefvar(PADAPTER adapter, HAL_DEF_VARIABLE variable, void *pval
 		break;
 
 	case HAL_DEF_BEAMFORMER_CAP:
-		val8 = 0;
-		rtw_hal_get_hwreg(adapter, HW_VAR_RF_TYPE, &val8);
-		switch (val8) {
-		case RF_1T1R:
-		case RF_1T2R:
-			*(u8 *)pval = 0;
-			break;
-		default:
-		case RF_2T2R:
-			*(u8 *)pval = 1;
-			break;
-		}
+		val8 = GET_HAL_TX_NSS(adapter);
+		*(u8 *)pval = (val8 - 1);
 		break;
 
 	case HAL_DEF_BEAMFORMEE_CAP:
@@ -3520,6 +3359,9 @@ static void fill_default_txdesc(struct xmit_frame *pxmitframe, u8 *pbuf)
 				drv_userate = 1;
 		}
 #endif
+#ifdef CONFIG_SUPPORT_DYNAMIC_TXPWR
+		rtw_phydm_set_dyntxpwr(adapter, pbuf, pattrib->mac_id);
+#endif
 
 		if ((pattrib->ether_type != 0x888e) &&
 		    (pattrib->ether_type != 0x0806) &&
@@ -3692,13 +3534,13 @@ static void fill_default_txdesc(struct xmit_frame *pxmitframe, u8 *pbuf)
 
 		SET_TX_DESC_PKT_OFFSET_8822B(pbuf, pkt_offset);
 		SET_TX_DESC_OFFSET_8822B(pbuf, offset);
-#ifdef CONFIG_TX_CSUM_OFFLOAD
+#ifdef CONFIG_TCP_CSUM_OFFLOAD_TX
 	if (pattrib->hw_csum == 1) {
 		int offset = 48 + pkt_offset*8 + 8;
 
 		SET_TX_DESC_OFFSET_8822B(pbuf, offset);
 		SET_TX_DESC_CHK_EN_8822B(pbuf, 1);
-		SET_TX_DESC_WHEADER_LEN_8822B(pbuf, (pattrib->hdrlen + pattrib->iv_len)>>1);
+		SET_TX_DESC_WHEADER_LEN_8822B(pbuf, (pattrib->hdrlen + pattrib->iv_len + XATTRIB_GET_MCTRL_LEN(pattrib))>>1);
 	}
 #endif
 	}
@@ -4014,10 +3856,8 @@ void rtl8822b_set_hal_ops(PADAPTER adapter)
 	ops->set_chnl_bw_handler = rtl8822b_set_channel_bw;
 
 	ops->set_tx_power_level_handler = rtl8822b_set_tx_power_level;
-	ops->get_tx_power_level_handler = rtl8822b_get_tx_power_level;
-
 	ops->set_tx_power_index_handler = rtl8822b_set_tx_power_index;
-	ops->get_tx_power_index_handler = rtl8822b_get_tx_power_index;
+	ops->get_tx_power_index_handler = hal_com_get_txpwr_idx;
 
 	ops->hal_dm_watchdog = rtl8822b_phy_haldm_watchdog;
 

@@ -502,8 +502,6 @@ void phydm_cck_pd_init_type3(void *dm_void)
 	cckpd_t->cck_cs_ratio_20m_2r = (u8)((reg_tmp & 0x3e0) >> 5);
 	cckpd_t->cck_cs_ratio_40m_1r = (u8)((reg_tmp & 0x1f00000) >> 20);
 	cckpd_t->cck_cs_ratio_40m_2r = (u8)((reg_tmp & 0x3e000000) >> 25);
-
-	phydm_set_cckpd_lv_type3(dm, CCK_PD_LV_0);
 }
 #endif /*#ifdef PHYDM_COMPILE_CCKPD_TYPE3*/
 
@@ -664,7 +662,7 @@ void phydm_set_cck_pd_lv_type4(void *dm_void, enum cckpd_lv lv)
 		/*@pr_debug("[%s] warning!\n", __func__);*/
 		break;
 	}
-phydm_write_cck_pd_type4(dm, lv, cck_mode);
+	phydm_write_cck_pd_type4(dm, lv, cck_mode);
 }
 
 void phydm_read_cckpd_para_type4(void *dm_void)
@@ -779,7 +777,6 @@ void phydm_cckpd_type4(void *dm_void)
 			  cckpd_t->cck_pd_table_jgr3[cckpd_t->cck_bw]
 			  [cckpd_t->cck_n_rx - 1][0][lv]);
 	}
-
 	phydm_read_cckpd_para_type4(dm);
 }
 
@@ -905,6 +902,50 @@ void phydm_cck_pd_init_type4(void *dm_void)
 		#endif
 	}
 }
+
+void phydm_invalid_cckpd_type4(void *dm_void)
+{
+	struct dm_struct *dm = (struct dm_struct *)dm_void;
+	struct phydm_cckpd_struct *cckpd_t = &dm->dm_cckpd_table;
+	u8 val = 0;
+	u8 i = 0;
+	u8 k = 0;
+
+	PHYDM_DBG(dm, DBG_CCKPD, "[%s]======>\n", __func__);
+
+	for (i = 0; i < CCK_PD_LV_MAX; i++) {
+		for (k = RF_PATH_A; k < dm->num_rf_path; k++) {
+			val = cckpd_t->cck_pd_table_jgr3[0][k][1][i];
+
+			if (val == INVALID_CS_RATIO_0)
+				cckpd_t->cck_pd_table_jgr3[0][k][1][i] = 28;
+			else if (val == INVALID_CS_RATIO_1)
+				cckpd_t->cck_pd_table_jgr3[0][k][1][i] = 30;
+			else if (val > MAXVALID_CS_RATIO)
+				cckpd_t->cck_pd_table_jgr3[0][k][1][i] =
+				MAXVALID_CS_RATIO;
+			val = cckpd_t->cck_pd_table_jgr3[1][k][1][i];
+
+			if (val == INVALID_CS_RATIO_0)
+				cckpd_t->cck_pd_table_jgr3[1][k][1][i] = 28;
+			else if (val == INVALID_CS_RATIO_1)
+				cckpd_t->cck_pd_table_jgr3[1][k][1][i] = 30;
+			else if (val > MAXVALID_CS_RATIO)
+				cckpd_t->cck_pd_table_jgr3[1][k][1][i] =
+				MAXVALID_CS_RATIO;
+			val = cckpd_t->cck_pd_table_jgr3[0][k][0][i];
+
+			if (val > MAXVALID_PD_THRES)
+				cckpd_t->cck_pd_table_jgr3[0][k][0][i] =
+				MAXVALID_PD_THRES;
+			val = cckpd_t->cck_pd_table_jgr3[1][k][0][i];
+			if (val > MAXVALID_PD_THRES)
+				cckpd_t->cck_pd_table_jgr3[1][k][0][i] =
+				MAXVALID_PD_THRES;
+		}
+	}
+}
+
 #endif /*#ifdef PHYDM_COMPILE_CCKPD_TYPE4*/
 
 void phydm_set_cckpd_val(void *dm_void, u32 *val_buf, u8 val_len)
@@ -1070,11 +1111,14 @@ void phydm_cck_pd_init(void *dm_void)
 	#ifdef PHYDM_COMPILE_CCKPD_TYPE3
 	case 3:
 		phydm_cck_pd_init_type3(dm);
+		phydm_set_cckpd_lv_type3(dm, CCK_PD_LV_0);
 		break;
 	#endif
 	#ifdef PHYDM_COMPILE_CCKPD_TYPE4
 	case 4:
 		phydm_cck_pd_init_type4(dm);
+		phydm_invalid_cckpd_type4(dm);
+		phydm_set_cck_pd_lv_type4(dm, CCK_PD_LV_0);
 		break;
 	#endif
 	default:

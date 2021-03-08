@@ -548,13 +548,6 @@ void rtw_rson_scan_cmd_hdl(_adapter *padapter, int op)
 					if (rtw_to_roam(padapter) != 0) {
 						if (rtw_dec_to_roam(padapter) == 0) {
 							rtw_set_to_roam(padapter, 0);
-#ifdef CONFIG_INTEL_WIDI
-							if (padapter->mlmepriv.widi_state == INTEL_WIDI_STATE_ROAMING) {
-								_rtw_memset(pmlmepriv->sa_ext, 0x00, L2SDTA_SERVICE_VE_LEN);
-								intel_widi_wk_cmd(padapter, INTEL_WIDI_LISTEN_WK, NULL, 0);
-								RTW_INFO("change to widi listen\n");
-							}
-#endif /* CONFIG_INTEL_WIDI */
 							rtw_free_assoc_resources(padapter, _TRUE);
 							rtw_indicate_disconnect(padapter, 0, _FALSE);
 						} else

@@ -32,9 +32,8 @@
  * ============================================================
  */
 
-/*@#define DYNAMIC_TXPWR_VERSION	"1.0"*/
-/*@#define DYNAMIC_TXPWR_VERSION	"1.3" */ /*@2015.08.26, Add 8814 Dynamic TX power*/
-#define DYNAMIC_TXPWR_VERSION "1.4" /*@2015.11.06, Add CE 8821A Dynamic TX power*/
+/* 2019.2.12, refine code structure and set macid 127 only for 22C*/
+#define DYNAMIC_TXPWR_VERSION "1.8"
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_AP)
 #define TX_POWER_NEAR_FIELD_THRESH_LVL2 74
@@ -46,6 +45,20 @@
 #elif (DM_ODM_SUPPORT_TYPE == ODM_CE)
 #define TX_POWER_NEAR_FIELD_THRESH_LVL2 74
 #define TX_POWER_NEAR_FIELD_THRESH_LVL1 60
+#endif
+
+#if (DM_ODM_SUPPORT_TYPE == ODM_AP)
+#define TX_PWR_NEAR_FIELD_TH_JGR3_LVL3 255
+#define TX_PWR_NEAR_FIELD_TH_JGR3_LVL2 74
+#define TX_PWR_NEAR_FIELD_TH_JGR3_LVL1 60
+#elif (DM_ODM_SUPPORT_TYPE == ODM_WIN)
+#define TX_PWR_NEAR_FIELD_TH_JGR3_LVL3 90
+#define TX_PWR_NEAR_FIELD_TH_JGR3_LVL2 85
+#define TX_PWR_NEAR_FIELD_TH_JGR3_LVL1 80
+#elif (DM_ODM_SUPPORT_TYPE == ODM_CE)
+#define TX_PWR_NEAR_FIELD_TH_JGR3_LVL3 90
+#define TX_PWR_NEAR_FIELD_TH_JGR3_LVL2 85
+#define TX_PWR_NEAR_FIELD_TH_JGR3_LVL1 80
 #endif
 
 #define tx_high_pwr_level_normal 0
@@ -67,13 +80,27 @@ enum phydm_dtp_power_offset {
 	PHYDM_OFFSET_ADD_6DB = 5
 };
 
-enum phydm_dtp_power_offset_2ndtype {
+enum phydm_dtp_power_offset_2nd {
 	PHYDM_2ND_OFFSET_ZERO = 0,
-	PHYDM_2ND_OFFSET_MINUS_3DB = 2,
-	PHYDM_2ND_OFFSET_MINUS_7DB = 3,
-	PHYDM_2ND_OFFSET_MINUS_11DB = 1
+	PHYDM_2ND_OFFSET_MINUS_3DB = 1,
+	PHYDM_2ND_OFFSET_MINUS_7DB = 2,
+	PHYDM_2ND_OFFSET_MINUS_11DB = 3
 };
 
+enum phydm_dtp_power_offset_bbram {
+	/*@ HW min use 1dB*/
+	PHYDM_BBRAM_OFFSET_ZERO = 0,
+	PHYDM_BBRAM_OFFSET_MINUS_3DB = -3,
+	PHYDM_BBRAM_OFFSET_MINUS_7DB = -7,
+	PHYDM_BBRAM_OFFSET_MINUS_11DB = -11
+};
+
+enum phydm_dtp_power_pkt_type {
+	RAM_PWR_OFST0		= 0,
+	RAM_PWR_OFST1		= 1,
+	REG_PWR_OFST0		= 2,
+	REG_PWR_OFST1		= 3
+};
 
 /* @============================================================
  *  structure

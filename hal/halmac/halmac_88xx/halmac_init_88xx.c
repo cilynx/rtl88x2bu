@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -132,12 +132,15 @@ init_adapter_param_88xx(struct halmac_adapter *adapter)
 
 	adapter->sdio_cmd53_4byte = HALMAC_SDIO_CMD53_4BYTE_MODE_DISABLE;
 	adapter->sdio_hw_info.io_hi_speed_flag = 0;
-	adapter->sdio_hw_info.io_indir_flag = 0;
+	adapter->sdio_hw_info.io_indir_flag = 1;
+	adapter->sdio_hw_info.io_warn_flag = 0;
 	adapter->sdio_hw_info.spec_ver = HALMAC_SDIO_SPEC_VER_2_00;
 	adapter->sdio_hw_info.clock_speed = 50;
 	adapter->sdio_hw_info.block_size = 512;
 	adapter->sdio_hw_info.tx_seq = 1;
 	adapter->sdio_fs.macid_map = (u8 *)NULL;
+
+	adapter->watcher.get_watcher.sdio_rn_not_align = 0;
 
 	adapter->pinmux_info.wl_led = 0;
 	adapter->pinmux_info.sdio_int = 0;
@@ -218,6 +221,7 @@ mount_api_88xx(struct halmac_adapter *adapter)
 	api->halmac_read_efuse_bt = read_efuse_bt_88xx;
 	api->halmac_cfg_efuse_auto_check = cfg_efuse_auto_check_88xx;
 	api->halmac_dump_logical_efuse_map = dump_log_efuse_map_88xx;
+	api->halmac_dump_logical_efuse_mask = dump_log_efuse_mask_88xx;
 	api->halmac_pg_efuse_by_map = pg_efuse_by_map_88xx;
 	api->halmac_mask_logical_efuse = mask_log_efuse_88xx;
 	api->halmac_get_efuse_size = get_efuse_size_88xx;
@@ -228,6 +232,9 @@ mount_api_88xx(struct halmac_adapter *adapter)
 
 	api->halmac_write_logical_efuse = write_log_efuse_88xx;
 	api->halmac_read_logical_efuse = read_logical_efuse_88xx;
+
+	api->halmac_write_wifi_phy_efuse = write_wifi_phy_efuse_88xx;
+	api->halmac_read_wifi_phy_efuse = read_wifi_phy_efuse_88xx;
 
 	api->halmac_ofld_func_cfg = ofld_func_cfg_88xx;
 	api->halmac_h2c_lb = h2c_lb_88xx;
@@ -258,6 +265,8 @@ mount_api_88xx(struct halmac_adapter *adapter)
 	api->halmac_p2pps = p2pps_88xx;
 	api->halmac_clear_ch_info = clear_ch_info_88xx;
 	api->halmac_send_general_info = send_general_info_88xx;
+	api->halmac_send_scan_packet = send_scan_packet_88xx;
+	api->halmac_drop_scan_packet = drop_scan_packet_88xx;
 
 	api->halmac_start_iqk = start_iqk_88xx;
 	api->halmac_ctrl_pwr_tracking = ctrl_pwr_tracking_88xx;
@@ -307,13 +316,12 @@ mount_api_88xx(struct halmac_adapter *adapter)
 	api->halmac_enter_cpu_sleep_mode = enter_cpu_sleep_mode_88xx;
 	api->halmac_get_cpu_mode = get_cpu_mode_88xx;
 	api->halmac_drv_fwctrl = drv_fwctrl_88xx;
+	api->halmac_get_watcher = get_watcher_88xx;
 
 	if (adapter->intf == HALMAC_INTERFACE_SDIO) {
 #if HALMAC_SDIO_SUPPORT
-		api->halmac_init_sdio_cfg = init_sdio_cfg_88xx;
 		api->halmac_deinit_sdio_cfg = deinit_sdio_cfg_88xx;
 		api->halmac_cfg_rx_aggregation = cfg_sdio_rx_agg_88xx;
-		api->halmac_init_interface_cfg = init_sdio_cfg_88xx;
 		api->halmac_deinit_interface_cfg = deinit_sdio_cfg_88xx;
 		api->halmac_cfg_tx_agg_align = cfg_txagg_sdio_align_88xx;
 		api->halmac_set_bulkout_num = set_sdio_bulkout_num_88xx;
@@ -322,6 +330,7 @@ mount_api_88xx(struct halmac_adapter *adapter)
 		api->halmac_reg_sdio_cmd53_read_n = sdio_reg_rn_88xx;
 		api->halmac_sdio_cmd53_4byte = sdio_cmd53_4byte_88xx;
 		api->halmac_sdio_hw_info = sdio_hw_info_88xx;
+		api->halmac_en_ref_autok_pcie = en_ref_autok_sdio_88xx;
 
 #endif
 	} else if (adapter->intf == HALMAC_INTERFACE_USB) {
@@ -344,6 +353,7 @@ mount_api_88xx(struct halmac_adapter *adapter)
 		api->halmac_reg_write_32 = reg_w32_usb_88xx;
 		api->halmac_reg_read_indirect_32 = usb_indirect_reg_r32_88xx;
 		api->halmac_reg_sdio_cmd53_read_n = usb_reg_rn_88xx;
+		api->halmac_en_ref_autok_pcie = en_ref_autok_usb_88xx;
 #endif
 	} else if (adapter->intf == HALMAC_INTERFACE_PCIE) {
 #if HALMAC_PCIE_SUPPORT
@@ -365,7 +375,7 @@ mount_api_88xx(struct halmac_adapter *adapter)
 		api->halmac_reg_write_32 = reg_w32_pcie_88xx;
 		api->halmac_reg_read_indirect_32 = pcie_indirect_reg_r32_88xx;
 		api->halmac_reg_sdio_cmd53_read_n = pcie_reg_rn_88xx;
-		api->halmac_en_ref_autok_pcie = en_ref_autok_88xx;
+		api->halmac_en_ref_autok_pcie = en_ref_autok_pcie_88xx;
 #endif
 	} else {
 		PLTFM_MSG_ERR("[ERR]Set halmac io function Error!!\n");
@@ -548,6 +558,7 @@ reset_ofld_feature_88xx(struct halmac_adapter *adapter,
 		break;
 	case HALMAC_FEATURE_DUMP_PHYSICAL_EFUSE:
 	case HALMAC_FEATURE_DUMP_LOGICAL_EFUSE:
+	case HALMAC_FEATURE_DUMP_LOGICAL_EFUSE_MASK:
 		state->efuse_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
 		state->efuse_state.cmd_cnstr_state = HALMAC_CMD_CNSTR_IDLE;
 		break;
@@ -557,6 +568,12 @@ reset_ofld_feature_88xx(struct halmac_adapter *adapter,
 		break;
 	case HALMAC_FEATURE_UPDATE_PACKET:
 		state->update_pkt_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
+		break;
+	case HALMAC_FEATURE_SEND_SCAN_PACKET:
+		state->scan_pkt_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
+		break;
+	case HALMAC_FEATURE_DROP_SCAN_PACKET:
+		state->drop_pkt_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
 		break;
 	case HALMAC_FEATURE_IQK:
 		state->iqk_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
@@ -579,6 +596,8 @@ reset_ofld_feature_88xx(struct halmac_adapter *adapter,
 		state->scan_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
 		state->scan_state.cmd_cnstr_state = HALMAC_CMD_CNSTR_IDLE;
 		state->update_pkt_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
+		state->scan_pkt_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
+		state->drop_pkt_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
 		state->iqk_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
 		state->pwr_trk_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
 		state->psd_state.proc_status = HALMAC_CMD_PROCESS_IDLE;
@@ -864,6 +883,25 @@ rqpn_parser_88xx(struct halmac_adapter *adapter, enum halmac_trx_mode mode,
 		return HALMAC_RET_TRX_MODE_NOT_SUPPORT;
 	}
 
+	return HALMAC_RET_SUCCESS;
+}
+
+enum halmac_ret_status
+fwff_is_empty_88xx(struct halmac_adapter *adapter)
+{
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
+	u32 cnt;
+
+	cnt = 5000;
+	while (HALMAC_REG_R16(REG_FWFF_CTRL) !=
+		HALMAC_REG_R16(REG_FWFF_PKT_INFO)) {
+		if (cnt == 0) {
+			PLTFM_MSG_ERR("[ERR]polling fwff empty fail\n");
+			return HALMAC_RET_FWFF_NO_EMPTY;
+		}
+		cnt--;
+		PLTFM_DELAY_US(50);
+	}
 	return HALMAC_RET_SUCCESS;
 }
 

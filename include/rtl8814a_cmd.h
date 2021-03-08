@@ -155,6 +155,9 @@ Set_RA_LDPC_8814(
 
 s32 c2h_handler_8814a(_adapter *adapter, u8 id, u8 seq, u8 plen, u8 *payload);
 
+#ifdef CONFIG_BT_COEXIST
+void rtl8814a_download_BTCoex_AP_mode_rsvd_page(PADAPTER padapter);
+#endif /* CONFIG_BT_COEXIST */
 #ifdef CONFIG_P2P_PS
 	void rtl8814_set_p2p_ps_offload_cmd(PADAPTER padapter, u8 p2p_ps_state);
 #endif /* CONFIG_P2P */

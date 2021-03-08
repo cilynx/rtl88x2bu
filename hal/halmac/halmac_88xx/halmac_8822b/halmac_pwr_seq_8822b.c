@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -58,6 +58,16 @@ static struct halmac_wlan_pwr_cfg TRANS_CARDDIS_TO_CARDEMU_8822B[] = {
 
 static struct halmac_wlan_pwr_cfg TRANS_CARDEMU_TO_ACT_8822B[] = {
 	/* { offset, cut_msk, interface_msk, base|cmd, msk, value } */
+	{0xFF0A,
+	 HALMAC_PWR_CUT_ALL_MSK,
+	 HALMAC_PWR_INTF_USB_MSK,
+	 HALMAC_PWR_ADDR_MAC,
+	 HALMAC_PWR_CMD_WRITE, 0xFF, 0},
+	{0xFF0B,
+	 HALMAC_PWR_CUT_ALL_MSK,
+	 HALMAC_PWR_INTF_USB_MSK,
+	 HALMAC_PWR_ADDR_MAC,
+	 HALMAC_PWR_CMD_WRITE, 0xFF, 0},
 	{0x0012,
 	 HALMAC_PWR_CUT_ALL_MSK,
 	 HALMAC_PWR_INTF_ALL_MSK,
@@ -440,16 +450,6 @@ static struct halmac_wlan_pwr_cfg TRANS_CARDEMU_TO_SUS_8822B[] = {
 
 static struct halmac_wlan_pwr_cfg TRANS_SUS_TO_CARDEMU_8822B[] = {
 	/* { offset, cut_msk, interface_msk, base|cmd, msk, value } */
-	{0xFF0A,
-	 HALMAC_PWR_CUT_ALL_MSK,
-	 HALMAC_PWR_INTF_USB_MSK,
-	 HALMAC_PWR_ADDR_MAC,
-	 HALMAC_PWR_CMD_WRITE, 0xFF, 0},
-	{0xFF0B,
-	 HALMAC_PWR_CUT_ALL_MSK,
-	 HALMAC_PWR_INTF_USB_MSK,
-	 HALMAC_PWR_ADDR_MAC,
-	 HALMAC_PWR_CMD_WRITE, 0xFF, 0},
 	{0x0005,
 	 HALMAC_PWR_CUT_ALL_MSK,
 	 HALMAC_PWR_INTF_ALL_MSK,
@@ -690,32 +690,32 @@ static struct halmac_wlan_pwr_cfg TRANS_ACT_TO_DEEP_LPS_8822B[] = {
 	 HALMAC_PWR_CUT_ALL_MSK,
 	 HALMAC_PWR_INTF_PCI_MSK,
 	 HALMAC_PWR_ADDR_MAC,
-	 HALMAC_PWR_CMD_WRITE, 0xFF, 0xDE},
+	 HALMAC_PWR_CMD_WRITE, 0xFF, 0xDC},
 	{0x0092,
 	 HALMAC_PWR_CUT_ALL_MSK,
 	 HALMAC_PWR_INTF_PCI_MSK,
 	 HALMAC_PWR_ADDR_MAC,
-	 HALMAC_PWR_CMD_WRITE, 0xFF, 0x60},
+	 HALMAC_PWR_CMD_WRITE, 0xFF, 0x20},
 	{0x0093,
 	 HALMAC_PWR_CUT_ALL_MSK,
 	 HALMAC_PWR_INTF_USB_MSK,
 	 HALMAC_PWR_ADDR_MAC,
-	 HALMAC_PWR_CMD_WRITE, 0xFF, 0x9B},
+	 HALMAC_PWR_CMD_WRITE, 0xFF, 0x8},
 	{0x0092,
 	 HALMAC_PWR_CUT_ALL_MSK,
 	 HALMAC_PWR_INTF_USB_MSK,
 	 HALMAC_PWR_ADDR_MAC,
-	 HALMAC_PWR_CMD_WRITE, 0xFF, 0x60},
+	 HALMAC_PWR_CMD_WRITE, 0xFF, 0x20},
 	{0x0093,
 	 HALMAC_PWR_CUT_ALL_MSK,
 	 HALMAC_PWR_INTF_SDIO_MSK,
 	 HALMAC_PWR_ADDR_MAC,
-	 HALMAC_PWR_CMD_WRITE, 0xFF, 0xA},
+	 HALMAC_PWR_CMD_WRITE, 0xFF, 0x8},
 	{0x0092,
 	 HALMAC_PWR_CUT_ALL_MSK,
 	 HALMAC_PWR_INTF_SDIO_MSK,
 	 HALMAC_PWR_ADDR_MAC,
-	 HALMAC_PWR_CMD_WRITE, 0xFF, 0x60},
+	 HALMAC_PWR_CMD_WRITE, 0xFF, 0x20},
 	{0x0090,
 	 HALMAC_PWR_CUT_ALL_MSK,
 	 HALMAC_PWR_INTF_ALL_MSK,

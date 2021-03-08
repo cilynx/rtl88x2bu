@@ -112,13 +112,13 @@ static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz, u8 bag
 	if ((pxmitframe->frame_tag & 0x0f) == DATA_FRAMETAG) {
 		/* RTW_INFO("pxmitframe->frame_tag == DATA_FRAMETAG\n");	*/
 		rtl8822b_fill_txdesc_sectype(pattrib, ptxdesc);
-#ifdef CONFIG_TX_CSUM_OFFLOAD
+#ifdef CONFIG_TCP_CSUM_OFFLOAD_TX
 	if (pattrib->hw_csum == 1) {
 		int offset = 48 + pxmitframe->pkt_offset*8 + 8;
 
 		SET_TX_DESC_OFFSET_8822B(ptxdesc, offset);
 		SET_TX_DESC_CHK_EN_8822B(ptxdesc, 1);
-		SET_TX_DESC_WHEADER_LEN_8822B(ptxdesc, (pattrib->hdrlen + pattrib->iv_len)>>1);
+		SET_TX_DESC_WHEADER_LEN_8822B(ptxdesc, (pattrib->hdrlen + pattrib->iv_len + XATTRIB_GET_MCTRL_LEN(pattrib))>>1);
 	}
 #endif
 
@@ -135,6 +135,9 @@ static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz, u8 bag
 #ifdef CONFIG_CONCURRENT_MODE
 		if (bmcst)
 			rtl8822b_fill_txdesc_force_bmc_camid(pattrib, ptxdesc);
+#endif
+#ifdef CONFIG_SUPPORT_DYNAMIC_TXPWR
+		rtw_phydm_set_dyntxpwr(padapter, ptxdesc, pattrib->mac_id);
 #endif
 
 		if ((pattrib->ether_type != 0x888e) &&

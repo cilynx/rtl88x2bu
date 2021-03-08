@@ -161,7 +161,6 @@ void phydm_rssi_monitor_init(void *dm_void)
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct ra_table *ra_tab = &dm->dm_ra_table;
 
-	ra_tab->firstconnect = false;
 	dm->pre_rssi_min = 0;
 	dm->rssi_max = 0;
 	dm->rssi_min = 0;

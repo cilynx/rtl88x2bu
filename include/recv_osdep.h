@@ -23,7 +23,7 @@ extern void _rtw_free_recv_priv(struct recv_priv *precvpriv);
 extern s32  rtw_recv_entry(union recv_frame *precv_frame);
 void rtw_rframe_set_os_pkt(union recv_frame *rframe);
 extern int rtw_recv_indicatepkt(_adapter *adapter, union recv_frame *precv_frame);
-extern void rtw_recv_returnpacket(IN _nic_hdl cnxt, IN _pkt *preturnedpkt);
+extern void rtw_recv_returnpacket(_nic_hdl cnxt, _pkt *preturnedpkt);
 
 extern int rtw_recv_monitor(_adapter *padapter, union recv_frame *precv_frame);
 

@@ -173,7 +173,11 @@ static u8 init_bb_reg(PADAPTER adapter)
 	 */
 	ret = _init_bb_reg(adapter);
 
-	hal_set_crystal_cap(adapter, hal->crystal_cap);
+	if (rtw_phydm_set_crystal_cap(adapter, hal->crystal_cap) == _FALSE) {
+		RTW_ERR("Init crystal_cap failed\n");
+		rtw_warn_on(1);
+		ret = _FALSE;
+	}
 
 	return ret;
 }
@@ -226,7 +230,9 @@ static u8 _init_rf_reg(PADAPTER adapter)
 			status = odm_config_rf_with_header_file(&hal->odmpriv, CONFIG_RF_RADIO, phydm_path);
 			if (HAL_STATUS_SUCCESS != status)
 				goto exit;
+#if 0 /* Remove because coverity check fail */
 			ret = _TRUE;
+#endif
 		}
 	}
 
@@ -274,9 +280,6 @@ u8 rtl8822b_phy_init(PADAPTER adapter)
 {
 	struct dvobj_priv *d;
 	struct dm_struct *phydm;
-	enum bb_path txpath = BB_PATH_A | BB_PATH_B;
-	enum bb_path rxpath = BB_PATH_A | BB_PATH_B;
-	BOOLEAN tx2path;
 	int err;
 	u8 ok = _TRUE;
 	BOOLEAN ret;
@@ -306,17 +309,7 @@ u8 rtl8822b_phy_init(PADAPTER adapter)
 	if (FALSE == ret)
 		return _FALSE;
 
-	rtw_hal_get_rf_path(d, NULL, &txpath, &rxpath);
-	tx2path = FALSE;
-	ret = config_phydm_trx_mode_8822b(phydm, txpath, rxpath, tx2path);
-	if (FALSE == ret)
-		return _FALSE;
-
 	return _TRUE;
-}
-
-static void dm_CheckProtection(PADAPTER	adapter)
-{
 }
 
 #ifdef CONFIG_SUPPORT_HW_WPS_PBC
@@ -451,7 +444,7 @@ static void init_phydm_cominfo(PADAPTER adapter)
 	else if (IS_CHIP_VENDOR_SMIC(hal->version_id))
 		fab_ver = ODM_UMC + 1;
 	else
-		RTW_INFO("%s: unknown fab_ver=%d !!\n",
+		RTW_INFO("%s: unknown Fv=%d !!\n",
 			 __FUNCTION__, GET_CVID_MANUFACTUER(hal->version_id));
 
 	if (IS_A_CUT(hal->version_id))
@@ -473,10 +466,10 @@ static void init_phydm_cominfo(PADAPTER adapter)
 	else if (IS_K_CUT(hal->version_id))
 		cut_ver = ODM_CUT_K;
 	else
-		RTW_INFO("%s: unknown cut_ver=%d !!\n",
+		RTW_INFO("%s: unknown Cv=%d !!\n",
 			 __FUNCTION__, GET_CVID_CUT_VERSION(hal->version_id));
 
-	RTW_INFO("%s: fab_ver=%d cut_ver=%d\n", __FUNCTION__, fab_ver, cut_ver);
+	RTW_INFO("%s: Fv=%d Cv=%d\n", __FUNCTION__, fab_ver, cut_ver);
 	odm_cmn_info_init(p_dm_odm, ODM_CMNINFO_FAB_VER, fab_ver);
 	odm_cmn_info_init(p_dm_odm, ODM_CMNINFO_CUT_VER, cut_ver);
 
@@ -564,15 +557,14 @@ void rtl8822b_phy_haldm_watchdog(PADAPTER adapter)
 		/*
 		 * Dynamically switch RTS/CTS protection.
 		 */
-		dm_CheckProtection(adapter);
 	}
 
-#ifdef CONFIG_DISABLE_ODM
-	goto skip_dm;
-#endif
-
 #ifdef CONFIG_LPS
-	if (pwrpriv->bLeisurePs && bFwCurrentInPSMode && pwrpriv->pwr_mode != PS_MODE_ACTIVE) {
+	if (pwrpriv->bLeisurePs && bFwCurrentInPSMode && pwrpriv->pwr_mode != PS_MODE_ACTIVE
+#ifdef CONFIG_WMMPS_STA
+		&& !rtw_is_wmmps_mode(adapter)
+#endif /* CONFIG_WMMPS_STA */
+	) {
 
 		for (i = 0; i < dvobj->iface_nums; i++) {
 			iface = dvobj->padapters[i];
@@ -582,17 +574,9 @@ void rtl8822b_phy_haldm_watchdog(PADAPTER adapter)
 
 		lps_changed = _TRUE;
 		in_lps = _TRUE;
-		LPS_Leave(current_lps_iface, "LPS_CTRL_PHYDM");
+		LPS_Leave(current_lps_iface, LPS_CTRL_PHYDM);
 	}
 #endif
-
-	rtw_phydm_watchdog(adapter, in_lps);
-
-#ifdef CONFIG_LPS
-	if (lps_changed)
-		LPS_Enter(current_lps_iface, "LPS_CTRL_PHYDM");
-#endif
-
 
 #ifdef CONFIG_BEAMFORMING
 #ifdef RTW_BEAMFORMING_VERSION_2
@@ -602,7 +586,20 @@ void rtl8822b_phy_haldm_watchdog(PADAPTER adapter)
 #endif
 #endif
 
+#ifdef CONFIG_DISABLE_ODM
+	goto skip_dm;
+#endif
+
+	rtw_phydm_watchdog(adapter, in_lps);
+
+
 skip_dm:
+
+#ifdef CONFIG_LPS
+	if (lps_changed)
+		LPS_Enter(current_lps_iface, LPS_CTRL_PHYDM);
+#endif
+
 	/*
 	 * Check GPIO to determine current RF on/off and Pbc status.
 	 * Check Hardware Radio ON/OFF or not
@@ -733,10 +730,6 @@ void rtl8822b_set_tx_power_level(PADAPTER adapter, u8 channel)
 	}
 }
 
-void rtl8822b_get_tx_power_level(PADAPTER adapter, s32 *power)
-{
-}
-
 /*
  * Parameters:
  *	padatper
@@ -746,87 +739,47 @@ void rtl8822b_get_tx_power_level(PADAPTER adapter, s32 *power)
  */
 void rtl8822b_set_tx_power_index(PADAPTER adapter, u32 powerindex, enum rf_path rfpath, u8 rate)
 {
+	HAL_DATA_TYPE *hal = GET_HAL_DATA(adapter);
 	struct dm_struct *phydm = adapter_to_phydm(adapter);
 	u8 shift = 0;
-	static u32 index = 0;
+	boolean write_ret;
 
+	if (!IS_1T_RATE(rate) && !IS_2T_RATE(rate)) {
+		RTW_ERR(FUNC_ADPT_FMT" invalid rate(%s)\n", FUNC_ADPT_ARG(adapter), MGN_RATE_STR(rate));
+		rtw_warn_on(1);
+		goto exit;
+	}
 
-	rate = PHY_GetRateIndexOfTxPowerByRate(rate);
+	rate = MRateToHwRate(rate);
 
 	/*
 	* For 8822B, phydm api use 4 bytes txagc value
 	* driver must combine every four 1 byte to one 4 byte and send to phydm api
 	*/
 	shift = rate % 4;
-	index |= ((powerindex & 0xff) << (shift * 8));
+	hal->txagc_set_buf |= ((powerindex & 0xff) << (shift * 8));
 
-	if (shift == 3) {
-		rate = rate - 3;
+	if (shift != 3)
+		goto exit;
 
-		if (!config_phydm_write_txagc_8822b(phydm, index, rfpath, rate)) {
-			RTW_INFO("%s(index:%d, rfpath:%d, rate:0x%02x, disable api:%d) fail\n",
-				__FUNCTION__, index, rfpath, rate, phydm->is_disable_phy_api);
+	rate = rate & 0xFC;
+	write_ret = config_phydm_write_txagc_8822b(phydm, hal->txagc_set_buf, rfpath, rate);
 
-			rtw_warn_on(1);
-		}
-		index = 0;
-	}
-}
+	if (write_ret == true && !DBG_TX_POWER_IDX)
+		goto clear_buf;
 
+	RTW_INFO(FUNC_ADPT_FMT" (index:0x%08x, %c, rate:%s(0x%02x), disable api:%d) %s\n"
+		, FUNC_ADPT_ARG(adapter), hal->txagc_set_buf, rf_path_char(rfpath)
+		, HDATA_RATE(rate), rate, phydm->is_disable_phy_api
+		, write_ret == true ? "OK" : "FAIL");
 
-/*
- * Parameters:
- *	padatper
- *	rfpath		Antenna(RF) path, type "enum rf_path"
- *	rate		data rate, type "enum MGN_RATE"
- *	bandwidth	Bandwidth, type "enum _CHANNEL_WIDTH"
- *	channel		Channel number
- *
- * Rteurn:
- *	tx_power	power index for rate
- */
-u8 rtl8822b_get_tx_power_index(PADAPTER adapter, enum rf_path rfpath, u8 rate, u8 bandwidth, u8 channel, struct txpwr_idx_comp *tic)
-{
-	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
-	struct hal_spec_t *hal_spec = GET_HAL_SPEC(adapter);
-	s16 power_idx;
-	u8 base_idx = 0;
-	s8 by_rate_diff = 0, limit = 0, tpt_offset = 0, extra_bias = 0;
-	u8 ntx_idx = phy_get_current_tx_num(adapter, rate);
-	u8 bIn24G = _FALSE;
+	rtw_warn_on(write_ret != true);
 
-	base_idx = PHY_GetTxPowerIndexBase(adapter, rfpath, rate, ntx_idx, bandwidth, channel, &bIn24G);
+clear_buf:
+	hal->txagc_set_buf = 0;
 
-	by_rate_diff = PHY_GetTxPowerByRate(adapter, (u8)(!bIn24G), rfpath, rate);
-	limit = PHY_GetTxPowerLimit(adapter, NULL, (BAND_TYPE)(!bIn24G),
-			hal->current_channel_bw, rfpath, rate, ntx_idx, hal->current_channel);
-
-	/* tpt_offset += PHY_GetTxPowerTrackingOffset(adapter, rfpath, rate); */
-
-	if (tic) {
-		tic->ntx_idx = ntx_idx;
-		tic->base = base_idx;
-		tic->by_rate = by_rate_diff;
-		tic->limit = limit;
-		tic->tpt = tpt_offset;
-		tic->ebias = extra_bias;
-	}
-
-	by_rate_diff = by_rate_diff > limit ? limit : by_rate_diff;
-	power_idx = base_idx + by_rate_diff + tpt_offset + extra_bias;
-
-#if 0
-#if CCX_SUPPORT
-	CCX_CellPowerLimit(adapter, channel, rate, (pu1Byte)&power_idx);
-#endif
-#endif
-
-	if (power_idx < 0)
-		power_idx = 0;
-	else if (power_idx > hal_spec->txgi_max)
-		power_idx = hal_spec->txgi_max;
-
-	return power_idx;
+exit:
+	return;
 }
 
 /*
@@ -1261,7 +1214,7 @@ void rtl8822b_mp_config_rfpath(PADAPTER adapter)
 		break;
 	}
 
-	config_phydm_trx_mode_8822b(GET_PDM_ODM(adapter), bb_tx, bb_rx, FALSE);
+	phydm_api_trx_mode(GET_PDM_ODM(adapter), bb_tx, bb_rx, bb_tx);
 
 	RTW_INFO("-Config RF Path Finish\n");
 }
@@ -1338,23 +1291,10 @@ enum _HW_CFG_SOUNDING_TYPE {
 
 static u8 _bf_get_nrx(PADAPTER adapter)
 {
-	u8 rf;
 	u8 nrx = 0;
 
-
-	rtw_hal_get_hwreg(adapter, HW_VAR_RF_TYPE, &rf);
-	switch (rf) {
-	case RF_1T1R:
-		nrx = 0;
-		break;
-	default:
-	case RF_1T2R:
-	case RF_2T2R:
-		nrx = 1;
-		break;
-	}
-
-	return nrx;
+	nrx = GET_HAL_RX_NSS(adapter);
+	return (nrx - 1);
 }
 
 static void _sounding_reset_all(PADAPTER adapter)
@@ -2384,9 +2324,10 @@ void rtw_lps_pwr_tracking(_adapter *adapter, u8 thermal_value)
 
 	if (adapter_to_pwrctl(adapter)->bLeisurePs &&
 		adapter_to_pwrctl(adapter)->bFwCurrentInPSMode &&
-		adapter_to_pwrctl(adapter)->pwr_mode != PS_MODE_ACTIVE)
+		adapter_to_pwrctl(adapter)->pwr_mode != PS_MODE_ACTIVE) {
 		lps_changed = _TRUE;
 		LPS_Leave(adapter, "LPS_CTRL_TXSS");
+	}
 
 	rtw_phydm_pwr_tracking_directly(adapter);
 

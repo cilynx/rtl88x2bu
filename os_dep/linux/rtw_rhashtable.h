@@ -40,7 +40,11 @@ typedef struct rhashtable_iter rtw_rhashtable_iter;
 
 int rtw_rhashtable_walk_enter(rtw_rhashtable *ht, rtw_rhashtable_iter *iter);
 #define rtw_rhashtable_walk_exit(iter) rhashtable_walk_exit(iter)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 16, 0))
+#define rtw_rhashtable_walk_start(iter) rhashtable_walk_start_check(iter)
+#else
 #define rtw_rhashtable_walk_start(iter) rhashtable_walk_start(iter)
+#endif
 #define rtw_rhashtable_walk_next(iter) rhashtable_walk_next(iter)
 #define rtw_rhashtable_walk_stop(iter) rhashtable_walk_stop(iter)
 

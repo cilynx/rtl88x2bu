@@ -152,7 +152,7 @@ static void gethwreg(PADAPTER padapter, u8 variable, u8 *val)
 	Description:
 		Change default setting of specified variable.
 */
-static u8 sethaldefvar(PADAPTER padapter, HAL_DEF_VARIABLE eVariable, PVOID pValue)
+static u8 sethaldefvar(PADAPTER padapter, HAL_DEF_VARIABLE eVariable, void *pValue)
 {
 	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(padapter);
 	u8 bResult = _SUCCESS;
@@ -170,7 +170,7 @@ static u8 sethaldefvar(PADAPTER padapter, HAL_DEF_VARIABLE eVariable, PVOID pVal
 	Description:
 		Query setting of specified variable.
 */
-static u8 gethaldefvar(PADAPTER	padapter, HAL_DEF_VARIABLE eVariable, PVOID pValue)
+static u8 gethaldefvar(PADAPTER	padapter, HAL_DEF_VARIABLE eVariable, void *pValue)
 {
 	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(padapter);
 	u8 bResult = _SUCCESS;

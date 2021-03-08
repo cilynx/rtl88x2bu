@@ -42,30 +42,29 @@ u32 phydm_get_psd_data(void *dm_void, u32 psd_tone_idx, u32 igi)
 			       psd_tone_idx >> 10);
 		/*PSD trigger start*/
 		odm_set_bb_reg(dm, dm_psd_table->psd_reg, BIT(18), 1);
-		ODM_delay_us(10);
+		ODM_delay_us(10 << (dm_psd_table->fft_smp_point >> 7));
 		/*PSD trigger stop*/
 		odm_set_bb_reg(dm, dm_psd_table->psd_reg, BIT(18), 0);
-	} else if (dm->support_ic_type == ODM_RTL8721D) {
+	} else if (dm->support_ic_type & (ODM_RTL8721D |
+				ODM_RTL8710C)) {
 		odm_set_bb_reg(dm, dm_psd_table->psd_reg, 0xfff, psd_tone_idx);
 		odm_set_bb_reg(dm, dm_psd_table->psd_reg, BIT(28), 1);
 		/*PSD trigger start*/
-		ODM_delay_us(10);
+		ODM_delay_us(10 << (dm_psd_table->fft_smp_point >> 7));
 		odm_set_bb_reg(dm, dm_psd_table->psd_reg, BIT(28), 0);
 		/*PSD trigger stop*/
-
-		psd_report = odm_get_bb_reg(dm, dm_psd_table->psd_report_reg,
-					    0xffffff);
-		psd_report = psd_report >> 5;
 	} else {
 		odm_set_bb_reg(dm, dm_psd_table->psd_reg, 0x3ff, psd_tone_idx);
 		/*PSD trigger start*/
 		odm_set_bb_reg(dm, dm_psd_table->psd_reg, BIT(22), 1);
-		ODM_delay_us(10);
+		ODM_delay_us(10 << (dm_psd_table->fft_smp_point >> 7));
 		/*PSD trigger stop*/
 		odm_set_bb_reg(dm, dm_psd_table->psd_reg, BIT(22), 0);
 	}
 
-	if (dm->support_ic_type & ODM_RTL8821C) {
+	/*Get PSD Report*/
+	if (dm->support_ic_type & (ODM_RTL8821C | ODM_RTL8721D |
+				ODM_RTL8710C)) {
 		psd_report = odm_get_bb_reg(dm, dm_psd_table->psd_report_reg,
 					    0xffffff);
 		psd_report = psd_report >> 5;
@@ -139,7 +138,8 @@ u8 phydm_psd(void *dm_void, u32 igi, u16 start_point, u16 stop_point)
 
 	if (psd_fc_channel > 14) {
 		is_5G = 1;
-		if (dm->support_ic_type & (ODM_RTL8822C | ODM_RTL8812F)) {
+		if (dm->support_ic_type & (ODM_RTL8822C | ODM_RTL8812F |
+					   ODM_RTL8197G)) {
 			if (psd_fc_channel < 80)
 				ag_rf_mode_reg = 0x1;
 			else if (psd_fc_channel >= 80 && psd_fc_channel <= 140)
@@ -168,7 +168,8 @@ u8 phydm_psd(void *dm_void, u32 igi, u16 start_point, u16 stop_point)
 	odm_set_rf_reg(dm, RF_PATH_B, RF_0x18, 0xff, psd_fc_channel);
 	odm_set_rf_reg(dm, RF_PATH_A, RF_0x18, 0x300, is_5G);
 	odm_set_rf_reg(dm, RF_PATH_B, RF_0x18, 0x300, is_5G);
-	if (dm->support_ic_type & (ODM_RTL8822C | ODM_RTL8812F)) {
+	if (dm->support_ic_type & (ODM_RTL8822C | ODM_RTL8812F |
+				   ODM_RTL8197G)) {
 		/* @2b'11: 20MHz, 2b'10: 40MHz, 2b'01: 80MHz */
 		odm_set_rf_reg(dm, RF_PATH_A, RF_0x18, 0x3000,
 			       dm_psd_table->psd_bw_rf_reg);
@@ -184,6 +185,12 @@ u8 phydm_psd(void *dm_void, u32 igi, u16 start_point, u16 stop_point)
 		if (dm->support_ic_type == ODM_RTL8721D) {
 			odm_set_rf_reg(dm, RF_PATH_A, RF_0x18, 0x1c00,
 				       dm_psd_table->psd_bw_rf_reg);
+#if (RTL8710C_SUPPORT == 1)
+		} else if (dm->support_ic_type == ODM_RTL8710C) {
+			config_phydm_write_rf_reg_8710c(dm, RF_PATH_A,
+							RF_0x18, 0x1c00,
+						dm_psd_table->psd_bw_rf_reg);
+#endif
 		} else {
 			odm_set_rf_reg(dm, RF_PATH_A, RF_0x18, 0xc00,
 				       dm_psd_table->psd_bw_rf_reg);
@@ -328,7 +335,7 @@ void phydm_psd_para_setting(void *dm_void, u8 sw_avg_time, u8 hw_avg_time,
 			       fft_smp_point_idx);
 		odm_set_bb_reg(dm, R_0x910, BIT(17) | BIT(16), ant_sel);
 		odm_set_bb_reg(dm, R_0x910, BIT(23), psd_input);
-	} else if (dm->support_ic_type == ODM_RTL8721D) {
+	} else if (dm->support_ic_type & (ODM_RTL8721D | ODM_RTL8710C)) {
 		odm_set_bb_reg(dm, 0x808, BIT(19) | BIT(18), i_q_setting);
 		odm_set_bb_reg(dm, 0x808, BIT(21) | BIT(20), hw_avg_time);
 		odm_set_bb_reg(dm, 0x808, BIT(23) | BIT(22), fft_smp_point_idx);

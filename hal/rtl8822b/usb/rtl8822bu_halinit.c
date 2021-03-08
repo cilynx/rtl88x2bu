@@ -25,20 +25,6 @@
 
 #endif
 
-
-static void _dbg_dump_macreg(PADAPTER padapter)
-{
-	u32 offset = 0;
-	u32 val32 = 0;
-	u32 index = 0;
-
-	for (index = 0; index < 64; index++) {
-		offset = index * 4;
-		val32 = rtw_read32(padapter, offset);
-		RTW_INFO("offset : 0x%02x ,val:0x%08x\n", offset, val32);
-	}
-}
-
 #ifdef CONFIG_FWLPS_IN_IPS
 u8 rtl8822bu_fw_ips_init(_adapter *padapter)
 {
@@ -218,9 +204,10 @@ u32 rtl8822bu_init(PADAPTER padapter)
 
 	hal_init_misc(padapter);
 
+#ifdef CONFIG_FWLPS_IN_IPS
 exit:
+#endif
 	RTW_INFO("%s in %dms\n", __func__, rtw_get_passing_time_ms(init_start_time));
-
 	return status;
 }
 
@@ -258,7 +245,9 @@ u32 rtl8822bu_deinit(PADAPTER padapter)
 		return _FAIL;
 	}
 
+#ifdef CONFIG_FWLPS_IN_IPS
 exit:
+#endif
 	RTW_INFO("%s <==\n", __func__);
 	return _SUCCESS;
 }
@@ -423,8 +412,6 @@ void rtl8822bu_interface_configure(PADAPTER padapter)
 		pHalData->UsbBulkOutSize = USB_HIGH_SPEED_BULK_SIZE;
 	else
 		pHalData->UsbBulkOutSize = USB_FULL_SPEED_BULK_SIZE;
-
-	pHalData->interfaceIndex = pdvobjpriv->InterfaceNumber;
 
 #ifdef CONFIG_USB_TX_AGGREGATION
 	/* according to value defined by halmac */

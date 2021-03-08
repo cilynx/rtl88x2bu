@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -14517,6 +14517,7 @@
 /* 2 REG_LIFETIME_EN_8814B */
 #define BIT_BT_INT_CPU_8814B BIT(7)
 #define BIT_BT_INT_PTA_8814B BIT(6)
+#define BIT_BA_PARSER_EN_8814B BIT(5)
 #define BIT_EN_CTRL_RTYBIT_8814B BIT(4)
 #define BIT_LIFETIME_BK_EN_8814B BIT(3)
 #define BIT_LIFETIME_BE_EN_8814B BIT(2)
@@ -25467,6 +25468,7 @@
 	 BIT_R_WMAC_RX_FIL_LEN_2_8814B(v))
 
 /* 2 REG_RX_FILTER_FUNCTION_8814B */
+#define BIT_RXHANG_EN_8814B BIT(15)
 #define BIT_R_WMAC_MHRDDY_LATCH_8814B BIT(14)
 #define BIT_R_WMAC_MHRDDY_CLR_8814B BIT(13)
 #define BIT_R_RXPKTCTL_FSM_BASED_MPDURDY1_8814B BIT(12)

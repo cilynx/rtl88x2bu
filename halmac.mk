@@ -31,11 +31,18 @@ ic := 8821c
 endif
 
 ifeq ($(CONFIG_RTL8814B), y)
-v1 := "_v1"
+v1 := _v1
 ic := 8814b
 endif
 
+ifeq ($(v1), _v1)
+d2all :=
+else
+d2all := y
+endif
+
 halmac-y +=		$(path_hm)/halmac_api.o
+halmac-y +=		$(path_hm)/halmac_dbg.o
 
 # Modify level 1 directory if needed
 path_hm_d1 := $(path_hm_d1)$(v1)
@@ -54,9 +61,10 @@ halmac-$(usb) += 	$(path_hm_d1)/halmac_usb_88xx$(v1).o
 
 # Level 2 directory
 path_hm_d2 := $(path_hm_d1)/halmac_$(ic)
-halmac-y +=		$(path_hm_d2)/halmac_cfg_wmac_$(ic).o \
-			$(path_hm_d2)/halmac_common_$(ic).o \
-			$(path_hm_d2)/halmac_gpio_$(ic).o \
+halmac-$(d2all) +=	$(path_hm_d2)/halmac_cfg_wmac_$(ic).o \
+			$(path_hm_d2)/halmac_common_$(ic).o
+
+halmac-y	+=	$(path_hm_d2)/halmac_gpio_$(ic).o \
 			$(path_hm_d2)/halmac_init_$(ic).o \
 			$(path_hm_d2)/halmac_phy_$(ic).o \
 			$(path_hm_d2)/halmac_pwr_seq_$(ic).o

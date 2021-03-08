@@ -245,13 +245,11 @@ int rtw_dev_get_feature_set(struct net_device *dev)
 {
 	_adapter *adapter = (_adapter *)rtw_netdev_priv(dev);
 	HAL_DATA_TYPE *HalData = GET_HAL_DATA(adapter);
-	HAL_VERSION *hal_ver = &HalData->version_id;
-
 	int feature_set = 0;
 
 	feature_set |= WIFI_FEATURE_INFRA;
 
-#ifdef CONFIG_IEEE80211_BAND_5GHZ
+#if CONFIG_IEEE80211_BAND_5GHZ
 	if (is_supported_5g(adapter_to_regsty(adapter)->wireless_mode))
 		feature_set |= WIFI_FEATURE_INFRA_5G;
 #endif
@@ -1596,7 +1594,11 @@ void rtw_hal_set_hw_mac_addr(PADAPTER adapter, u8 *mac_addr)
 	rtw_ps_deny(adapter, PS_DENY_IOCTL);
 	LeaveAllPowerSaveModeDirect(adapter);
 
+#ifdef CONFIG_MI_WITH_MBSSID_CAM
+	rtw_hal_change_macaddr_mbid(adapter, mac_addr);
+#else
 	rtw_hal_set_hwreg(adapter, HW_VAR_MAC_ADDR, mac_addr);
+#endif
 #ifdef CONFIG_RTW_DEBUG
 	rtw_hal_dump_macaddr(RTW_DBGDUMP, adapter);
 #endif

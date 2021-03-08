@@ -26,7 +26,7 @@
 #ifndef __PHYDM_PMAC_TX_SETTING_H__
 #define __PHYDM_PMAC_TX_SETTING_H__
 
-#define PMAC_TX_SETTING_VERSION "1.0"
+#define PMAC_TX_SETTING_VERSION "1.3"
 
 /* @1 ============================================================
  * 1  Definition
@@ -98,41 +98,6 @@ enum phydm_pmac_mode {
  * 1  function prototype
  * 1 ============================================================
  */
-#ifdef PHYDM_IC_JGR3_SERIES_SUPPORT
-void phydm_start_cck_cont_tx_jgr3(void *dm_void,
-				  struct phydm_pmac_info *tx_info);
-
-void phydm_stop_cck_cont_tx_jgr3(void *dm_void);
-
-void phydm_start_ofdm_cont_tx_jgr3(void *dm_void);
-
-void phydm_stop_ofdm_cont_tx_jgr3(void *dm_void);
-
-void phydm_set_single_tone_jgr3(void *dm_void, boolean is_single_tone,
-				boolean en_pmac_tx, u8 path);
-
-void phydm_stop_pmac_tx_jgr3(void *dm_void, struct phydm_pmac_info *tx_info);
-
-void phydm_set_mac_phy_txinfo_jgr3(void *dm_void,
-				   struct phydm_pmac_info *tx_info);
-
-
-void phydm_set_sig_jgr3(void *dm_void, struct phydm_pmac_info *tx_info);
-
-void phydm_set_cck_preamble_hdr_jgr3(void *dm_void,
-				     struct phydm_pmac_info *tx_info);
-
-void phydm_set_mode_jgr3(void *dm_void, struct phydm_pmac_info *tx_info,
-			 enum phydm_pmac_mode mode);
-
-void phydm_set_pmac_txon_jgr3(void *dm_void, struct phydm_pmac_info *tx_info);
-
-void phydm_set_pmac_tx_jgr3(void *dm_void, struct phydm_pmac_info *tx_info,
-			    enum rf_path mpt_rf_path);
-
-void phydm_set_tmac_tx_jgr3(void *dm_void);
-#endif
-
 void phydm_start_cck_cont_tx(void *dm_void, struct phydm_pmac_info *tx_info);
 
 void phydm_stop_cck_cont_tx(void *dm_void);

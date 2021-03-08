@@ -23,7 +23,7 @@
  *
  *****************************************************************************/
 
-/*Image2HeaderVersion: R3 1.5.3*/
+/*Image2HeaderVersion: R3 1.5.10*/
 #if (RTL8822B_SUPPORT == 1)
 #ifndef __INC_MP_BB_HW_IMG_8822B_H
 #define __INC_MP_BB_HW_IMG_8822B_H
@@ -99,6 +99,15 @@ u32 odm_get_version_mp_8822b_phy_reg_pg_type17(void);
 void
 odm_read_and_config_mp_8822b_phy_reg_pg_type18(struct dm_struct *dm);
 u32 odm_get_version_mp_8822b_phy_reg_pg_type18(void);
+
+/******************************************************************************
+ *                           phy_reg_pg_type19.TXT
+ ******************************************************************************/
+
+/* tc: Test Chip, mp: mp Chip*/
+void
+odm_read_and_config_mp_8822b_phy_reg_pg_type19(struct dm_struct *dm);
+u32 odm_get_version_mp_8822b_phy_reg_pg_type19(void);
 
 /******************************************************************************
  *                           phy_reg_pg_type2.TXT

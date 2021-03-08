@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -43,6 +43,7 @@
 #define CMD_ID_IQK_OFFLOAD 0X05
 #define CMD_ID_MACID_CFG_3SS 0X06
 #define CMD_ID_RA_PARA_ADJUST 0X07
+#define CMD_ID_REQ_TXRPT_ACQ 0X12
 #define CMD_ID_WWLAN 0X00
 #define CMD_ID_REMOTE_WAKE_CTRL 0X01
 #define CMD_ID_AOAC_GLOBAL_INFO 0X02
@@ -80,6 +81,7 @@
 #define CLASS_IQK_OFFLOAD 0X2
 #define CLASS_MACID_CFG_3SS 0X2
 #define CLASS_RA_PARA_ADJUST 0X02
+#define CLASS_REQ_TXRPT_ACQ 0X02
 #define CLASS_WWLAN 0X4
 #define CLASS_REMOTE_WAKE_CTRL 0X4
 #define CLASS_AOAC_GLOBAL_INFO 0X04
@@ -845,6 +847,20 @@
 	LE_BITS_TO_4BYTE(h2c_pkt + 0X04, 16, 8)
 #define RA_PARA_ADJUST_SET_ASK_FW_FOR_FW_PARA(h2c_pkt, value)                  \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X04, 16, 8, value)
+#define REQ_TXRPT_ACQ_GET_CMD_ID(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X00, 0, 5)
+#define REQ_TXRPT_ACQ_SET_CMD_ID(h2c_pkt, value)                               \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X00, 0, 5, value)
+#define REQ_TXRPT_ACQ_GET_CLASS(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X00, 5, 3)
+#define REQ_TXRPT_ACQ_SET_CLASS(h2c_pkt, value)                                \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X00, 5, 3, value)
+#define REQ_TXRPT_ACQ_GET_STA1_MACID(h2c_pkt)                                  \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X00, 8, 8)
+#define REQ_TXRPT_ACQ_SET_STA1_MACID(h2c_pkt, value)                           \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X00, 8, 8, value)
+#define REQ_TXRPT_ACQ_GET_PASS_DROP_SEL(h2c_pkt)                               \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X00, 16, 8)
+#define REQ_TXRPT_ACQ_SET_PASS_DROP_SEL(h2c_pkt, value)                        \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X00, 16, 8, value)
 #define WWLAN_GET_CMD_ID(h2c_pkt) LE_BITS_TO_4BYTE(h2c_pkt + 0X00, 0, 5)
 #define WWLAN_SET_CMD_ID(h2c_pkt, value)                                       \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X00, 0, 5, value)
@@ -961,6 +977,10 @@
 	LE_BITS_TO_4BYTE(h2c_pkt + 0X00, 24, 1)
 #define REMOTE_WAKE_CTRL_SET_ARP_ACTION(h2c_pkt, value)                        \
 	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X00, 24, 1, value)
+#define REMOTE_WAKE_CTRL_GET_TIM_PARSER_EN(h2c_pkt)                            \
+	LE_BITS_TO_4BYTE(h2c_pkt + 0X00, 26, 1)
+#define REMOTE_WAKE_CTRL_SET_TIM_PARSER_EN(h2c_pkt, value)                     \
+	SET_BITS_TO_LE_4BYTE(h2c_pkt + 0X00, 26, 1, value)
 #define REMOTE_WAKE_CTRL_GET_FW_PARSING_UNTIL_WAKEUP(h2c_pkt)                  \
 	LE_BITS_TO_4BYTE(h2c_pkt + 0X00, 28, 1)
 #define REMOTE_WAKE_CTRL_SET_FW_PARSING_UNTIL_WAKEUP(h2c_pkt, value)           \

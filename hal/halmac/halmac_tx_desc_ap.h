@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -17,7 +17,7 @@
 #define _HALMAC_TX_DESC_AP_H_
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8812F_SUPPORT)
+     HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 /*TXDESC_WORD0*/
 
@@ -49,7 +49,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_GF(txdesc, value)                                          \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword0,   \
@@ -79,7 +79,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_NO_ACM(txdesc, value)                                      \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword0,   \
@@ -108,7 +108,8 @@
 #endif
 
 #if (HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT || HALMAC_8821C_SUPPORT ||   \
-     HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT || HALMAC_8812F_SUPPORT ||   \
+     HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_BCNPKT_TSF_CTRL(txdesc, value)                             \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword0,   \
@@ -124,7 +125,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_AMSDU_PAD_EN(txdesc, value)                                \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword0,   \
@@ -140,7 +141,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8812F_SUPPORT)
+     HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_LS(txdesc, value)                                          \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword0,   \
@@ -156,7 +157,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_HTC(txdesc, value)                                         \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword0,   \
@@ -195,7 +196,8 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8814B_SUPPORT || HALMAC_8198F_SUPPORT ||   \
-     HALMAC_8822C_SUPPORT || HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8822C_SUPPORT || HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT ||   \
+     HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_OFFSET(txdesc, value)                                      \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword0,   \
@@ -218,7 +220,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 /*WORD1*/
 
@@ -248,7 +250,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_FTM_EN_V1(txdesc, value)                                   \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword1,   \
@@ -278,7 +280,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_MOREDATA(txdesc, value)                                    \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword1,   \
@@ -317,7 +319,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_PKT_OFFSET(txdesc, value)                                  \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword1,   \
@@ -347,7 +349,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_SEC_TYPE(txdesc, value)                                    \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword1,   \
@@ -395,7 +397,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_PIFS(txdesc, value)                                        \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword1,   \
@@ -443,7 +445,8 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8814B_SUPPORT || HALMAC_8198F_SUPPORT ||   \
-     HALMAC_8822C_SUPPORT || HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8822C_SUPPORT || HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT ||   \
+     HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_QSEL(txdesc, value)                                        \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword1,   \
@@ -457,7 +460,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_SPECIAL_CW(txdesc, value)                                  \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword1,   \
@@ -472,7 +475,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_MACID(txdesc, value)                                       \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword1,   \
@@ -546,7 +549,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_ANTCEL_D_V1(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword2,   \
@@ -604,7 +607,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_ANTSEL_C_V1(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword2,   \
@@ -620,7 +623,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_BT_NULL(txdesc, value)                                     \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword2,   \
@@ -695,7 +698,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_NULL_1(txdesc, value)                                      \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword2,   \
@@ -747,7 +750,7 @@
 
 #if (HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT || HALMAC_8821C_SUPPORT ||   \
      HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT || HALMAC_8192F_SUPPORT ||   \
-     HALMAC_8812F_SUPPORT)
+     HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_TRI_FRAME(txdesc, value)                                   \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword2,   \
@@ -762,7 +765,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_P_AID(txdesc, value)                                       \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword2,   \
@@ -792,7 +795,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 /*TXDESC_WORD3*/
 
@@ -851,7 +854,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_NAVUSEHDR(txdesc, value)                                   \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword3,   \
@@ -917,7 +920,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_DISDATAFB(txdesc, value)                                   \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword3,   \
@@ -978,7 +981,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_WHEADER_LEN(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword3,   \
@@ -1008,7 +1011,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 /*TXDESC_WORD4*/
 
@@ -1122,7 +1125,7 @@
 #endif
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
-     HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT)
+     HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_TXPWR_OFSET(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword5,   \
@@ -1180,7 +1183,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_DROP_ID(txdesc, value)                                     \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword5,   \
@@ -1210,7 +1213,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8812F_SUPPORT)
+     HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_PORT_ID(txdesc, value)                                     \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword5,   \
@@ -1239,7 +1242,8 @@
 #endif
 
 #if (HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT || HALMAC_8821C_SUPPORT ||   \
-     HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT || HALMAC_8812F_SUPPORT ||   \
+     HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_MULTIPLE_PORT(txdesc, value)                               \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword5,   \
@@ -1255,7 +1259,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8812F_SUPPORT)
+     HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_SIGNALING_TAPKT_EN(txdesc, value)                          \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword5,   \
@@ -1270,7 +1274,7 @@
 #endif
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8197F_SUPPORT || HALMAC_8198F_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_RTS_SC(txdesc, value)                                      \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword5,   \
@@ -1301,7 +1305,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_RTS_SHORT(txdesc, value)                                   \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword5,   \
@@ -1381,7 +1385,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_ANT_MAPD_V1(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword6,   \
@@ -1424,7 +1428,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_ANT_MAPC_V1(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword6,   \
@@ -1467,7 +1471,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_ANT_MAPB_V1(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword6,   \
@@ -1510,7 +1514,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_ANT_MAPA_V1(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword6,   \
@@ -1582,7 +1586,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_ANTSEL_B_V1(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword6,   \
@@ -1634,7 +1638,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_ANTSEL_A_V1(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword6,   \
@@ -1664,7 +1668,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_MBSSID(txdesc, value)                                      \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword6,   \
@@ -1693,7 +1697,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT || HALMAC_8192F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8192F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_SWPS_SEQ(txdesc, value)                                    \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword6,   \
@@ -1709,7 +1713,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 /*TXDESC_WORD7*/
 
@@ -1727,7 +1731,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8812F_SUPPORT)
+     HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_FINAL_DATA_RATE(txdesc, value)                             \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword7,   \
@@ -1766,7 +1770,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8812F_SUPPORT)
+     HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_NTX_MAP(txdesc, value)                                     \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword7,   \
@@ -1780,7 +1784,7 @@
 
 #endif
 
-#if (HALMAC_8198F_SUPPORT)
+#if (HALMAC_8198F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_ANTSEL_EN(txdesc, value)                                   \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword7,   \
@@ -1819,7 +1823,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_TX_BUFF_SIZE(txdesc, value)                                \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword7,   \
@@ -1853,7 +1857,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8812F_SUPPORT)
+     HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 /*TXDESC_WORD8*/
 
@@ -1934,7 +1938,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_TAILPAGE_L(txdesc, value)                                  \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword8,   \
@@ -1997,7 +2001,7 @@
 
 #endif
 
-#if (HALMAC_8812F_SUPPORT)
+#if (HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_EN_HWSEQ_MODE(txdesc, value)                               \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword8,   \
@@ -2013,7 +2017,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_DATA_RC(txdesc, value)                                     \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword8,   \
@@ -2046,7 +2050,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8812F_SUPPORT)
+     HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 /*TXDESC_WORD9*/
 
@@ -2087,7 +2091,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_SW_SEQ(txdesc, value)                                      \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword9,   \
@@ -2103,7 +2107,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8812F_SUPPORT)
+     HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_TXBF_PATH(txdesc, value)                                   \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword9,   \
@@ -2119,7 +2123,7 @@
 
 #if (HALMAC_8814A_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8197F_SUPPORT ||   \
      HALMAC_8821C_SUPPORT || HALMAC_8198F_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT)
+     HALMAC_8192F_SUPPORT || HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_PADDING_LEN(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword9,   \
@@ -2155,6 +2159,11 @@
 #define GET_TX_DESC_HT_DATA_SND(txdesc)                                        \
 	HALMAC_GET_DESC_FIELD(((struct halmac_tx_desc *)txdesc)->dword10, 0x1, \
 			      31)
+
+#endif
+
+#if (HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
+
 #define SET_TX_DESC_SHCUT_CAM(txdesc, value)                                   \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword10,  \
 				  value, 0x3f, 16)
@@ -2215,7 +2224,7 @@
 #endif
 
 #if (HALMAC_8822B_SUPPORT || HALMAC_8821C_SUPPORT || HALMAC_8822C_SUPPORT ||   \
-     HALMAC_8812F_SUPPORT)
+     HALMAC_8812F_SUPPORT || HALMAC_8197G_SUPPORT)
 
 #define SET_TX_DESC_SND_PKT_SEL(txdesc, value)                                 \
 	HALMAC_SET_DESC_FIELD_CLR(((struct halmac_tx_desc *)txdesc)->dword10,  \

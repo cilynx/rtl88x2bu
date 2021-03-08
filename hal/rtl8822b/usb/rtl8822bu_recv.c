@@ -36,7 +36,6 @@ static u8 recvbuf2recvframe_proccess_c2h(PADAPTER padapter, u8 *pbuf, s32 transf
 	/* send rx desc + c2h content to halmac */
 	rtl8822b_c2h_handler_no_io(padapter, pbuf, transfer_len);
 
-exit:
 	return ret;
 }
 

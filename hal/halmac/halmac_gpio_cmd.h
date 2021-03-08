@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -88,6 +88,13 @@
 #define HALMAC_BT_LNAON_SEL		42
 #define HALMAC_WLBT_LNAON_SEL		43
 #define HALMAC_SWR_CTRL_EN		44
+#define HALMAC_UART_BRIDGE		45
+#define HALMAC_BT_I2C			46
+#define HALMAC_BTCOEX_CMD		47
+#define HALMAC_BT_UART_INTF		48
+#define HALMAC_DATA_CPU_JTAG		49
+#define HALMAC_DATA_CPU_SFLASH		50
+#define HALMAC_DATA_CPU_UART		51
 
 struct halmac_gpio_pimux_list {
 	u16 func;

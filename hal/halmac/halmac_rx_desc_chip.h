@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2019 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -686,6 +686,89 @@
 /*RXDESC_WORD5*/
 
 #define GET_RX_DESC_TSFL_8192F(rxdesc) GET_RX_DESC_TSFL(rxdesc)
+
+#endif
+
+#if (HALMAC_8197G_SUPPORT)
+
+/*RXDESC_WORD0*/
+
+#define GET_RX_DESC_EOR_8197G(rxdesc) GET_RX_DESC_EOR(rxdesc)
+#define GET_RX_DESC_PHYPKTIDC_8197G(rxdesc) GET_RX_DESC_PHYPKTIDC(rxdesc)
+#define GET_RX_DESC_SWDEC_8197G(rxdesc) GET_RX_DESC_SWDEC(rxdesc)
+#define GET_RX_DESC_PHYST_8197G(rxdesc) GET_RX_DESC_PHYST(rxdesc)
+#define GET_RX_DESC_SHIFT_8197G(rxdesc) GET_RX_DESC_SHIFT(rxdesc)
+#define GET_RX_DESC_QOS_8197G(rxdesc) GET_RX_DESC_QOS(rxdesc)
+#define GET_RX_DESC_SECURITY_8197G(rxdesc) GET_RX_DESC_SECURITY(rxdesc)
+#define GET_RX_DESC_DRV_INFO_SIZE_8197G(rxdesc)                                \
+	GET_RX_DESC_DRV_INFO_SIZE(rxdesc)
+#define GET_RX_DESC_ICV_ERR_8197G(rxdesc) GET_RX_DESC_ICV_ERR(rxdesc)
+#define GET_RX_DESC_CRC32_8197G(rxdesc) GET_RX_DESC_CRC32(rxdesc)
+#define GET_RX_DESC_PKT_LEN_8197G(rxdesc) GET_RX_DESC_PKT_LEN(rxdesc)
+
+/*RXDESC_WORD1*/
+
+#define GET_RX_DESC_BC_8197G(rxdesc) GET_RX_DESC_BC(rxdesc)
+#define GET_RX_DESC_MC_8197G(rxdesc) GET_RX_DESC_MC(rxdesc)
+#define GET_RX_DESC_TY_PE_8197G(rxdesc) GET_RX_DESC_TY_PE(rxdesc)
+#define GET_RX_DESC_MF_8197G(rxdesc) GET_RX_DESC_MF(rxdesc)
+#define GET_RX_DESC_MD_8197G(rxdesc) GET_RX_DESC_MD(rxdesc)
+#define GET_RX_DESC_PWR_8197G(rxdesc) GET_RX_DESC_PWR(rxdesc)
+#define GET_RX_DESC_PAM_8197G(rxdesc) GET_RX_DESC_PAM(rxdesc)
+#define GET_RX_DESC_CHK_VLD_8197G(rxdesc) GET_RX_DESC_CHK_VLD(rxdesc)
+#define GET_RX_DESC_RX_IS_TCP_UDP_8197G(rxdesc)                                \
+	GET_RX_DESC_RX_IS_TCP_UDP(rxdesc)
+#define GET_RX_DESC_RX_IPV_8197G(rxdesc) GET_RX_DESC_RX_IPV(rxdesc)
+#define GET_RX_DESC_CHKERR_8197G(rxdesc) GET_RX_DESC_CHKERR(rxdesc)
+#define GET_RX_DESC_PAGGR_8197G(rxdesc) GET_RX_DESC_PAGGR(rxdesc)
+#define GET_RX_DESC_RXID_MATCH_8197G(rxdesc) GET_RX_DESC_RXID_MATCH(rxdesc)
+#define GET_RX_DESC_AMSDU_8197G(rxdesc) GET_RX_DESC_AMSDU(rxdesc)
+#define GET_RX_DESC_MACID_VLD_8197G(rxdesc) GET_RX_DESC_MACID_VLD(rxdesc)
+#define GET_RX_DESC_TID_8197G(rxdesc) GET_RX_DESC_TID(rxdesc)
+#define GET_RX_DESC_MACID_8197G(rxdesc) GET_RX_DESC_MACID(rxdesc)
+
+/*RXDESC_WORD2*/
+
+#define GET_RX_DESC_FCS_OK_8197G(rxdesc) GET_RX_DESC_FCS_OK(rxdesc)
+#define GET_RX_DESC_PPDU_CNT_8197G(rxdesc) GET_RX_DESC_PPDU_CNT(rxdesc)
+#define GET_RX_DESC_C2H_8197G(rxdesc) GET_RX_DESC_C2H(rxdesc)
+#define GET_RX_DESC_HWRSVD_8197G(rxdesc) GET_RX_DESC_HWRSVD_V1(rxdesc)
+#define GET_RX_DESC_WLANHD_IV_LEN_8197G(rxdesc)                                \
+	GET_RX_DESC_WLANHD_IV_LEN(rxdesc)
+#define GET_RX_DESC_RX_STATISTICS_8197G(rxdesc)                                \
+	GET_RX_DESC_RX_STATISTICS(rxdesc)
+#define GET_RX_DESC_RX_IS_QOS_8197G(rxdesc) GET_RX_DESC_RX_IS_QOS(rxdesc)
+#define GET_RX_DESC_FRAG_8197G(rxdesc) GET_RX_DESC_FRAG(rxdesc)
+#define GET_RX_DESC_SEQ_8197G(rxdesc) GET_RX_DESC_SEQ(rxdesc)
+
+/*RXDESC_WORD3*/
+
+#define GET_RX_DESC_DMA_AGG_NUM_8197G(rxdesc) GET_RX_DESC_DMA_AGG_NUM(rxdesc)
+#define GET_RX_DESC_BSSID_FIT_1_0_8197G(rxdesc)                                \
+	GET_RX_DESC_BSSID_FIT_1_0(rxdesc)
+#define GET_RX_DESC_EOSP_8197G(rxdesc) GET_RX_DESC_EOSP(rxdesc)
+#define GET_RX_DESC_HTC_8197G(rxdesc) GET_RX_DESC_HTC(rxdesc)
+#define GET_RX_DESC_BSSID_FIT_4_2_8197G(rxdesc)                                \
+	GET_RX_DESC_BSSID_FIT_4_2(rxdesc)
+#define GET_RX_DESC_RX_RATE_8197G(rxdesc) GET_RX_DESC_RX_RATE(rxdesc)
+
+/*RXDESC_WORD4*/
+
+#define GET_RX_DESC_A1_FIT_A1_8197G(rxdesc) GET_RX_DESC_A1_FIT_A1(rxdesc)
+#define GET_RX_DESC_MACID_RPT_BUFF_8197G(rxdesc)                               \
+	GET_RX_DESC_MACID_RPT_BUFF(rxdesc)
+#define GET_RX_DESC_RX_PRE_NDP_VLD_8197G(rxdesc)                               \
+	GET_RX_DESC_RX_PRE_NDP_VLD(rxdesc)
+#define GET_RX_DESC_RX_SCRAMBLER_8197G(rxdesc) GET_RX_DESC_RX_SCRAMBLER(rxdesc)
+#define GET_RX_DESC_RX_EOF_8197G(rxdesc) GET_RX_DESC_RX_EOF(rxdesc)
+#define GET_RX_DESC_FC_POWER_8197G(rxdesc) GET_RX_DESC_FC_POWER(rxdesc)
+#define GET_RX_DESC_TXRPTMID_CTL_MASK_8197G(rxdesc)                            \
+	GET_RX_DESC_TXRPTMID_CTL_MASK(rxdesc)
+#define GET_RX_DESC_SWPS_RPT_8197G(rxdesc) GET_RX_DESC_SWPS_RPT(rxdesc)
+
+/*RXDESC_WORD5*/
+
+#define GET_RX_DESC_TSFL_8197G(rxdesc) GET_RX_DESC_TSFL(rxdesc)
 
 #endif
 

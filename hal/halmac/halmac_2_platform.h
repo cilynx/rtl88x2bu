@@ -73,6 +73,12 @@
  */
 #define HALMAC_MSG_LEVEL HALMAC_MSG_LEVEL_TRACE
 
+#ifdef DBG_IO
+#define HALMAC_DBG_MONITOR_IO		1
+#else
+#define HALMAC_DBG_MONITOR_IO		0
+#endif /*DBG_IO*/
+
 /*[Driver] define the Rx FIFO expanding mode packet size unit for 8821C and 8822B */
 /*Should be 8 Byte alignment*/
 #define HALMAC_RX_FIFO_EXPANDING_MODE_PKT_SIZE	80 /*Bytes*/

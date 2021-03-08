@@ -532,10 +532,10 @@ u8 *rtw_tdls_set_ht_cap(_adapter *padapter, u8 *pframe, struct pkt_attrib *pattr
 void rtw_tdls_process_vht_cap(_adapter *padapter, struct sta_info *ptdls_sta, u8 *data, u8 Length)
 {
 	struct rf_ctl_t *rfctl = adapter_to_rfctl(padapter);
-	struct hal_spec_t *hal_spec = GET_HAL_SPEC(padapter);
 	struct mlme_priv		*pmlmepriv = &padapter->mlmepriv;
 	struct vht_priv			*pvhtpriv = &pmlmepriv->vhtpriv;
-	u8	cur_ldpc_cap = 0, cur_stbc_cap = 0, cur_beamform_cap = 0, rf_type = RF_1T1R, tx_nss = 0;
+	u8	cur_ldpc_cap = 0, cur_stbc_cap = 0, tx_nss = 0;
+	u16 cur_beamform_cap = 0;
 	u8	*pcap_mcs;
 
 	_rtw_memset(&ptdls_sta->vhtpriv, 0, sizeof(struct vht_priv));
@@ -560,8 +560,10 @@ void rtw_tdls_process_vht_cap(_adapter *padapter, struct sta_info *ptdls_sta, u8
 	if (ptdls_sta->flags & WLAN_STA_VHT) {
 		if (REGSTY_IS_11AC_ENABLE(&padapter->registrypriv)
 		    && is_supported_vht(padapter->registrypriv.wireless_mode)
-		    && (!rfctl->country_ent || COUNTRY_CHPLAN_EN_11AC(rfctl->country_ent)))
+		    && (!rfctl->country_ent || COUNTRY_CHPLAN_EN_11AC(rfctl->country_ent))) {
 			ptdls_sta->vhtpriv.vht_option = _TRUE;
+			ptdls_sta->cmn.ra_info.is_vht_enable = _TRUE;
+		}
 		else
 			ptdls_sta->vhtpriv.vht_option = _FALSE;
 	}
@@ -596,6 +598,7 @@ void rtw_tdls_process_vht_cap(_adapter *padapter, struct sta_info *ptdls_sta, u8
 	    GET_VHT_CAPABILITY_ELE_SU_BFER(data))
 		SET_FLAG(cur_beamform_cap, BEAMFORMING_VHT_BEAMFORMER_ENABLE);
 	ptdls_sta->vhtpriv.beamform_cap = cur_beamform_cap;
+	ptdls_sta->cmn.bf_info.vht_beamform_cap = cur_beamform_cap;
 	if (cur_beamform_cap)
 		RTW_INFO("Current VHT Beamforming Setting = %02X\n", cur_beamform_cap);
 	#endif /*CONFIG_BEAMFORMING*/
@@ -604,8 +607,7 @@ void rtw_tdls_process_vht_cap(_adapter *padapter, struct sta_info *ptdls_sta, u8
 	ptdls_sta->vhtpriv.ampdu_len = GET_VHT_CAPABILITY_ELE_MAX_RXAMPDU_FACTOR(data);
 
 	pcap_mcs = GET_VHT_CAPABILITY_ELE_RX_MCS(data);
-	rtw_hal_get_hwreg(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
-	tx_nss = rtw_min(rf_type_to_rf_tx_cnt(rf_type), hal_spec->tx_nss_num);
+	tx_nss = GET_HAL_TX_NSS(padapter);
 	rtw_vht_nss_to_mcsmap(tx_nss, ptdls_sta->vhtpriv.vht_mcs_map, pcap_mcs);
 	ptdls_sta->vhtpriv.vht_highest_rate = rtw_get_vht_highest_rate(ptdls_sta->vhtpriv.vht_mcs_map);
 }

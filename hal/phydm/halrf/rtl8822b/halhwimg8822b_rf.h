@@ -23,7 +23,7 @@
  *
  *****************************************************************************/
 
-/*Image2HeaderVersion: R3 1.5.3*/
+/*Image2HeaderVersion: R3 1.5.10*/
 #if (RTL8822B_SUPPORT == 1)
 #ifndef __INC_MP_RF_HW_IMG_8822B_H
 #define __INC_MP_RF_HW_IMG_8822B_H
@@ -42,6 +42,7 @@
  * #define CONFIG_8822B_TYPE16_DRV_DIS
  * #define CONFIG_8822B_TYPE17_DRV_DIS
  * #define CONFIG_8822B_TYPE18_DRV_DIS
+ * #define CONFIG_8822B_TYPE19_DRV_DIS
  * #define CONFIG_8822B_TYPE2_DRV_DIS
  * #define CONFIG_8822B_TYPE3_TYPE5_DRV_DIS
  * #define CONFIG_8822B_TYPE4_DRV_DIS
@@ -111,6 +112,11 @@
 #define CONFIG_8822B_TYPE18
 #ifdef CONFIG_8822B_TYPE18_DRV_DIS
     #undef CONFIG_8822B_TYPE18
+#endif
+
+#define CONFIG_8822B_TYPE19
+#ifdef CONFIG_8822B_TYPE19_DRV_DIS
+    #undef CONFIG_8822B_TYPE19
 #endif
 
 #define CONFIG_8822B_TYPE2
@@ -285,6 +291,15 @@ odm_read_and_config_mp_8822b_txpowertrack_type18(struct dm_struct *dm);
 u32 odm_get_version_mp_8822b_txpowertrack_type18(void);
 
 /******************************************************************************
+ *                           txpowertrack_type19.TXT
+ ******************************************************************************/
+
+/* tc: Test Chip, mp: mp Chip*/
+void
+odm_read_and_config_mp_8822b_txpowertrack_type19(struct dm_struct *dm);
+u32 odm_get_version_mp_8822b_txpowertrack_type19(void);
+
+/******************************************************************************
  *                           txpowertrack_type2.TXT
  ******************************************************************************/
 
@@ -400,6 +415,15 @@ u32 odm_get_version_mp_8822b_txpwr_lmt_type17(void);
 void
 odm_read_and_config_mp_8822b_txpwr_lmt_type18(struct dm_struct *dm);
 u32 odm_get_version_mp_8822b_txpwr_lmt_type18(void);
+
+/******************************************************************************
+ *                           txpwr_lmt_type19.TXT
+ ******************************************************************************/
+
+/* tc: Test Chip, mp: mp Chip*/
+void
+odm_read_and_config_mp_8822b_txpwr_lmt_type19(struct dm_struct *dm);
+u32 odm_get_version_mp_8822b_txpwr_lmt_type19(void);
 
 /******************************************************************************
  *                           txpwr_lmt_type2.TXT

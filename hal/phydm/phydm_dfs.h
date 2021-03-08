@@ -76,6 +76,7 @@ struct _DFS_STATISTICS {
 	boolean		det_print;
 	boolean		det_print2;
 	boolean		radar_type;
+	u8		dfs_polling_time;
 	/*@dfs histogram*/
 	boolean		print_hist_rpt;
 	boolean		hist_cond_on;
@@ -174,6 +175,12 @@ u8 phydm_dfs_polling_time(void *dm_void);
 
 boolean
 phydm_dfs_is_meteorology_channel(void *dm_void);
+
+void
+phydm_dfs_segment_distinguish(void *dm_void, enum rf_syn syn_path);
+
+void
+phydm_dfs_segment_flag_reset(void *dm_void);
 
 boolean
 phydm_is_dfs_band(void *dm_void);
