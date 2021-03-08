@@ -6005,7 +6005,7 @@ ssize_t proc_set_tx_deauth(struct file *file, const char __user *buffer, size_t 
 		}
 		RTW_INFO("key_type=%d\n", key_type);
 	}
-	if (key_type < 0 || key_type > 4)
+	if (key_type > 4)
 		return count;
 
 	if ((check_fwstate(pmlmepriv, WIFI_STATION_STATE) == _TRUE)
