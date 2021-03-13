@@ -5,7 +5,7 @@ set -euo pipefail
 VER="$(sed -En 's/^PACKAGE_VERSION="(.*)"/\1/p' dkms.conf)"
 DRV_NAME=rtl88x2bu
 
-if ! sudo -v
+if [ "$EUID" -ne 0 ]
 then
     echo "Root privileges required to run this script!" >&2
     exit 1
