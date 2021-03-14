@@ -46,6 +46,12 @@ modules:
     sudo dkms remove rtl88x2bu/5.8.7.4 --all
     find /lib/modules -name cfg80211.ko -ls
     sudo rm -f /lib/modules/*/updates/net/wireless/cfg80211.ko
+    
+    
+This can also be caused by cfg80211 module not being present in the kernel.
+You can remedy this by running:
+
+    sudo modprobe cfg80211
 
 
 ## Raspberry Pi Access Point
