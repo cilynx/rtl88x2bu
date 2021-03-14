@@ -174,4 +174,8 @@ wlx74ee2ae24062  IEEE 802.11an  ESSID:"borg"  Nickname:"<WIFI@REALTEK>"
           Tx excessive retries:0  Invalid misc:0   Missed beacon:0
 
 ```
-If you want to setup masquerading or bridging, check out [the official Raspberry Pi docs](https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md).
+If you want to setup
+[masquerading](https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md)
+or
+[bridging](https://www.raspberrypi.org/documentation/configuration/wireless/access-point-bridged.md),
+check out the official Raspberry Pi docs.
