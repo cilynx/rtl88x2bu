@@ -46,7 +46,9 @@ sudo dkms install -m rtl88x2bu -v ${VER}
 sudo modprobe 88x2bu
 ```
 
-## Raspberry Pi Access Point
+## Raspberry Pi
+
+### driver installation 
 
 ```bash
 # Update all packages per normal
@@ -54,7 +56,7 @@ sudo apt update
 sudo apt upgrade
 
 # Install prereqs
-sudo apt install git dnsmasq hostapd bc build-essential dkms raspberrypi-kernel-headers
+sudo apt install git bc build-essential dkms raspberrypi-kernel-headers
 
 # Reboot just in case there were any kernel updates
 sudo reboot
@@ -76,6 +78,14 @@ sudo dkms install -m rtl88x2bu -v ${VER}
 
 # Plug in your adapter then confirm your new interface name
 ip addr
+```
+
+### access point setup
+> complete driver installation above first!
+> 
+```bash
+# Install prereqs
+sudo apt install dnsmasq hostapd
 
 # Set a static IP for the new interface (adjust if you have a different interface name or preferred IP)
 sudo tee -a /etc/dhcpcd.conf <<EOF
