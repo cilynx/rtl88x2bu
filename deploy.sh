@@ -32,6 +32,6 @@ function deploy_driver() {
     sudo modprobe 88x2bu
 }
 
-ensure_no_cli_args
+ensure_no_cli_args "$@"
 ensure_root_permissions
 deploy_driver
