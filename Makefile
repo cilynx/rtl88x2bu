@@ -1309,10 +1309,17 @@ else
 endif
 CROSS_COMPILE ?=
 KVER  ?= $(shell uname -r)
-KSRC ?= /lib/modules/$(KVER)/build
-MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
+ifeq ($(KBASE),)
+	KBASE = /lib/modules/$(KVER)
+	KSRC = $(KBASE)/build
+	MODDESTDIR = $(KBASE)/kernel/drivers/net/wireless/
+	STAGINGMODDIR = $(KBASE)/kernel/drivers/staging
+else
+	KSRC = $(KBASE)
+	MODDESTDIR = $(KBASE)/drivers/net/wireless/
+	STAGINGMODDIR = $(KBASE)/drivers/staging
+endif
 INSTALL_PREFIX :=
-STAGINGMODDIR := /lib/modules/$(KVER)/kernel/drivers/staging
 endif
 
 ifeq ($(CONFIG_PLATFORM_NV_TK1), y)
