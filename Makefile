@@ -1297,6 +1297,8 @@ EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
 EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
 ifeq ($(CONFIG_PLATFORM_ARM_RPI), y)
 	ARCH := arm
+	_WARNING := $(warning ARM_RPI requested. Must disable -Werror.)
+	EXTRA_CFLAGS += -Wno-error
 else
 	ARCH := $(shell uname -m | sed -e s/i.86/i386/)
 endif
