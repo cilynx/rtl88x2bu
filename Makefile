@@ -1293,26 +1293,19 @@ else
 EXTRA_CFLAGS += -DRTW_VHT_2G4=0
 endif
 
-ifeq ($(CONFIG_PLATFORM_ARM_NV_NANO), y)
+ifeq (y, $(filter y, $(CONFIG_PLATFORM_I386_PC) $(CONFIG_PLATFORM_ARM_NV_NANO) $(CONFIG_PLATFORM_ARM_RPI)))
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
 EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
-ARCH := arm64
-KVER := $(shell uname -r)
-KSRC := /lib/modules/$(KVER)/build
-MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
-INSTALL_PREFIX :=
-STAGINGMODDIR := /lib/modules/$(KVER)/kernel/drivers/staging
-endif
-
-ifeq (y, $(filter y, $(CONFIG_PLATFORM_ARM_RPI) $(CONFIG_PLATFORM_I386_PC)))
-EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
-EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
-ifeq ($(CONFIG_PLATFORM_ARM_RPI), y)
-	ARCH := arm
-	_WARNING := $(warning ARM_RPI requested. Must disable -Werror.)
-	EXTRA_CFLAGS += -Wno-error
-else
+ifeq ($(CONFIG_PLATFORM_I386_PC), y)
 	ARCH := $(shell uname -m | sed -e s/i.86/i386/)
+else
+	_WARNING := $(warning ARM_RPI or ARM_NV_NANO requested. Must disable -Werror.)
+	EXTRA_CFLAGS += -Wno-error
+	ifeq ($(CONFIG_PLATFORM_ARM_RPI), y)
+		ARCH := arm
+	else
+		ARCH := arm64
+	endif
 endif
 CROSS_COMPILE ?=
 KVER  ?= $(shell uname -r)
