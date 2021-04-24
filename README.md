@@ -1,6 +1,8 @@
 # Administrative Note
 
 As of upstream version 5.6.1, I'm moving away from individual repositories for each upstream version in favor of a single repository with version-based branches.  Hopefully, this will help with clutter and URL consistency moving forward.  The archived repositories are available here:
+* [rtl88x2BU_WiFi_linux_v5.6.1.6_35492.20191025_COEX20180928-6a6a](https://github.com/cilynx/rtl88x2bu/tree/5.6.1.6_35492.20191025_COEX20180928-6a6a)
+* [rtl88x2BU_WiFi_linux_v5.6.1_30362.20181109_COEX20180928-6a6a](https://github.com/cilynx/rtl88x2bu/tree/5.6.1_30362.20181109_COEX20180928-6a6a)
 * [rtl88x2BU_WiFi_linux_v5.3.1_27678.20180430_COEX20180427-5959](https://github.com/cilynx/rtl88x2BU_WiFi_linux_v5.3.1_27678.20180430_COEX20180427-5959)
 * [rtl88x2BU_WiFi_linux_v5.2.4.4_26334.20180126_COEX20171012-5044](https://github.com/cilynx/rtl88x2BU_WiFi_linux_v5.2.4.4_26334.20180126_COEX20171012-5044)
 * [rtl88x2BU_WiFi_linux_v5.2.4.4_25643.20171212_COEX20171012-5044](https://github.com/cilynx/rtl88x2BU_WiFi_linux_v5.2.4.4_25643.20171212_COEX20171012-5044)
