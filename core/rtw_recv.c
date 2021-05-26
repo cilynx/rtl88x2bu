@@ -3573,7 +3573,7 @@ int validate_mp_recv_frame(_adapter *adapter, union recv_frame *precv_frame)
 			int i;
 			RTW_INFO("############ type:0x%02x subtype:0x%02x #################\n", type, subtype);
 
-			for (i = 0; i < precv_frame->u.hdr.len; i = i + 8)
+			for (i = 0; i < precv_frame->u.hdr.len; i = i + 8) {
 				RTW_INFO("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr + i),
 					*(ptr + i + 1), *(ptr + i + 2) , *(ptr + i + 3) , *(ptr + i + 4), *(ptr + i + 5), *(ptr + i + 6), *(ptr + i + 7));
 				RTW_INFO("#############################\n");
@@ -3581,6 +3581,7 @@ int validate_mp_recv_frame(_adapter *adapter, union recv_frame *precv_frame)
 				_rtw_memcpy(pmppriv->mplink_buf, ptr, precv_frame->u.hdr.len);
 				pmppriv->mplink_rx_len = precv_frame->u.hdr.len;
 				pmppriv->mplink_brx =_TRUE;
+			}
 		}
 	}
 	if (pmppriv->bloopback) {
