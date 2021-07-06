@@ -40,7 +40,7 @@ intervention, only execute it if you understand what the script does.
 
 ### Known Problems
 
-Some users reported problems due to `Unkown symbol in module`. This can be
+Some users reported problems due to `Unknown symbol in module`. This can be
 caused by old deployments of the driver still being present in the systems
 directories. One solution reported was to forcefully remove all old driver
 modules:
