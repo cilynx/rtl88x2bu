@@ -6,6 +6,7 @@ EXTRA_CFLAGS += -Wextra
 #EXTRA_CFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
 
 EXTRA_CFLAGS += -Wno-cast-function-type
+EXTRA_CFLAGS += -Wno-type-limits
 EXTRA_CFLAGS += -Wno-unused-function
 EXTRA_CFLAGS += -Wno-unused-parameter
 EXTRA_CFLAGS += -Wno-unused-variable
