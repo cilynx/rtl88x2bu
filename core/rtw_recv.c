@@ -3576,7 +3576,7 @@ int validate_mp_recv_frame(_adapter *adapter, union recv_frame *precv_frame)
 			for (i = 0; i < precv_frame->u.hdr.len; i = i + 8)
 				RTW_INFO("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr + i),
 					*(ptr + i + 1), *(ptr + i + 2) , *(ptr + i + 3) , *(ptr + i + 4), *(ptr + i + 5), *(ptr + i + 6), *(ptr + i + 7));
-				RTW_INFO("#############################\n");
+			RTW_INFO("#############################\n");
 				_rtw_memset(pmppriv->mplink_buf, '\0' , sizeof(pmppriv->mplink_buf));
 				_rtw_memcpy(pmppriv->mplink_buf, ptr, precv_frame->u.hdr.len);
 				pmppriv->mplink_rx_len = precv_frame->u.hdr.len;
