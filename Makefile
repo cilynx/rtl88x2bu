@@ -67,6 +67,7 @@ CONFIG_RTW_CHPLAN = 0xFF
 CONFIG_RTW_ADAPTIVITY_EN = disable
 CONFIG_RTW_ADAPTIVITY_MODE = normal
 CONFIG_SIGNAL_SCALE_MAPPING = n
+CONFIG_80211D = y
 CONFIG_80211W = y
 CONFIG_REDUCE_TX_CPU_LOADING = n
 CONFIG_BR_EXT = y
@@ -84,7 +85,7 @@ CONFIG_ICMP_VOQ = n
 CONFIG_IP_R_MONITOR = n #arp VOQ and high rate
 # user priority mapping rule : tos, dscp
 CONFIG_RTW_UP_MAPPING_RULE = tos
-# Enable VHT rate on 2.4G channel or not
+# enable VHT rate on 2.4G channel or not
 CONFIG_RTW_VHT_2G4 = y
 
 ########################## Debug ###########################
@@ -1133,6 +1134,10 @@ endif
 
 ifeq ($(CONFIG_SIGNAL_SCALE_MAPPING), y)
 EXTRA_CFLAGS += -DCONFIG_SIGNAL_SCALE_MAPPING
+endif
+
+ifeq ($(CONFIG_80211D), y)
+EXTRA_CFLAGS += -DCONFIG_80211D
 endif
 
 ifeq ($(CONFIG_80211W), y)
