@@ -1356,13 +1356,13 @@ static void _sounding_config_su(PADAPTER adapter, struct beamformee_entry *bfee,
 				new_ctrl |= BIT_R_TXBF0_80M_8822B;
 			else if (1 == bfee->su_reg_index)
 				new_ctrl |= BIT_R_TXBF1_80M_8822B;
-			/* fall through */
+			__attribute__((__fallthrough__));
 		case CHANNEL_WIDTH_40:
 			if (0 == bfee->su_reg_index)
 				new_ctrl |= BIT_R_TXBF0_40M_8822B;
 			else if (1 == bfee->su_reg_index)
 				new_ctrl |= BIT_R_TXBF1_40M_8822B;
-			/* fall through */
+			__attribute__((__fallthrough__));
 		case CHANNEL_WIDTH_20:
 			if (0 == bfee->su_reg_index)
 				new_ctrl |= BIT_R_TXBF0_20M_8822B;
