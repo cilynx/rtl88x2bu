@@ -1296,17 +1296,19 @@ endif
 ifeq (y, $(filter y, $(CONFIG_PLATFORM_I386_PC) $(CONFIG_PLATFORM_ARM_NV_NANO) $(CONFIG_PLATFORM_ARM_RPI)))
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
 EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
-ifeq ($(CONFIG_PLATFORM_I386_PC), y)
-	ARCH := $(shell uname -m | sed -e s/i.86/i386/)
-else
+
+ARCH := $(shell uname -m | sed -e s/i.86/i386/)
+ifneq ($(CONFIG_PLATFORM_I386_PC), y)
 	_WARNING := $(warning ARM_RPI or ARM_NV_NANO requested. Must disable -Werror.)
 	EXTRA_CFLAGS += -Wno-error
+	ARCH := arm64
 	ifeq ($(CONFIG_PLATFORM_ARM_RPI), y)
-		ARCH := arm
-	else
-		ARCH := arm64
+		ifneq ($(shell uname -m), aarch64)
+			ARCH := arm
+		endif
 	endif
 endif
+
 CROSS_COMPILE ?=
 KVER  ?= $(shell uname -r)
 ifeq ($(KBASE),)
