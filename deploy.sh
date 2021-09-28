@@ -24,7 +24,7 @@ function get_version() {
 
 function deploy_driver() {
     VER=$(get_version)
-    sudo rsync --delete --exclude=.git -rvhP ./ "/usr/src/rtl88x2bu-${VER}"
+    sudo rsync --delete --cvs-exclude -rvhP ./ "/usr/src/rtl88x2bu-${VER}"
     for action in add build install
     do
       sudo dkms "${action}" -m rtl88x2bu -v "${VER}"
