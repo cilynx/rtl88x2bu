@@ -14,16 +14,12 @@ fi
 GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || true)
 MODULE_NAME="rtl88x2bu"
 
-__version() {
-	git describe --tags --dirty 2>/dev/null || sed -re's/v?(.*)/v\1/' "$(dirname "${BASH_SOURCE[0]}")/../VERSION"
-}
-
 __version_lte() {
 	[ "$1" = "$(echo -e "$1\n${2/-/.9999-}" | sort -V | head -n1)" ]
 }
 
 # shellcheck disable=SC2034
-VERSION=$(__version)
+VERSION="5.8.7.1"
 
 DKMS_BIN=$(type -p dkms)
 
