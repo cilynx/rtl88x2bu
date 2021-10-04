@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # Authors:
 #     - Kai Krakow from xpadneo (https://github.com/atar-axis/xpadneo/)
 #     - Max Görner
