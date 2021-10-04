@@ -12,6 +12,7 @@ fi
 
 # shellcheck disable=SC2034
 GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || true)
+MODULE_NAME="rtl88x2bu"
 
 __version() {
 	git describe --tags --dirty 2>/dev/null || sed -re's/v?(.*)/v\1/' "$(dirname "${BASH_SOURCE[0]}")/../VERSION"
@@ -42,7 +43,7 @@ get_upstream_version_latest() {
 cat_dkms_make_log() {
 	local last_error=$?
 	if [ -n "${V[*]}" ]; then
-		cat "/var/lib/dkms/hid-xpadneo/${VERSION}/build/make.log" || true
+		cat "/var/lib/dkms/$MODULE_NAME/${VERSION}/build/make.log" || true
 	fi
 	exit ${last_error}
 }

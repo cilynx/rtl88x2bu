@@ -13,7 +13,7 @@ source "scripts-lib/verbose.sh"
 source "scripts-lib/installer.sh"
 
 echo "* unloading current driver module"
-modprobe -r hid_xpadneo || true
+modprobe -r "$MODULE_NAME" || true
 
 echo "* looking for registered instances"
 echo "found ${#INSTALLED[@]} registered instance(s) on your system"
@@ -25,8 +25,8 @@ do
     set -e
 
     echo "  * uninstalling and removing $instance from DKMS"
-    dkms remove "${V[*]}" "hid-xpadneo/${instance}" --all
+    dkms remove "${V[*]}" "$MODULE_NAME/${instance}" --all
 
     echo "  * removing $instance folder from /usr/src"
-    rm --recursive "/usr/src/hid-xpadneo-$instance/"
+    rm --recursive "/usr/src/$MODULE_NAME-$instance/"
 done

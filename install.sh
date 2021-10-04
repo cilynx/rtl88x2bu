@@ -20,7 +20,7 @@ if [[ -z "${INSTALLED[*]}" ]]; then
     sed 's/"@DO_NOT_CHANGE@"/"'"${VERSION}"'"/g' scripts-lib/dkms.conf.in >scripts-lib/dkms.conf
 
     echo "* installing module (using DKMS)"
-    dkms install "${V[*]}" "hid-xpadneo" --force || cat_dkms_make_log
+    dkms install "${V[*]}" "$MODULE_NAME" --force || cat_dkms_make_log
 
 else
 
