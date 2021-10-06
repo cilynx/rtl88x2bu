@@ -25,8 +25,8 @@ do
     set -e
 
     echo "  * uninstalling and removing $instance from DKMS"
-    dkms remove "${V[*]}" "$MODULE_NAME/${instance}" --all
+    dkms remove "${V[*]}" "$PROJECT_NAME/${instance}" --all
 
     echo "  * removing $instance folder from /usr/src"
-    rm --recursive "/usr/src/$MODULE_NAME-$instance/"
+    rm --recursive "/usr/src/$PROJECT_NAME-$instance/"
 done

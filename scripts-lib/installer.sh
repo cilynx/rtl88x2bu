@@ -12,7 +12,8 @@ fi
 
 # shellcheck disable=SC2034
 GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || true)
-MODULE_NAME="rtl88x2bu"
+PROJECT_NAME="rtl88x2bu"
+export MODULE_NAME="88x2bu"
 
 __version_lte() {
 	[ "$1" = "$(echo -e "$1\n${2/-/.9999-}" | sort -V | head -n1)" ]
@@ -27,7 +28,7 @@ DKMS_BIN=$(type -p dkms)
 : ${DKMS_BIN:?Please install dkms to continue}
 
 get_dkms_versions_installed() {
-	${DKMS_BIN} status | tr -s ':, ' ' ' | awk -- "\$1 == \"$MODULE_NAME\" { print \$2 }" | sort -nu
+	${DKMS_BIN} status | tr -s ':, ' ' ' | awk -- "\$1 == \"$PROJECT_NAME\" { print \$2 }" | sort -nu
 }
 
 get_upstream_version_latest() {
@@ -39,7 +40,7 @@ get_upstream_version_latest() {
 cat_dkms_make_log() {
 	local last_error=$?
 	if [ -n "${V[*]}" ]; then
-		cat "/var/lib/dkms/$MODULE_NAME/${VERSION}/build/make.log" || true
+		cat "/var/lib/dkms/$PROJECT_NAME/${VERSION}/build/make.log" || true
 	fi
 	exit ${last_error}
 }
