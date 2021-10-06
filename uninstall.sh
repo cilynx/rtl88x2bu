@@ -13,7 +13,7 @@ source "scripts-lib/verbose.sh"
 source "scripts-lib/installer.sh"
 
 echo "* unloading current driver module"
-modprobe -r "$MODULE_NAME" || true
+rmmod "$MODULE_NAME" || true
 
 echo "* looking for registered instances"
 echo "found ${#INSTALLED[@]} registered instance(s) on your system"
