@@ -1,0 +1,7 @@
+AUTOINSTALL="yes"
+BUILT_MODULE_NAME[0]="88x2bu"
+CLEAN="make clean"
+DEST_MODULE_LOCATION[0]="/kernel/drivers/net"
+MAKE[0]="'make' KVER=$kernelver src=$source_tree/rtl88x2bu-$PACKAGE_VERSION"
+PACKAGE_NAME="rtl88x2bu"
+PACKAGE_VERSION="@DO_NOT_CHANGE@"
