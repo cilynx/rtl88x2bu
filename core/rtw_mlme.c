@@ -3455,7 +3455,9 @@ void rtw_drv_scan_by_self(_adapter *padapter, u8 reason)
 		#endif
 			RTW_INFO(FUNC_ADPT_FMT" exit BusyTraffic\n", FUNC_ADPT_ARG(padapter));
 			goto exit;
+		#ifdef CONFIG_LAYER2_ROAMING
 		}
+		#endif
 	}
 	else if (ssc_chk != SS_ALLOW)
 		goto exit;
