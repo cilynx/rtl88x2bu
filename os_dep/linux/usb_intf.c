@@ -253,6 +253,8 @@ static struct usb_device_id rtw_usb_id_tbl[] = {
 	{USB_DEVICE_AND_INTERFACE_INFO(0x0b05, 0x1841, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* ASUS AC1300 USB-AC55 B1 */
 	{USB_DEVICE_AND_INTERFACE_INFO(0x0b05, 0x184c, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* ASUS USB-AC53 Nano */
 	{USB_DEVICE_AND_INTERFACE_INFO(0x0846, 0x9055, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* NeatGear A6150 - AC1200 Dual Band WiFi USB Mini Adapter */
+	{USB_DEVICE_AND_INTERFACE_INFO(0x20F4, 0x808A, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* TRENDnet TEW-808UBM */
+	{USB_DEVICE_AND_INTERFACE_INFO(0x13b1, 0x0045, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* Linksys WUSB3600 v2 */	
 #endif /* CONFIG_RTL8822B */
 
 #ifdef CONFIG_RTL8723D
