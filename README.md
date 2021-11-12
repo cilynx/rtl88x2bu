@@ -56,6 +56,17 @@ You can remedy this by running:
     sudo modprobe cfg80211
 
 
+### Secure Boot
+
+Secure Boot will prevent the module from loading as it isn't signed.
+
+Check your secure boot setting with `mokutil --sb-state`. You should see something like:
+
+    SecureBoot disabled
+
+If not, disable secure boot in BIOS.
+
+
 ## Raspberry Pi Access Point
 
 ```bash
