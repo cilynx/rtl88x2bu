@@ -225,6 +225,9 @@ struct registry_priv {
 #ifdef CONFIG_TX_EARLY_MODE
 	u8   early_mode;
 #endif
+#ifdef CONFIG_SW_LED
+	u8   led_ctrl;
+#endif
 #ifdef CONFIG_NARROWBAND_SUPPORTING
 	u8	rtw_nb_config;
 #endif
