@@ -3352,8 +3352,7 @@ void phydm_physts_dbg(void *dm_void, char input[][16], u32 *_used,
 	u8 i = 0;
 
 	for (i = 0; i < 3; i++) {
-		if (input[i + 1])
-			PHYDM_SSCANF(input[i + 1], DCMD_DECIMAL, &var[i]);
+		PHYDM_SSCANF(input[i + 1], DCMD_DECIMAL, &var[i]);
 	}
 
 	if ((strcmp(input[1], help) == 0)) {

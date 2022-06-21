@@ -149,8 +149,7 @@ void phydm_pow_train_debug(
 			 "{0: Auto PT, 1:enable, 2: disable}\n");
 	} else {
 		for (i = 0; i < 10; i++) {
-			if (input[i + 1])
-				PHYDM_SSCANF(input[i + 1], DCMD_HEX, &var1[i]);
+			PHYDM_SSCANF(input[i + 1], DCMD_HEX, &var1[i]);
 		}
 
 		if (var1[0] == 0)

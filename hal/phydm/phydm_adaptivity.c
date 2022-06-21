@@ -374,10 +374,8 @@ void phydm_adaptivity_debug(void *dm_void, char input[][16], u32 *_used,
 	s8 h2l_diff = 0;
 
 	for (i = 0; i < 5; i++) {
-		if (input[i + 1]) {
-			PHYDM_SSCANF(input[i + 1], DCMD_HEX, &dm_value[i]);
-			input_idx++;
-		}
+		PHYDM_SSCANF(input[i + 1], DCMD_HEX, &dm_value[i]);
+		input_idx++;
 	}
 	if (strcmp(input[1], help) == 0) {
 		PDM_SNPF(out_len, used, output + used, out_len - used,

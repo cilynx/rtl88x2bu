@@ -2168,8 +2168,7 @@ void phydm_dfs_hist_dbg(void *dm_void, char input[][16], u32 *_used,
 		PHYDM_SSCANF(input[1], DCMD_DECIMAL, &argv[0]);
 
 		for (i = 1; i < 30; i++) {
-			if (input[i + 1])
-				PHYDM_SSCANF(input[i + 1], DCMD_DECIMAL,
+			PHYDM_SSCANF(input[i + 1], DCMD_DECIMAL,
 					     &argv[i]);
 		}
 		if (argv[0] == 0) {
@@ -2329,10 +2328,8 @@ void phydm_dfs_debug(void *dm_void, char input[][16], u32 *_used,
 	u8 i, input_idx = 0;
 
 	for (i = 0; i < 7; i++) {
-		if (input[i + 1]) {
-			PHYDM_SSCANF(input[i + 1], DCMD_HEX, &argv[i]);
-			input_idx++;
-		}
+		PHYDM_SSCANF(input[i + 1], DCMD_HEX, &argv[i]);
+		input_idx++;
 	}
 
 	if (input_idx == 0)

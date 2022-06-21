@@ -418,8 +418,7 @@ void phydm_psd_debug(void *dm_void, char input[][16], u32 *_used,
 
 	if (var1[0] == 0) {
 		for (i = 1; i < 10; i++) {
-			if (input[i + 1])
-				PHYDM_SSCANF(input[i + 1], DCMD_DECIMAL,
+			PHYDM_SSCANF(input[i + 1], DCMD_DECIMAL,
 					     &var1[i]);
 		}
 		PDM_SNPF(out_len, used, output + used, out_len - used,

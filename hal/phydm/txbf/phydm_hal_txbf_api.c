@@ -637,8 +637,7 @@ void phydm_bf_debug(void *dm_void, char input[][16], u32 *_used, char *output,
 		return;
 	}
 	for (i = 0; i < 3; i++) {
-		if (input[i + 1])
-			PHYDM_SSCANF(input[i + 1], DCMD_DECIMAL, &var1[i]);
+		PHYDM_SSCANF(input[i + 1], DCMD_DECIMAL, &var1[i]);
 	}
 	if (var1[0] == 0) {
 		#if (DM_ODM_SUPPORT_TYPE & (ODM_WIN | ODM_CE))
