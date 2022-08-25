@@ -11,6 +11,7 @@ EXTRA_CFLAGS += -Wno-unused-function
 EXTRA_CFLAGS += -Wno-unused-parameter
 EXTRA_CFLAGS += -Wno-unused-variable
 EXTRA_CFLAGS += -Wno-array-bounds
+EXTRA_CFLAGS += -Wno-address
 
 GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
 ifeq ($(GCC_VER_49),1)
