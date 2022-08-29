@@ -38,7 +38,7 @@ register it in DKMS. An executable explanation of how to do so can be found in
 the script `deploy.sh`. Since registering a kernel module in DKMS is a major
 intervention, only execute it if you understand what the script does.
 
-### Known Problems
+### Unknown Symbol Errors
 
 Some users reported problems due to `Unknown symbol in module`. This can be
 caused by old deployments of the driver still being present in the systems
