@@ -953,8 +953,8 @@ static int _cfg80211_check_bss(struct _ADAPTER *a)
 	network = &a->mlmeextpriv.mlmext_info.network;
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 2)
-	if ((!wdev->u.ap.ssid_len) || (wdev->u.ap.ssid_len != network->Ssid.SsidLength)
-	    || (_rtw_memcmp(wdev->u.ap.ssid, network->Ssid.Ssid,
+	if ((!wdev->u.client.ssid_len) || (wdev->u.client.ssid_len != network->Ssid.SsidLength)
+	    || (_rtw_memcmp(wdev->u.client.ssid, network->Ssid.Ssid,
 #else
 	if ((!wdev->ssid_len) || (wdev->ssid_len != network->Ssid.SsidLength)
 	    || (_rtw_memcmp(wdev->ssid, network->Ssid.Ssid,
@@ -967,7 +967,7 @@ static int _cfg80211_check_bss(struct _ADAPTER *a)
 			  network->Ssid.SsidLength);
 		RTW_PRINT(FUNC_ADPT_FMT ": (wdev) ssid:[%s] len=%d\n",
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 2)
-			  FUNC_ADPT_ARG(a), wdev->u.ap.ssid, wdev->u.ap.ssid_len);
+			  FUNC_ADPT_ARG(a), wdev->u.client.ssid, wdev->u.client.ssid_len);
 #else
 			  FUNC_ADPT_ARG(a), wdev->ssid, wdev->ssid_len);
 #endif
