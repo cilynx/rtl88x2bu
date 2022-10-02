@@ -1598,7 +1598,6 @@ u32 _iqk_rximr_selfcheck_8822b(void *dm_void, u32 tone_index, u8 path,
 boolean _iqk_get_rxk1_8822b(struct dm_struct *dm, u8 path, u8 imr_limit,
 			    u8 side, u32 temp[][15])
 {
-	struct dm_iqk_info *iqk = &dm->IQK_info;
 	boolean kfail = true;
 	u8 i, count = 0;
 	u32 tone_index;
@@ -1655,7 +1654,6 @@ boolean _iqk_get_rxk1_8822b(struct dm_struct *dm, u8 path, u8 imr_limit,
 void _iqk_get_rxk2_8822b(struct dm_struct *dm, u8 path, u8 imr_limit, u8 side,
 			 u32 temp[][15])
 {
-	struct dm_iqk_info *iqk = &dm->IQK_info;
 	u8 i;
 	u32 tone_index, imr_result;
 	char *freq[15] = {
@@ -1690,8 +1688,7 @@ void _iqk_rximr_test_8822b(struct dm_struct *dm, u8 path, u8 imr_limit)
 {
 	struct dm_iqk_info *iqk = &dm->IQK_info;
 	boolean kfail;
-	u8 i, step, count, side;
-	u32 imr_result = 0, tone_index;
+	u8 step, count, side;
 	u32 temp = 0, temp1b38[2][15];
 	u32 cmd = 0xf8000008;
 

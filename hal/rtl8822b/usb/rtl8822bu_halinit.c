@@ -226,9 +226,6 @@ static void hal_deinit_misc(PADAPTER adapter)
 
 u32 rtl8822bu_deinit(PADAPTER padapter)
 {
-	struct pwrctrl_priv *pwrctl = adapter_to_pwrctl(padapter);
-	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(padapter);
-	struct dvobj_priv *pobj_priv = adapter_to_dvobj(padapter);
 	u8 status = _TRUE;
 
 	RTW_INFO("==> %s\n", __func__);

@@ -959,7 +959,7 @@ void phydm_set_kfree_to_rf_8198f(void *dm_void, u8 e_rf_path, u8 data)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct odm_power_trim_data *power_trim_info = &dm->power_trim_data;
-	u32 band, i;
+	u32 i;
 	s8 pwr_offset[3];
 
 	RF_DBG(dm, DBG_RF_MP,
@@ -1798,8 +1798,6 @@ void phydm_set_power_trim_rf_8195b(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct odm_power_trim_data *power_trim_info = &dm->power_trim_data;
-	u32 band, i;
-	s8 pwr_offset[3];
 
 	RF_DBG(dm, DBG_RF_MP,
 		   "[kfree] %s:Set kfree to rf 0x33\n", __func__);
@@ -2232,7 +2230,6 @@ void phydm_get_set_lna_offset_8197g(void *dm_void)
 	struct odm_power_trim_data *power_trim_info = &dm->power_trim_data;
 
 	u8 pg_lna[2] = {0}, i, pg_lna_tmp = 0;
-	u32 rf_reg;
 
 	odm_efuse_one_byte_read(dm, PPG_LNA_2GA_97G, &pg_lna_tmp, false);
 

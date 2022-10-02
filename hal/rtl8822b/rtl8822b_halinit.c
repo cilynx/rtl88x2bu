@@ -75,7 +75,6 @@ void rtl8822b_init_hal_spec(PADAPTER adapter)
 u32 rtl8822b_power_on(PADAPTER adapter)
 {
 	struct dvobj_priv *d;
-	PHAL_DATA_TYPE hal;
 	u8 bMacPwrCtrlOn;
 	int err = 0;
 	u8 ret = _SUCCESS;
@@ -203,7 +202,6 @@ u8 rtl8822b_mac_verify(PADAPTER adapter)
 void rtl8822b_init_misc(PADAPTER adapter)
 {
 	PHAL_DATA_TYPE hal;
-	u8 v8 = 0;
 	u32 v32 = 0;
 #ifdef RTW_AMPDU_AGG_RETRY_AND_NEW
 	u32 ctrl;
@@ -343,7 +341,6 @@ u32 rtl8822b_deinit(PADAPTER adapter)
 void rtl8822b_init_default_value(PADAPTER adapter)
 {
 	PHAL_DATA_TYPE hal;
-	u8 i;
 
 
 	hal = GET_HAL_DATA(adapter);

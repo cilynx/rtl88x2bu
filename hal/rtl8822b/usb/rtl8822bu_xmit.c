@@ -35,10 +35,8 @@ static void update_txdesc_h2c_pkt(struct xmit_frame *pxmitframe, u8 *pmem, s32 s
 static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz, u8 bagg_pkt)
 {
 	int pull = 0;
-	uint qsel;
-	u8 data_rate, pwr_status, offset;
+	u8 offset;
 	_adapter *padapter = pxmitframe->padapter;
-	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct pkt_attrib *pattrib = &pxmitframe->attrib;
 	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(padapter);
 	u8 *ptxdesc =  pmem;
@@ -904,7 +902,6 @@ static s32 pre_xmitframe(PADAPTER padapter, struct xmit_frame *pxmitframe)
 	struct xmit_buf *pxmitbuf = NULL;
 	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
 	struct pkt_attrib *pattrib = &pxmitframe->attrib;
-	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 
 	_enter_critical_bh(&pxmitpriv->lock, &irqL);
 

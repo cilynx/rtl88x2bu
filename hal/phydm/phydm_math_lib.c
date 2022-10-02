@@ -86,7 +86,6 @@ s32 odm_sign_conversion(s32 value, u32 total_bit)
 /*threshold must form low to high*/
 u16 phydm_find_intrvl(void *dm_void, u16 val, u16 *threshold, u16 th_len)
 {
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	u16 i = 0;
 	u16 ret_val = 0;
 	u16 max_th = threshold[th_len - 1];

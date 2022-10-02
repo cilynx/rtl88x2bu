@@ -2271,7 +2271,6 @@ static ssize_t proc_set_tx_aclt_force_val(struct file *file, const char __user *
 	}
 
 	if (buffer && !copy_from_user(tmp, buffer, count)) {
-		struct dvobj_priv *dvobj = adapter_to_dvobj(adapter);
 		struct tx_aclt_conf_t input;
 		int num = sscanf(tmp, "%hhx %u %u", &input.en, &input.vo_vi, &input.be_bk);
 
@@ -2350,7 +2349,6 @@ static ssize_t proc_set_tx_aclt_confs(struct file *file, const char __user *buff
 	}
 
 	if (buffer && !copy_from_user(tmp, buffer, count)) {
-		struct dvobj_priv *dvobj = adapter_to_dvobj(adapter);
 		u8 id;
 		struct tx_aclt_conf_t input;
 		int num = sscanf(tmp, "%hhu %hhx %u %u", &id, &input.en, &input.vo_vi, &input.be_bk);

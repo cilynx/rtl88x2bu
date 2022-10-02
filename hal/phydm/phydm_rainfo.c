@@ -818,7 +818,6 @@ void phydm_show_sta_info(void *dm_void, char input[][16], u32 *_used,
 
 u8 phydm_get_rx_stream_num(void *dm_void, enum rf_type type)
 {
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	u8 rx_num = 1;
 
 	if (type == RF_1T1R)

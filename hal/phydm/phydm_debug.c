@@ -421,9 +421,9 @@ void phydm_bb_hw_dbg_info_ac(void *dm_void, u32 *_used, char *output,
 	u32 used = *_used;
 	u32 out_len = *_out_len;
 	char *tmp_string = NULL;
-	u8 rx_ht_bw, rx_vht_bw, rxsc, rx_ht, bw_idx = 0;
+	u8 rxsc, rx_ht, bw_idx = 0;
 	static u8 v_rx_bw;
-	u32 value32, value32_1, value32_2, value32_3;
+	u32 value32;
 	struct phydm_cfo_rpt cfo;
 	u8 i = 0;
 	static u8 tail, parity, rsv, vrsv, smooth, htsound, agg;
@@ -431,7 +431,7 @@ void phydm_bb_hw_dbg_info_ac(void *dm_void, u32 *_used, char *output,
 	static u8 vtxops, vrsv2, vbrsv, bf, vbcrc;
 	static u16 h_length, htcrc8, length;
 	static u16 vpaid;
-	static u16 v_length, vhtcrc8, v_mcss, v_tail, vb_tail;
+	static u16 vhtcrc8, v_mcss, v_tail;
 	static u8 hmcss, hrx_bw;
 	u8 pwdb;
 	s8 rxevm_0, rxevm_1, rxevm_2;
@@ -1922,8 +1922,6 @@ u16 phydm_rx_avg_phy_rate(void *dm_void)
 void phydm_print_hist_2_buf(void *dm_void, u16 *val, u16 len, char *buf,
 			    u16 buf_size)
 {
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-
 	if (len == PHY_HIST_SIZE) {
 		PHYDM_SNPRINTF(buf, buf_size,
 			       "[%.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d]",
@@ -2032,7 +2030,6 @@ void phydm_show_phy_hitogram(void *dm_void)
 	char buf[PHYDM_SNPRINT_SIZE] = {0};
 	u16 buf_size = PHYDM_SNPRINT_SIZE;
 	u16 th_size = PHY_HIST_SIZE - 1;
-	u8 i = 0;
 
 	PHYDM_DBG(dm, DBG_CMN, "[PHY Histogram] ==============>\n");
 /*@===[Threshold]=============================================================*/
@@ -3996,7 +3993,6 @@ void phydm_dump_reg(void *dm_void, char input[][16], u32 *_used, char *output,
 	u32 var1[10] = {0};
 	u32 used = *_used;
 	u32 out_len = *_out_len;
-	u32 addr = 0;
 
 	if (input[1])
 		PHYDM_SSCANF(input[1], DCMD_DECIMAL, &var1[0]);
@@ -4632,7 +4628,6 @@ void phydm_mp_dbg(void *dm_void, char input[][16], u32 *_used, char *output,
 	char buf[PHYDM_SNPRINT_SIZE] = {0};
 	u32 used = *_used;
 	u32 out_len = *_out_len;
-	u32 var1[10] = {0};
 	u16 buf_size = PHYDM_SNPRINT_SIZE;
 	u16 th_size = PHY_HIST_SIZE - 1;
 	u8 i = 0;

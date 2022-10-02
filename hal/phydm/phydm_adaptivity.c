@@ -452,7 +452,6 @@ void phydm_set_edcca_val(void *dm_void, u32 *val_buf, u8 val_len)
 boolean phydm_edcca_abort(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct phydm_adaptivity_struct *adapt = &dm->adaptivity;
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void *adapter = dm->adapter;
 	u32 is_fw_in_psmode = false;

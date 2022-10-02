@@ -237,7 +237,6 @@ enum rf_type rtw_chip_rftype_to_hal_rftype(_adapter *adapter, u8 limit)
 
 void dump_hal_runtime_trx_mode(void *sel, _adapter *adapter)
 {
-	struct registry_priv *regpriv = &adapter->registrypriv;
 	PHAL_DATA_TYPE hal_data = GET_HAL_DATA(adapter);
 	int i;
 
@@ -250,7 +249,6 @@ void dump_hal_runtime_trx_mode(void *sel, _adapter *adapter)
 
 void dump_hal_trx_mode(void *sel, _adapter *adapter)
 {
-	struct registry_priv *regpriv = &adapter->registrypriv;
 	PHAL_DATA_TYPE hal_data = GET_HAL_DATA(adapter);
 
 	RTW_PRINT_SEL(sel, "trx_path_bmp:0x%02x(%s), NumTotalRFPath:%u, max_tx_cnt:%u\n"
@@ -315,7 +313,6 @@ if (IS_HARDWARE_TYPE_8814A(adapter)) {
 	enum rf_type type;
 	u8 tx_path_num;
 	u8 rx_path_num;
-	int i;
 
 	ic_cap = rtw_chip_rftype_to_hal_rftype(adapter, hal_spec->rf_reg_path_num);
 	if (!RF_TYPE_VALID(ic_cap)) {
@@ -1192,7 +1189,6 @@ bool rtw_hal_c2h_reg_hdr_parse(_adapter *adapter, u8 *buf, u8 *id, u8 *seq, u8 *
 #ifdef CONFIG_FW_C2H_PKT
 bool rtw_hal_c2h_pkt_hdr_parse(_adapter *adapter, u8 *buf, u16 len, u8 *id, u8 *seq, u8 *plen, u8 **payload)
 {
-	HAL_DATA_TYPE *HalData = GET_HAL_DATA(adapter);
 	bool ret = _FAIL;
 
 	if (!buf || len > 256 || len < 3)

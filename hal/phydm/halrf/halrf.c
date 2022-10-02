@@ -494,8 +494,6 @@ void phydm_get_iqk_cfir(void *dm_void, u8 idx, u8 path, boolean debug)
 void halrf_iqk_dbg_cfir_backup(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct dm_iqk_info *iqk_info = &dm->IQK_info;
-	u8 path, idx, i;
 
 	switch (dm->support_ic_type) {
 #if (RTL8822B_SUPPORT == 1)
@@ -517,11 +515,6 @@ void halrf_iqk_dbg_cfir_backup(void *dm_void)
 void halrf_iqk_dbg_cfir_backup_update(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct dm_iqk_info *iqk = &dm->IQK_info;
-	u8 i, path, idx;
-	u32 bmask13_12 = BIT(13) | BIT(12);
-	u32 bmask20_16 = BIT(20) | BIT(19) | BIT(18) | BIT(17) | BIT(16);
-	u32 data;
 
 	switch (dm->support_ic_type) {
 #if (RTL8822B_SUPPORT == 1)
@@ -542,11 +535,6 @@ void halrf_iqk_dbg_cfir_backup_update(void *dm_void)
 void halrf_iqk_dbg_cfir_reload(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct dm_iqk_info *iqk = &dm->IQK_info;
-	u8 i, path, idx;
-	u32 bmask13_12 = BIT(13) | BIT(12);
-	u32 bmask20_16 = BIT(20) | BIT(19) | BIT(18) | BIT(17) | BIT(16);
-	u32 data;
 
 	switch (dm->support_ic_type) {
 #if (RTL8822B_SUPPORT == 1)
@@ -568,7 +556,6 @@ void halrf_iqk_dbg_cfir_write(void *dm_void, u8 type, u32 path, u32 idx,
 			      u32 i, u32 data)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct dm_iqk_info *iqk_info = &dm->IQK_info;
 
 	switch (dm->support_ic_type) {
 #if (RTL8822B_SUPPORT == 1)
@@ -589,8 +576,6 @@ void halrf_iqk_dbg_cfir_write(void *dm_void, u8 type, u32 path, u32 idx,
 void halrf_iqk_dbg_cfir_backup_show(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct dm_iqk_info *iqk_info = &dm->IQK_info;
-	u8 path, idx, i;
 
 	switch (dm->support_ic_type) {
 #if (RTL8822B_SUPPORT == 1)
@@ -1381,10 +1366,6 @@ halrf_iqk_init(
 void halrf_reload_iqk(void *dm_void, boolean reset)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct dm_iqk_info *iqk_info = &dm->IQK_info;
-	u8 i, ch;
-	u32 tmp;
-	u32 bit_mask_20_16 = BIT(20) | BIT(19) | BIT(18) | BIT(17) | BIT(16);
 
 	switch (dm->support_ic_type) {
 #if (RTL8822C_SUPPORT == 1)
@@ -1499,8 +1480,6 @@ void halrf_dack_dbg(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct _hal_rf_ *rf = &dm->rf_table;
-
-	u64 start_time;
 
 	if (!(rf->rf_supportability & HAL_RF_DACK))
 		return;
@@ -1695,7 +1674,6 @@ void halrf_iqk_trigger(void *dm_void, boolean is_recovery)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct dm_iqk_info *iqk_info = &dm->IQK_info;
-	struct dm_dpk_info *dpk_info = &dm->dpk_info;
 	struct _hal_rf_ *rf = &dm->rf_table;
 	u64 start_time;
 
@@ -2102,7 +2080,6 @@ void halrf_dpk_trigger(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct _hal_rf_ *rf = &dm->rf_table;
-	struct dm_dpk_info *dpk_info = &dm->dpk_info;
 	struct dm_iqk_info *iqk_info = &dm->IQK_info;
 
 	u64 start_time;
@@ -2216,10 +2193,7 @@ void halrf_dpk_trigger(void *dm_void)
 void halrf_set_dpkbychannel(void *dm_void, boolean dpk_by_ch)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _hal_rf_ *rf = &dm->rf_table;
 	struct dm_dpk_info *dpk_info = &dm->dpk_info;
-	struct dm_iqk_info *iqk_info = &dm->IQK_info;
-
 
 	switch (dm->support_ic_type) {
 #if (RTL8814B_SUPPORT == 1)
@@ -2248,10 +2222,6 @@ void halrf_set_dpkbychannel(void *dm_void, boolean dpk_by_ch)
 void halrf_set_dpkenable(void *dm_void, boolean is_dpk_enable)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _hal_rf_ *rf = &dm->rf_table;
-	struct dm_dpk_info *dpk_info = &dm->dpk_info;
-	struct dm_iqk_info *iqk_info = &dm->IQK_info;
-
 
 	switch (dm->support_ic_type) {
 #if (RTL8814B_SUPPORT == 1)
@@ -2284,9 +2254,6 @@ void halrf_set_dpkenable(void *dm_void, boolean is_dpk_enable)
 boolean halrf_get_dpkbychannel(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _hal_rf_ *rf = &dm->rf_table;
-	struct dm_dpk_info *dpk_info = &dm->dpk_info;
-	struct dm_iqk_info *iqk_info = &dm->IQK_info;
 	boolean is_dpk_by_channel = true;
 
 	switch (dm->support_ic_type) {
@@ -2315,9 +2282,6 @@ boolean halrf_get_dpkbychannel(void *dm_void)
 boolean halrf_get_dpkenable(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct _hal_rf_ *rf = &dm->rf_table;
-	struct dm_dpk_info *dpk_info = &dm->dpk_info;
-	struct dm_iqk_info *iqk_info = &dm->IQK_info;
 	boolean is_dpk_enable = true;
 
 
@@ -2443,8 +2407,6 @@ u8 halrf_dpk_result_check(void *dm_void)
 void halrf_dpk_sram_read(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-
-	u8 path, group;
 
 	switch (dm->support_ic_type) {
 #if (RTL8822C_SUPPORT == 1)
@@ -2735,7 +2697,6 @@ void halrf_dpk_info_rsvd_page(void *dm_void, u8 *buf, u32 *buf_size)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct _hal_rf_ *rf = &dm->rf_table;
-	struct dm_dpk_info *dpk_info = &dm->dpk_info;
 
 	if (!(rf->rf_supportability & HAL_RF_DPK) || rf->is_dpk_in_progress)
 		return;
@@ -3210,7 +3171,6 @@ void halrf_bprf(void *dm_void, u32 *bp_reg, u32 bp[][4], u32 num, u8 ss)
 
 void halrf_swap(void *dm_void, u32 *v1, u32 *v2)
 {
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	u32 temp;
 
 	temp = *v1;
@@ -3221,7 +3181,6 @@ void halrf_swap(void *dm_void, u32 *v1, u32 *v2)
 void halrf_bubble(void *dm_void, u32 *v1, u32 *v2)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	u32 temp;
 
 	if (*v1 >= 0x200 && *v2 >= 0x200) {
 		if (*v1 > *v2)
@@ -3237,7 +3196,6 @@ void halrf_bubble(void *dm_void, u32 *v1, u32 *v2)
 void halrf_b_sort(void *dm_void, u32 *iv, u32 *qv)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	u32 temp;
 	u32 i, j;
 
 	RF_DBG(dm, DBG_RF_DACK, "[DACK]bubble!!!!!!!!!!!!");
@@ -3252,8 +3210,6 @@ void halrf_b_sort(void *dm_void, u32 *iv, u32 *qv)
 void halrf_minmax_compare(void *dm_void, u32 value, u32 *min,
 			  u32 *max)
 {
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-
 	if (value >= 0x200) {
 		if (*min >= 0x200) {
 			if (*min > value)
@@ -3282,8 +3238,6 @@ void halrf_minmax_compare(void *dm_void, u32 value, u32 *min,
 
 u32 halrf_delta(void *dm_void, u32 v1, u32 v2)
 {
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-
 	if (v1 >= 0x200 && v2 >= 0x200) {
 		if (v1 > v2)
 			return v1 - v2;
@@ -3320,11 +3274,11 @@ boolean halrf_compare(void *dm_void, u32 value)
 void halrf_mode(void *dm_void, u32 *i_value, u32 *q_value)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	u32 iv[SN], qv[SN], im[SN], qm[SN], temp, temp1, temp2;
+	u32 iv[SN], qv[SN], im[SN], qm[SN], temp;
 	u32 p, m, t;
 	u32 i_max = 0, q_max = 0, i_min = 0x0, q_min = 0x0, c = 0x0;
 	u32 i_delta, q_delta;
-	u8 i, j, ii = 0, qi = 0;
+	u8 i;
 	boolean fail = false;
 
 	ODM_delay_ms(10);

@@ -1089,7 +1089,6 @@ void phydm_c2h_dtp_handler(void *dm_void, u8 *cmd_buf, u8 cmd_len)
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct _ODM_PATH_DIVERSITY_ *p_div = &dm->dm_path_div;
 
-	u8 macid = cmd_buf[0];
 	u8 target = cmd_buf[1];
 	u8 nsc_1 = cmd_buf[2];
 	u8 nsc_2 = cmd_buf[3];

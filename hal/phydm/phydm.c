@@ -1867,8 +1867,6 @@ u8 phydm_pause_func(void *dm_void, enum phydm_func_idx pause_func,
 	u32 ori_val[5] = {0};
 	u64 pause_func_bitmap = (u64)BIT(pause_func);
 	u8 i = 0;
-	u8 en_2rcca = 0;
-	u8 en_bw40m = 0;
 	u8 pause_result = PAUSE_FAIL;
 
 	PHYDM_DBG(dm, ODM_COMP_API, "\n");

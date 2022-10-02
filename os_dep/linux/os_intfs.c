@@ -963,7 +963,7 @@ module_param(rtw_suspend_type, uint, 0644);
 #if CONFIG_TX_AC_LIFETIME
 static void rtw_regsty_load_tx_ac_lifetime(struct registry_priv *regsty)
 {
-	int i, j;
+	int i;
 	struct tx_aclt_conf_t *conf;
 	uint *parm;
 
