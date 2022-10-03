@@ -1701,7 +1701,9 @@ int rtw_ndev_init(struct net_device *dev)
 
 void rtw_ndev_uninit(struct net_device *dev)
 {
+#ifdef CONFIG_RTW_DEBUG
 	_adapter *adapter = rtw_netdev_priv(dev);
+#endif
 
 	RTW_PRINT(FUNC_ADPT_FMT" if%d\n"
 		  , FUNC_ADPT_ARG(adapter), (adapter->iface_id + 1));
@@ -3909,7 +3911,9 @@ int rtw_ips_pwr_up(_adapter *padapter)
 	struct sreset_priv *psrtpriv = &pHalData->srestpriv;
 #endif/* #ifdef DBG_CONFIG_ERROR_DETECT */
 #endif /* defined(CONFIG_SWLPS_IN_IPS) || defined(CONFIG_FWLPS_IN_IPS) */
+#ifdef CONFIG_RTW_DEBUG
 	systime start_time = rtw_get_current_time();
+#endif
 	RTW_INFO("===>  rtw_ips_pwr_up..............\n");
 
 #if defined(CONFIG_SWLPS_IN_IPS) || defined(CONFIG_FWLPS_IN_IPS)
@@ -3930,7 +3934,9 @@ int rtw_ips_pwr_up(_adapter *padapter)
 
 void rtw_ips_pwr_down(_adapter *padapter)
 {
+#ifdef CONFIG_RTW_DEBUG
 	systime start_time = rtw_get_current_time();
+#endif
 	RTW_INFO("===> rtw_ips_pwr_down...................\n");
 
 	padapter->net_closed = _TRUE;
@@ -4931,7 +4937,9 @@ int rtw_suspend_common(_adapter *padapter)
 #endif
 
 	int ret = 0;
+#ifdef CONFIG_RTW_DEBUG
 	systime start_time = rtw_get_current_time();
+#endif
 
 	RTW_PRINT(" suspend start\n");
 	RTW_INFO("==> %s (%s:%d)\n", __FUNCTION__, current->comm, current->pid);
@@ -5399,7 +5407,9 @@ exit:
 int rtw_resume_common(_adapter *padapter)
 {
 	int ret = 0;
+#ifdef CONFIG_RTW_DEBUG
 	systime start_time = rtw_get_current_time();
+#endif
 	struct pwrctrl_priv *pwrpriv = adapter_to_pwrctl(padapter);
 
 	if (pwrpriv == NULL)

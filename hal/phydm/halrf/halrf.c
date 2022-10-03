@@ -196,7 +196,9 @@ void halrf_iqk_xym_read(void *dm_void, u8 path, u8 xym_type)
 void halrf_iqk_xym_show(struct dm_struct *dm, u8 xym_type)
 {
 	u8 num, path, path_num, i;
+#ifdef CONFIG_RTW_DEBUG
 	struct dm_iqk_info *iqk_info = &dm->IQK_info;
+#endif
 
 	if (dm->rf_type == RF_1T1R)
 		path_num = 0x1;
@@ -381,8 +383,10 @@ void halrf_iqk_dbg(void *dm_void)
 	u32 tmp;
 	/*two channel, PATH, TX/RX, 0:pass 1 :fail*/
 	boolean iqk_result[2][NUM][2];
+#ifdef CONFIG_RTW_DEBUG
 	struct dm_iqk_info *iqk_info = &dm->IQK_info;
 	struct _hal_rf_ *rf = &dm->rf_table;
+#endif
 
 	/* IQK INFO */
 	RF_DBG(dm, DBG_RF_IQK, "%-20s\n", "====== IQK Info ======");

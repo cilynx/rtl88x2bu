@@ -373,11 +373,13 @@ void phydm_ra_dynamic_retry_count(void *dm_void)
 void phydm_print_rate(void *dm_void, u8 rate, u32 dbg_component)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	u8 rate_idx = rate & 0x7f; /*remove bit7 SGI*/
 	boolean vht_en = phydm_is_vht_rate(dm, rate_idx);
 	u8 b_sgi = (rate & 0x80) >> 7;
 	u8 rate_ss = phydm_rate_to_num_ss(dm, rate_idx);
 	u8 rate_digit = phydm_rate_2_rate_digit(dm, rate_idx);
+#endif
 
 	PHYDM_DBG_F(dm, dbg_component, "( %s%s%s%s%s%d%s%s)\n",
 		    (vht_en && (rate_ss == 1)) ? "VHT 1ss " : "",

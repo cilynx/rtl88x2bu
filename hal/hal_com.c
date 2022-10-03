@@ -13592,8 +13592,9 @@ exit:
 void rtw_dump_cur_efuse(PADAPTER padapter)
 {
 	int mapsize =0;
+#ifdef CONFIG_RTW_DEBUG
 	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(padapter);
-
+#endif
 	EFUSE_GetEfuseDefinition(padapter, EFUSE_WIFI, TYPE_EFUSE_MAP_LEN , (void *)&mapsize, _FALSE);
 
 	if (mapsize <= 0 || mapsize > EEPROM_MAX_SIZE) {

@@ -133,7 +133,9 @@ static int proc_get_drv_cfg(struct seq_file *m, void *v)
 static ssize_t proc_set_log_level(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data)
 {
 	char tmp[32];
+#ifdef CONFIG_RTW_DEBUG
 	int log_level;
+#endif
 
 	if (count < 1)
 		return -EINVAL;

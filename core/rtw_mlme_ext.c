@@ -189,7 +189,9 @@ void rtw_txpwr_init_regd(struct rf_ctl_t *rfctl)
 		, rfctl->country_ent ? rfctl->country_ent->alpha2 : NULL
 		, rfctl->ChannelPlan);
 	if (exc) {
+#ifdef CONFIG_RTW_DEBUG
 		u8 has_country = (exc->country[0] == '\0' && exc->country[1] == '\0') ? 0 : 1;
+#endif
 
 		if (strcmp(exc->regd_name, regd_str(TXPWR_LMT_NONE)) == 0)
 			rfctl->regd_name = regd_str(TXPWR_LMT_NONE);
@@ -6163,7 +6165,9 @@ int issue_probereq_p2p_ex(_adapter *adapter, u8 *da, int try_cnt, int wait_ms)
 {
 	int ret;
 	int i = 0;
+#ifdef CONFIG_RTW_DEBUG
 	systime start = rtw_get_current_time();
+#endif
 
 	do {
 		ret = _issue_probereq_p2p(adapter, da, wait_ms > 0 ? _TRUE : _FALSE);
@@ -8564,7 +8568,9 @@ int issue_probereq_ex(_adapter *padapter, const NDIS_802_11_SSID *pssid, const u
 {
 	int ret = _FAIL;
 	int i = 0;
+#ifdef CONFIG_RTW_DEBUG
 	systime start = rtw_get_current_time();
+#endif
 
 	if (rtw_rfctl_is_tx_blocked_by_ch_waiting(adapter_to_rfctl(padapter)))
 		goto exit;
@@ -9593,7 +9599,9 @@ int issue_nulldata(_adapter *padapter, unsigned char *da, unsigned int power_mod
 {
 	int ret = _FAIL;
 	int i = 0;
+#ifdef CONFIG_RTW_DEBUG
 	systime start = rtw_get_current_time();
+#endif
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
 
@@ -9747,7 +9755,9 @@ int issue_qos_nulldata(_adapter *padapter, unsigned char *da, u16 tid, u8 ps, in
 {
 	int ret = _FAIL;
 	int i = 0;
+#ifdef CONFIG_RTW_DEBUG
 	systime start = rtw_get_current_time();
+#endif
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
 
@@ -9888,7 +9898,9 @@ int issue_deauth_ex(_adapter *padapter, u8 *da, unsigned short reason, int try_c
 {
 	int ret = _FAIL;
 	int i = 0;
+#ifdef CONFIG_RTW_DEBUG
 	systime start = rtw_get_current_time();
+#endif
 
 	if (rtw_rfctl_is_tx_blocked_by_ch_waiting(adapter_to_rfctl(padapter)))
 		goto exit;
@@ -10301,7 +10313,9 @@ inline u8 issue_addba_rsp_wait_ack(_adapter *adapter, unsigned char *ra, u8 tid,
 {
 	int ret = _FAIL;
 	int i = 0;
+#ifdef CONFIG_RTW_DEBUG
 	systime start = rtw_get_current_time();
+#endif
 
 	if (rtw_rfctl_is_tx_blocked_by_ch_waiting(adapter_to_rfctl(adapter)))
 		goto exit;
@@ -10379,7 +10393,9 @@ int issue_del_ba_ex(_adapter *adapter, unsigned char *ra, u8 tid, u16 reason, u8
 {
 	int ret = _FAIL;
 	int i = 0;
+#ifdef CONFIG_RTW_DEBUG
 	systime start = rtw_get_current_time();
+#endif
 
 	if (rtw_rfctl_is_tx_blocked_by_ch_waiting(adapter_to_rfctl(adapter)))
 		goto exit;
@@ -10657,7 +10673,9 @@ int issue_action_SM_PS_wait_ack(_adapter *padapter, unsigned char *raddr, u8 New
 {
 	int ret = _FAIL;
 	int i = 0;
+#ifdef CONFIG_RTW_DEBUG
 	systime start = rtw_get_current_time();
+#endif
 
 	if (rtw_rfctl_is_tx_blocked_by_ch_waiting(adapter_to_rfctl(padapter)))
 		goto exit;

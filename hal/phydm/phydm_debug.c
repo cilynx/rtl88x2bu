@@ -2366,7 +2366,9 @@ void phydm_get_phy_statistic(void *dm_void)
 void phydm_basic_dbg_msg_linked(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	struct phydm_cfo_track_struct *cfo_t = &dm->dm_cfo_track;
+#endif
 	struct odm_phy_dbg_info *dbg_t = &dm->phy_dbg_info;
 	u16 macid, client_cnt = 0;
 	u8 rate = 0;
@@ -2624,7 +2626,9 @@ void phydm_dm_summary(void *dm_void, u8 macid)
 void phydm_basic_dbg_message(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	struct phydm_fa_struct *fa_t = &dm->false_alm_cnt;
+#endif
 	#ifdef NHM_SUPPORT
 	struct ccx_info *ccx = &dm->dm_ccx_info;
 	u8 nhm_valid = 0;
@@ -3962,7 +3966,9 @@ void phydm_dump_rf_reg(void *dm_void, u32 *_used, char *output, u32 *_out_len)
 
 void phydm_dump_mac_reg(void *dm_void, u32 *_used, char *output, u32 *_out_len)
 {
+#ifdef CONFIG_RTW_DEBUG
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#endif
 	u32 addr = 0;
 	u32 used = *_used;
 	u32 out_len = *_out_len;
@@ -5581,6 +5587,7 @@ void phydm_fw_trace_handler_code(void *dm_void, u8 *buffer, u8 cmd_len)
 {
 #ifdef CONFIG_PHYDM_DEBUG_FUNCTION
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	u8 function = buffer[0];
 	u8 dbg_num = buffer[1];
 	u16 content_0 = (((u16)buffer[3]) << 8) | ((u16)buffer[2]);
@@ -5588,6 +5595,7 @@ void phydm_fw_trace_handler_code(void *dm_void, u8 *buffer, u8 cmd_len)
 	u16 content_2 = (((u16)buffer[7]) << 8) | ((u16)buffer[6]);
 	u16 content_3 = (((u16)buffer[9]) << 8) | ((u16)buffer[8]);
 	u16 content_4 = (((u16)buffer[11]) << 8) | ((u16)buffer[10]);
+#endif
 
 	if (cmd_len > 12)
 		PHYDM_DBG(dm, DBG_FW_TRACE,

@@ -2796,7 +2796,9 @@ void parsing_eapol_packet(_adapter *padapter, u8 *key_payload, struct sta_info *
 	struct ieee802_1x_hdr *hdr;
 	struct wpa_eapol_key *key;
 	u16 key_info, key_data_length;
+#ifdef CONFIG_RTW_DEBUG
 	char *trx_msg = trx_type ? "send" : "recv";
+#endif
 
 	hdr = (struct ieee802_1x_hdr *) key_payload;
 

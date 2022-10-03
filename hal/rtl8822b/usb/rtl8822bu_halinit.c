@@ -193,7 +193,9 @@ static void hal_init_misc(PADAPTER adapter)
 u32 rtl8822bu_init(PADAPTER padapter)
 {
 	u8 status = _SUCCESS;
+#ifdef CONFIG_RTW_DEBUG
 	systime init_start_time = rtw_get_current_time();
+#endif
 
 #ifdef CONFIG_FWLPS_IN_IPS
 	if (_SUCCESS == rtl8822bu_fw_ips_init(padapter))

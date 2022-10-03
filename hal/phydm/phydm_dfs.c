@@ -844,6 +844,9 @@ phydm_radar_detect_dm_check(
 	u32 regf70_value = 0, regf74_value = 0;
 	u32 rega40_value = 0, rega44_value = 0, rega48_value = 0;
 	u32 rega4c_value = 0, rega50_value = 0, rega54_value = 0;
+#ifdef CONFIG_RTW_DEBUG
+	u32 regdf4_value = 0;
+#endif
 	#if (RTL8721D_SUPPORT)
 	u32 reg908_value = 0, regdf4_value = 0;
 	u32 regf54_value = 0, regf58_value = 0, regf5c_value = 0;

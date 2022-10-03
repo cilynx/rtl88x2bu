@@ -194,8 +194,10 @@ void phydm_set_kfree_to_rf_8821c(void *dm_void, u8 e_rf_path, boolean wlg_btg,
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	u8 wlg, btg;
 	u32 gain_bmask = (BIT(18) | BIT(17) | BIT(16) | BIT(15) | BIT(14));
+#ifdef CONFIG_RTW_DEBUG
 	u32 s_gain_bmask = (BIT(19) | BIT(18) | BIT(17) |
 			    BIT(16) | BIT(15) | BIT(14));
+#endif
 
 	odm_set_rf_reg(dm, e_rf_path, RF_0xde, BIT(0), 1);
 	odm_set_rf_reg(dm, e_rf_path, RF_0xde, BIT(5), 1);
@@ -227,8 +229,10 @@ void phydm_clear_kfree_to_rf_8821c(void *dm_void, u8 e_rf_path, u8 data)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	u32 gain_bmask = (BIT(18) | BIT(17) | BIT(16) | BIT(15) | BIT(14));
+#ifdef CONFIG_RTW_DEBUG
 	u32 s_gain_bmask = (BIT(19) | BIT(18) | BIT(17) |
 			    BIT(16) | BIT(15) | BIT(14));
+#endif
 
 	odm_set_rf_reg(dm, e_rf_path, RF_0xde, BIT(0), 1);
 	odm_set_rf_reg(dm, e_rf_path, RF_0xde, BIT(5), 1);

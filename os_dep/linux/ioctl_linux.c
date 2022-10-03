@@ -5244,7 +5244,9 @@ static int rtw_p2p_set_wfd_enable(struct net_device *dev,
 
 	int ret = 0;
 	_adapter *padapter = (_adapter *)rtw_netdev_priv(dev);
+#ifdef CONFIG_RTW_DEBUG
 	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
+#endif
 
 	if (*extra == '0')
 		rtw_wfd_enable(padapter, 0);
@@ -5836,7 +5838,9 @@ static int rtw_dbg_port(struct net_device *dev,
 	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
 	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
+#ifdef CONFIG_RTW_DEBUG
 	struct security_priv *psecuritypriv = &padapter->securitypriv;
+#endif
 	struct wlan_network *cur_network = &(pmlmepriv->cur_network);
 	struct sta_priv *pstapriv = &padapter->stapriv;
 
@@ -6155,8 +6159,10 @@ static int rtw_dbg_port(struct net_device *dev,
 				, rtw_is_drv_stopped(padapter) ? "True" : "False");
 			break;
 		case 0x08: {
+#ifdef CONFIG_RTW_DEBUG
 			struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
 			struct recv_priv  *precvpriv = &padapter->recvpriv;
+#endif
 
 			RTW_INFO("free_xmitbuf_cnt=%d, free_xmitframe_cnt=%d"
 				", free_xmit_extbuf_cnt=%d, free_xframe_ext_cnt=%d"
@@ -6281,7 +6287,9 @@ static int rtw_dbg_port(struct net_device *dev,
 		}
 			break;
 		case 0x15: {
+#ifdef CONFIG_RTW_DEBUG
 			struct pwrctrl_priv *pwrpriv = adapter_to_pwrctl(padapter);
+#endif
 			RTW_INFO("==>silent resete cnts:%d\n", pwrpriv->ips_enter_cnts);
 		}
 			break;
@@ -6333,7 +6341,9 @@ static int rtw_dbg_port(struct net_device *dev,
 			break;
 #endif
 		case 0x14: { /* get wifi_spec */
+#ifdef CONFIG_RTW_DEBUG
 			struct registry_priv	*pregpriv = &padapter->registrypriv;
+#endif
 			RTW_INFO("get wifi_spec=%d\n", pregpriv->wifi_spec);
 
 		}
