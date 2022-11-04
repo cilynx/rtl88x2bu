@@ -76,6 +76,17 @@ echo "blacklist rtw88_8822bu" > /etc/modprobe.d/rtw8822bu.conf
 And reboot your system.
 
 
+### Secure Boot
+
+Secure Boot will prevent the module from loading as it isn't signed.
+
+Check your secure boot setting with `mokutil --sb-state`. You should see something like:
+
+    SecureBoot disabled
+
+If not, disable secure boot in BIOS.
+
+
 ## Raspberry Pi Access Point
 
 ```bash
