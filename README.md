@@ -78,13 +78,14 @@ And reboot your system.
 
 ### Secure Boot
 
-Secure Boot will prevent the module from loading as it isn't signed.
+Secure Boot will prevent the module from loading as it isn't signed. In order
+to check whether you have secure boot enabled, you couly run  `mokutil
+--sb-state`. If you see something like `SecureBoot disabled`, you do not take
+to setup module signing.
 
-Check your secure boot setting with `mokutil --sb-state`. You should see something like:
-
-    SecureBoot disabled
-
-If not, disable secure boot in BIOS.
+If Secure Boot is enabled on your machine, you either could disable it in BIOS
+or UEFI or you could set up signing the module. How to do so is described
+[here](https://github.com/cilynx/rtl88x2bu/issues/210#issuecomment-1166402943).
 
 
 ## Raspberry Pi Access Point
