@@ -16,9 +16,13 @@ Realtek's 5.6.1.6 source was found bundled with the [Cudy WU1200 AC1200 High Gai
 
 Build confirmed on:
 
-```
-Linux version 5.4.0-4-amd64 (debian-kernel@lists.debian.org) (gcc version 9.2.1 20200203 (Debian 9.2.1-28)) #1 SMP Debian 5.4.19-1 (2020-02-13)
-```
+* Linux version `5.4.0-91-generic` on Linux Mint 20.2 (30 November 2021)
+* Linux version `5.15.89` on Manjaro (3 February 2023)
+* Linux version `5.19` on Ubuntu 22.4
+* Linux version `6.1.0-9-amd64` on Debian Bookworm
+* Linux version `6.1.*` (self compiled) on Debian Bookworm and Ubuntu 22.4
+* Linux version `6.2.*` (self compiled) on Debian Bookworm and Ubuntu 22.4
+* Linux version `6.3.*` (self compiled) on Debian Bookworm and Ubuntu 22.4
 
 ## Using and Installing the Driver
 
