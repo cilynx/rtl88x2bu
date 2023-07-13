@@ -20,10 +20,10 @@ Build confirmed on:
 * Linux version `5.15.89` on Manjaro (3 February 2023)
 * Linux version `5.19` on Ubuntu 22.4
 * Linux version `6.1.0-9-amd64` on Debian Bookworm
-* Linux version `6.1.*` (self compiled) on Debian Bookworm and Ubuntu 22.4
-* Linux version `6.2.*` (self compiled) on Debian Bookworm and Ubuntu 22.4
-* Linux version `6.3.*` (self compiled) on Debian Bookworm and Ubuntu 22.4
-* Linux version `6.4.0` (self compiled) on Debian Bookworm
+* Linux version `6.1.*` (self compiled) on Debian Bookworm and Ubuntu 22.04
+* Linux version `6.2.*` (self compiled) on Debian Bookworm and Ubuntu 22.04
+* Linux version `6.3.*` (self compiled) on Debian Bookworm and Ubuntu 22.04
+* Linux version `6.4.3` (self compiled) on Debian Bookworm
 
 ## Using and Installing the Driver
 
