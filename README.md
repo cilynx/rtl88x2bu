@@ -72,13 +72,14 @@ Check the currently loaded module using `lsmod`. If you see `rtw88_core`,
 `rtw88_usb`, or any name beginning with `rtw88_` then you are using the RTW88
 driver. If you see `88x2bu` then you are using this RTW88x2BU driver.
 
-To blacklist RTW88 8822bu USB driver, run the following command:
+To blacklist RTW88 8822bu USB driver, run the following command. It will
+_replace_ the existing `*.conf` file with the `echo`ed content.
 
 ```
-echo "blacklist rtw88_8822bu" > /etc/modprobe.d/rtw8822bu.conf
+echo "blacklist rtw88_8822bu" | sudo tee /etc/modprobe.d/rtw8822bu.conf
 ```
 
-And reboot your system.
+Then reboot your system.
 
 
 ### Secure Boot
