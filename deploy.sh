@@ -2,6 +2,33 @@
 
 set -euo pipefail
 
+function main() {
+	local COMMAND FIRST_ARG
+
+	if [[ $# -eq 0 ]]; then
+		print-global-usage
+		exit 1
+	fi
+
+	FIRST_ARG="$1"
+	shift
+	case "${FIRST_ARG}" in
+	install | list-kernels | remove)
+		COMMAND="${FIRST_ARG}"
+		;;
+	-h | --help)
+		print-global-usage
+		exit 0
+		;;
+	*)
+		print-global-usage
+		exit 1
+		;;
+	esac
+
+	ensure_root_permissions
+}
+
 function ensure_no_cli_args() {
     if [ $# -ne 0 ]
     then
