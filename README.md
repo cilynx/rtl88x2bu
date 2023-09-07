@@ -78,7 +78,7 @@ To blacklist RTW88 8822bu USB driver, run the following command:
 echo "blacklist rtw88_8822bu" > /etc/modprobe.d/rtw8822bu.conf
 ```
 
-And reboot your system.
+Then reboot your system.
 
 
 ### Secure Boot
