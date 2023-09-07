@@ -29,6 +29,25 @@ function main() {
 	ensure_root_permissions
 }
 
+function print-global-usage() {
+	cat <<EOF | fmt
+Synopsis: $0 <install|list-kernels|remove|-h|--help> [--all]
+
+-h|--help: display this help and exit
+install: install the driver for specified Kernels
+list-kernels: list all installed Kernels on STDOUT
+remove: remove the driver for specified Kernels
+
+SPECFIYING KERNELS:
+
+Kernels for which the driver should be installed can be specified on STDIN. In order to get a list of all installed Kernels one can use the command \`list-kernels\`. Thus, in order to install the driver for all current Kernels, one can write
+
+    $0 list-kernels | $0 install
+
+If no Kernel is specified, the default behaviour of DKMS will be used, which is to install the driver for the currently running Kernel.
+EOF
+}
+
 function ensure_no_cli_args() {
     if [ $# -ne 0 ]
     then
