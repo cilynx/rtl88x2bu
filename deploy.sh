@@ -27,6 +27,7 @@ function main() {
 	esac
 
 	ensure_root_permissions
+	"$COMMAND" "$@"
 }
 
 function print-global-usage() {
@@ -48,36 +49,39 @@ If no Kernel is specified, the default behaviour of DKMS will be used, which is 
 EOF
 }
 
+function list-kernels() {
+	ls -1 /boot/config-* | sed -E 's/.*config-(.*)/\1/'
+}
+
 function ensure_no_cli_args() {
-    if [ $# -ne 0 ]
-    then
-        echo "No command line arguments accepted!" >&2
-        exit 1
-    fi
+	if [ $# -ne 0 ]; then
+		echo "No command line arguments accepted!" >&2
+		exit 1
+	fi
 }
 
 function ensure_root_permissions() {
-    if ! sudo -v
-    then
-        echo "Root permissions required to deploy the driver!" >&2
-        exit 1
-    fi
+	if ! sudo -v; then
+		echo "Root permissions required to deploy the driver!" >&2
+		exit 1
+	fi
 }
 
 function get_version() {
-    sed -En 's/PACKAGE_VERSION="(.*)"/\1/p' dkms.conf
+	sed -En 's/PACKAGE_VERSION="(.*)"/\1/p' dkms.conf
 }
 
 function deploy_driver() {
-    VER=$(get_version)
-    sudo rsync --delete --exclude=.git -rvhP ./ "/usr/src/rtl88x2bu-${VER}"
-    for action in add build install
-    do
-      sudo dkms "${action}" -m rtl88x2bu -v "${VER}"
-    done
-    sudo modprobe 88x2bu
+	VER=$(get_version)
+	sudo rsync --delete --exclude=.git -rvhP ./ "/usr/src/rtl88x2bu-${VER}"
+	for action in add build install; do
+		sudo dkms "${action}" -m rtl88x2bu -v "${VER}"
+	done
+	sudo modprobe 88x2bu
 }
 
-ensure_no_cli_args "$@"
-ensure_root_permissions
-deploy_driver
+main "$@"
+
+# ensure_no_cli_args "$@"
+# ensure_root_permissions
+# deploy_driver
