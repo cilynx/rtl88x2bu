@@ -50,7 +50,7 @@ EOF
 }
 
 function list-kernels() {
-	ls -1 /boot/config-* | sed -E 's/.*config-(.*)/\1/'
+	find /boot -maxdepth 1 -name "config-*" | sed -E 's/.*config-(.*)/\1/'
 }
 
 function ensure_no_cli_args() {
