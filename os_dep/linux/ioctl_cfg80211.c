@@ -5364,7 +5364,7 @@ static int cfg80211_rtw_change_beacon(
 #if LINUX_VERSION_CODE <= KERNEL_VERSION(6, 6, 0)
 		struct cfg80211_beacon_data *info
 #else
-		struct cfg80211_ap_settings *params
+		struct cfg80211_ap_update *params
 #endif
 ) {
 	int ret = 0;
