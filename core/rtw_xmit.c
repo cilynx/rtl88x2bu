@@ -548,7 +548,6 @@ void rtw_get_adapter_tx_rate_bmp(_adapter *adapter, u16 r_bmp_cck_ofdm[], u32 r_
 	u16 bmp_cck_ofdm, tmp_cck_ofdm;
 	u32 bmp_ht, tmp_ht;
 	u64 bmp_vht, tmp_vht;
-	int i;
 
 	for (bw = CHANNEL_WIDTH_20; bw <= CHANNEL_WIDTH_160; bw++) {
 		bmp_cck_ofdm = bmp_ht = bmp_vht = 0;
@@ -2944,23 +2943,15 @@ s32 rtw_mgmt_xmitframe_coalesce(_adapter *padapter, _pkt *pkt, struct xmit_frame
 #define DBG_MGMT_XMIT_BIP_DUMP 0
 #define DBG_MGMT_XMIT_ENC_DUMP 0
 
-	struct pkt_file pktfile;
-	s32 frg_inx, frg_len, mpdu_len, llc_sz, mem_sz;
-	SIZE_PTR addr;
 	u8 *pframe, *mem_start = NULL, *tmp_buf = NULL;
-	u8 hw_hdr_offset, subtype ;
+	u8 subtype ;
 	u8 category = 0xFF;
 	struct sta_info		*psta = NULL;
-	struct xmit_priv	*pxmitpriv = &padapter->xmitpriv;
 	struct pkt_attrib	*pattrib = &pxmitframe->attrib;
-	u8 *pbuf_start;
 	s32 bmcst = IS_MCAST(pattrib->ra);
-	s32 res = _FAIL;
 	u8 *BIP_AAD = NULL;
 	u8 *MGMT_body = NULL;
 
-	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
-	struct mlme_priv	*pmlmepriv = &padapter->mlmepriv;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
 	u8 MME[_MME_IE_LENGTH_];
 

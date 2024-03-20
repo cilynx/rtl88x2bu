@@ -50,8 +50,11 @@ check_positive(struct dm_struct *dm,
 	       const u32	condition4
 )
 {
-	u32	cond1 = condition1, cond2 = condition2,
-		cond3 = condition3, cond4 = condition4;
+	u32	cond1 = condition1;
+#ifdef CONFIG_RTW_DEBUG
+	u32	cond2 = condition2, cond3 = condition3,
+		cond4 = condition4;
+#endif
 
 	u8	cut_version_for_para =
 		(dm->cut_version ==  ODM_CUT_A) ? 15 : dm->cut_version;
@@ -66,6 +69,7 @@ check_positive(struct dm_struct *dm,
 			(dm->support_interface & 0x0F) << 8  |
 			dm->rfe_type;
 
+#ifdef CONFIG_RTW_DEBUG
 	u32	driver2 = (dm->type_glna & 0xFF) <<  0 |
 			(dm->type_gpa & 0xFF)  <<  8 |
 			(dm->type_alna & 0xFF) << 16 |
@@ -77,6 +81,7 @@ check_positive(struct dm_struct *dm,
 			(dm->type_gpa & 0xFF00) |
 			(dm->type_alna & 0xFF00) << 8 |
 			(dm->type_apa & 0xFF00)  << 16;
+#endif
 
 	PHYDM_DBG(dm, ODM_COMP_INIT,
 		  "===> %s (cond1, cond2, cond3, cond4) = (0x%X 0x%X 0x%X 0x%X)\n",

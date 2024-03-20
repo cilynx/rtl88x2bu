@@ -58,8 +58,6 @@ BOOLEAN rtw_file_efuse_IsMasked(PADAPTER pAdapter, u16 Offset, u8 *maskbuf)
 }
 BOOLEAN efuse_IsBT_Masked(PADAPTER pAdapter, u16 Offset)
 {
-	PHAL_DATA_TYPE pHalData = GET_HAL_DATA(pAdapter);
-
 	if (pAdapter->registrypriv.boffefusemask)
 		return FALSE;
 
@@ -82,8 +80,6 @@ BOOLEAN efuse_IsBT_Masked(PADAPTER pAdapter, u16 Offset)
 
 void rtw_bt_efuse_mask_array(PADAPTER pAdapter, u8 *pArray)
 {
-	PHAL_DATA_TYPE pHalData = GET_HAL_DATA(pAdapter);
-
 #ifdef CONFIG_BT_EFUSE_MASK
 #ifdef CONFIG_USB_HCI
 if (IS_HARDWARE_TYPE_8822CU(pAdapter))
@@ -103,8 +99,6 @@ if (IS_HARDWARE_TYPE_8822CU(pAdapter))
 
 u16 rtw_get_bt_efuse_mask_arraylen(PADAPTER pAdapter)
 {
-	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(pAdapter);
-
 #ifdef CONFIG_BT_EFUSE_MASK
 #ifdef CONFIG_USB_HCI
 	if (IS_HARDWARE_TYPE_8822CU(pAdapter))
@@ -1184,7 +1178,7 @@ u8 rtw_efuse_map_read(PADAPTER adapter, u16 addr, u16 cnts, u8 *data)
 {
 	struct dvobj_priv *d;
 	u8 *efuse = NULL;
-	u32 size, i;
+	u32 size;
 	int err;
 	u32	backupRegs[4] = {0};
 	u8 status = _SUCCESS;
@@ -1565,8 +1559,6 @@ void hal_ReadEFuse_BT_logic_map(
 	u8			*pbuf
 )
 {
-
-	PHAL_DATA_TYPE	pHalData = GET_HAL_DATA(padapter);
 
 	u8	*efuseTbl, *phyefuse;
 	u8	bank;

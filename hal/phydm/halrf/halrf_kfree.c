@@ -194,8 +194,10 @@ void phydm_set_kfree_to_rf_8821c(void *dm_void, u8 e_rf_path, boolean wlg_btg,
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	u8 wlg, btg;
 	u32 gain_bmask = (BIT(18) | BIT(17) | BIT(16) | BIT(15) | BIT(14));
+#ifdef CONFIG_RTW_DEBUG
 	u32 s_gain_bmask = (BIT(19) | BIT(18) | BIT(17) |
 			    BIT(16) | BIT(15) | BIT(14));
+#endif
 
 	odm_set_rf_reg(dm, e_rf_path, RF_0xde, BIT(0), 1);
 	odm_set_rf_reg(dm, e_rf_path, RF_0xde, BIT(5), 1);
@@ -227,8 +229,10 @@ void phydm_clear_kfree_to_rf_8821c(void *dm_void, u8 e_rf_path, u8 data)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	u32 gain_bmask = (BIT(18) | BIT(17) | BIT(16) | BIT(15) | BIT(14));
+#ifdef CONFIG_RTW_DEBUG
 	u32 s_gain_bmask = (BIT(19) | BIT(18) | BIT(17) |
 			    BIT(16) | BIT(15) | BIT(14));
+#endif
 
 	odm_set_rf_reg(dm, e_rf_path, RF_0xde, BIT(0), 1);
 	odm_set_rf_reg(dm, e_rf_path, RF_0xde, BIT(5), 1);
@@ -959,7 +963,7 @@ void phydm_set_kfree_to_rf_8198f(void *dm_void, u8 e_rf_path, u8 data)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct odm_power_trim_data *power_trim_info = &dm->power_trim_data;
-	u32 band, i;
+	u32 i;
 	s8 pwr_offset[3];
 
 	RF_DBG(dm, DBG_RF_MP,
@@ -1798,8 +1802,6 @@ void phydm_set_power_trim_rf_8195b(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct odm_power_trim_data *power_trim_info = &dm->power_trim_data;
-	u32 band, i;
-	s8 pwr_offset[3];
 
 	RF_DBG(dm, DBG_RF_MP,
 		   "[kfree] %s:Set kfree to rf 0x33\n", __func__);
@@ -2232,7 +2234,6 @@ void phydm_get_set_lna_offset_8197g(void *dm_void)
 	struct odm_power_trim_data *power_trim_info = &dm->power_trim_data;
 
 	u8 pg_lna[2] = {0}, i, pg_lna_tmp = 0;
-	u32 rf_reg;
 
 	odm_efuse_one_byte_read(dm, PPG_LNA_2GA_97G, &pg_lna_tmp, false);
 

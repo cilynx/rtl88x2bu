@@ -2938,7 +2938,6 @@ s8 phy_get_txpwr_lmt(
 	u8 lock
 )
 {
-	struct dvobj_priv *dvobj = adapter_to_dvobj(Adapter);
 	struct rf_ctl_t *rfctl = adapter_to_rfctl(Adapter);
 	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(Adapter);
 	struct hal_spec_t *hal_spec = GET_HAL_SPEC(Adapter);
@@ -3045,7 +3044,6 @@ inline s8 phy_get_txpwr_lmt_diff(_adapter *adapter
 	, u8 rfpath, u8 rs, u8 tlrs, u8 ntx_idx, u8 cch, u8 lock
 )
 {
-	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
 	struct hal_spec_t *hal_spec = GET_HAL_SPEC(adapter);
 	s8 lmt = phy_get_txpwr_lmt(adapter, regd_name, band, bw, tlrs, ntx_idx, cch, lock);
 
@@ -3599,11 +3597,10 @@ phy_set_tx_power_limit(
 {
 #if CONFIG_TXPWR_LIMIT
 	PADAPTER Adapter = pDM_Odm->adapter;
-	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(Adapter);
 	struct hal_spec_t *hal_spec = GET_HAL_SPEC(Adapter);
 	u8 band = 0, bandwidth = 0, tlrs = 0, channel;
 	u8 ntx_idx;
-	s8 powerLimit = 0, prevPowerLimit, channelIndex;
+	s8 powerLimit = 0, channelIndex;
 	s8 ww_lmt_val = phy_txpwr_ww_lmt_value(Adapter);
 
 	if (0)
@@ -5040,7 +5037,6 @@ PHY_ConfigRFWithTxPwrTrackParaFile(
 )
 {
 	HAL_DATA_TYPE		*pHalData = GET_HAL_DATA(Adapter);
-	struct dm_struct			*pDM_Odm = &pHalData->odmpriv;
 	int	rlen = 0, rtStatus = _FAIL;
 	char	*szLine, *ptmp;
 	u32	i = 0;
@@ -5946,7 +5942,6 @@ s16 phy_get_txpwr_total_mbm(_adapter *adapter, RATE_SECTION rs, u8 rate
 static s16 _phy_get_txpwr_max_mbm(_adapter *adapter, s8 rfpath
 	, enum channel_width bw, u8 cch, u8 opch, u16 bmp_cck_ofdm, u32 bmp_ht, u64 bmp_vht)
 {
-	struct hal_spec_t *hal_spec = GET_HAL_SPEC(adapter);
 	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
 	BAND_TYPE band = cch <= 14 ? BAND_ON_2_4G : BAND_ON_5G;
 	u8 tx_num;

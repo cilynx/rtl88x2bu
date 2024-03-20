@@ -1356,7 +1356,6 @@ void phydm_process_rssi_for_dm(struct dm_struct *dm,
 	s32 rssi_ave = 0; /*@average among all paths*/
 	s8 rssi_all = 0; /*@average value of CCK & OFDM*/
 	s8 rssi_cck_tmp = 0, rssi_ofdm_tmp = 0;
-	u8 i = 0;
 	u8 rssi_max = 0, rssi_min = 0;
 	u32 w1 = 0, w2 = 0; /*weighting*/
 	u8 send_rssi_2_fw = 0;

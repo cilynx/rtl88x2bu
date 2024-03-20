@@ -1032,7 +1032,6 @@ void phydm_la_set_bb(void *dm_void)
 	u8	smp_rate = smp->la_smp_rate;
 	u8	dma_type = smp->la_dma_type;
 	u32	dbg_port_hdr_sel = 0;
-	char	*trig_mode_word = NULL;
 
 	pr_debug("3. [BB Setting] mode=(%d), Edge=(%s), smp_rate=(%dM), Dma_type=(%d)\n",
 		 trig_mode,
@@ -1561,7 +1560,6 @@ void phydm_la_init(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct rt_adcsmp *smp = &dm->adcsmp;
-	struct rt_adcsmp_string *buf = &smp->adc_smp_buf;
 
 	smp->adc_smp_state = ADCSMP_STATE_IDLE;
 	smp->is_la_print = true;

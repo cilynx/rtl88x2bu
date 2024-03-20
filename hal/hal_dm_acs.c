@@ -22,7 +22,6 @@ static void _rtw_bss_nums_count(_adapter *adapter, u8 *pbss_nums)
 	struct mlme_priv	*pmlmepriv = &(adapter->mlmepriv);
 	_queue *queue = &(pmlmepriv->scanned_queue);
 	struct wlan_network *pnetwork = NULL;
-	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
 
 	_list	*plist, *phead;
 	_irqL irqL;
@@ -115,8 +114,6 @@ void rtw_acs_adv_setting(_adapter *adapter, RT_SCAN_TYPE scan_type, u16 scan_tim
 {
 	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
 	struct auto_chan_sel *pacs = &hal_data->acs;
-	struct mlme_ext_priv *pmlmeext = &adapter->mlmeextpriv;
-	struct mlme_ext_info *pmlmeinfo = &pmlmeext->mlmext_info;
 
 	pacs->scan_type = scan_type;
 	pacs->scan_time = scan_time;
@@ -274,9 +271,11 @@ void _rtw_phydm_acs_select_best_chan(_adapter *adapter)
 void rtw_acs_info_dump(void *sel, _adapter *adapter)
 {
 	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
+#ifdef CONFIG_RTW_ACS_DBG
 	struct rf_ctl_t *rfctl = adapter_to_rfctl(adapter);
 	u8 max_chan_nums = rfctl->max_chan_nums;
 	u8 ch_idx, ch_num;
+#endif
 
 	_RTW_PRINT_SEL(sel, "========== ACS (VER-%d) ==========\n", RTK_ACS_VERSION);
 	_RTW_PRINT_SEL(sel, "Best 24G Channel:%d\n", hal_data->acs.best_chan_24g);

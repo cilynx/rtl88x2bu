@@ -108,7 +108,6 @@ void phydm_ant_weight_dbg(void *dm_void, char input[][16], u32 *_used,
 void phydm_trx_antenna_setting_init(void *dm_void, u8 num_rf_path)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	u8 rx_ant = 0, tx_ant = 0;
 	u8 path_bitmap = 1;
 
 	path_bitmap = (u8)phydm_gen_bitmask(num_rf_path);

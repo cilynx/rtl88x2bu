@@ -1563,7 +1563,9 @@ exit:
 void rtw_surveydone_event_callback(_adapter	*adapter, u8 *pbuf)
 {
 	_irqL  irqL;
+#ifdef CONFIG_RTW_ACS
 	struct surveydone_event *parm = (struct surveydone_event *)pbuf;
+#endif
 	struct	mlme_priv	*pmlmepriv = &(adapter->mlmepriv);
 #ifdef CONFIG_RTW_80211R
 	struct mlme_ext_priv	*pmlmeext = &adapter->mlmeextpriv;

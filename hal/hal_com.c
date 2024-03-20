@@ -7867,7 +7867,6 @@ static void rtw_hal_construct_PSPoll(_adapter *padapter,
 {
 	struct rtw_ieee80211_hdr	*pwlanhdr;
 	u16					*fctrl;
-	u32					pktlen;
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
 
@@ -10998,7 +10997,6 @@ static void _rtw_hal_set_fw_rsvd_page(_adapter *adapter, bool finished, u8 *page
 	struct mlme_priv *pmlmepriv = &adapter->mlmepriv;
 	u32	BeaconLength = 0, ProbeRspLength = 0, PSPollLength = 0;
 	u32	NullDataLength = 0, QosNullLength = 0, BTQosNullLength = 0;
-	u32	ProbeReqLength = 0, NullFunctionDataLength = 0;
 	u8	TxDescLen = TXDESC_SIZE, TxDescOffset = TXDESC_OFFSET;
 	u8	TotalPageNum = 0 , CurtPktPageNum = 0 , RsvdPageNum = 0;
 	u8	*ReservedPagePacket;
@@ -11597,9 +11595,7 @@ static void hw_var_set_mlme_sitesurvey(_adapter *adapter, u8 enable)
 #ifndef CONFIG_HAS_HW_VAR_MLME_JOIN
 static void hw_var_set_mlme_join(_adapter *adapter, u8 type)
 {
-	u8 val8;
 	u16 val16;
-	u32 val32;
 	u8 RetryLimit = RL_VAL_STA;
 	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
 	struct mlme_priv *pmlmepriv = &adapter->mlmepriv;
@@ -12633,8 +12629,6 @@ u8 SetHwReg(_adapter *adapter, u8 variable, u8 *val)
 void GetHwReg(_adapter *adapter, u8 variable, u8 *val)
 {
 	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
-	u64 val64;
-
 
 	switch (variable) {
 	case HW_VAR_MAC_ADDR:
@@ -12804,8 +12798,6 @@ u8 rtw_hal_query_txbfee_rf_num(_adapter *adapter)
 	struct registry_priv		*pregistrypriv = &adapter->registrypriv;
 	struct mlme_ext_priv	*pmlmeext = &adapter->mlmeextpriv;
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
-
-	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
 
 	if ((pregistrypriv->beamformee_rf_num) && (IS_HARDWARE_TYPE_8814AE(adapter) || IS_HARDWARE_TYPE_8814AU(adapter) || IS_HARDWARE_TYPE_8822BU(adapter) || IS_HARDWARE_TYPE_8821C(adapter)))
 		return pregistrypriv->beamformee_rf_num;
@@ -13600,8 +13592,9 @@ exit:
 void rtw_dump_cur_efuse(PADAPTER padapter)
 {
 	int mapsize =0;
+#ifdef CONFIG_RTW_DEBUG
 	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(padapter);
-
+#endif
 	EFUSE_GetEfuseDefinition(padapter, EFUSE_WIFI, TYPE_EFUSE_MAP_LEN , (void *)&mapsize, _FALSE);
 
 	if (mapsize <= 0 || mapsize > EEPROM_MAX_SIZE) {
@@ -14002,7 +13995,6 @@ void dm_DynamicUsbTxAgg(_adapter *padapter, u8 from_timer)
 /* bus-agg check for SoftAP mode */
 inline u8 rtw_hal_busagg_qsel_check(_adapter *padapter, u8 pre_qsel, u8 next_qsel)
 {
-	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
 	u8 chk_rst = _SUCCESS;
 
 	if (!MLME_IS_AP(padapter) && !MLME_IS_MESH(padapter))

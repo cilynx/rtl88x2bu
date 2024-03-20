@@ -216,7 +216,9 @@ void rtw_odm_parse_rx_phy_status_chinfo(union recv_frame *rframe, u8 *phys)
 	_adapter *adapter = rframe->u.hdr.adapter;
 	struct dm_struct *phydm = adapter_to_phydm(adapter);
 	struct rx_pkt_attrib *attrib = &rframe->u.hdr.attrib;
+	#ifdef CONFIG_RTW_DEBUG
 	u8 *wlanhdr = get_recvframe_data(rframe);
+	#endif
 
 	if (phydm->support_ic_type & PHYSTS_2ND_TYPE_IC) {
 		/*
@@ -247,7 +249,9 @@ void rtw_odm_parse_rx_phy_status_chinfo(union recv_frame *rframe, u8 *phys)
 		*/
 
 		if ((*phys & 0xf) == 0) {
+			#ifdef CONFIG_RTW_DEBUG
 			struct phy_sts_rpt_jgr2_type0 *phys_t0 = (struct phy_sts_rpt_jgr2_type0 *)phys;
+			#endif
 
 			if (DBG_RX_PHYSTATUS_CHINFO) {
 				RTW_PRINT("phys_t%u ta="MAC_FMT" %s, %s(band:%u, ch:%u, l_rxsc:%u)\n"
@@ -375,7 +379,9 @@ type1_end:
 				attrib->ch = pkt_cch;
 
 		} else {
+			#ifdef CONFIG_RTW_DEBUG
 			struct phy_sts_rpt_jgr2_type2 *phys_t2 = (struct phy_sts_rpt_jgr2_type2 *)phys;
+			#endif
 
 			if (DBG_RX_PHYSTATUS_CHINFO) {
 				RTW_PRINT("phys_t%u ta="MAC_FMT" %s, %s(band:%u, ch:%u, l_rxsc:%u, ht_rxsc:%u)\n"

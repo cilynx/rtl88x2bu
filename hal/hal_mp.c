@@ -1295,7 +1295,7 @@ void mpt_SetRFPath_819X(PADAPTER	pAdapter)
 	R_ANTENNA_SELECT_CCK	*p_cck_txrx;
 	u8		r_rx_antenna_ofdm = 0, r_ant_select_cck_val = 0;
 	u8		chgTx = 0, chgRx = 0;
-	u32		r_ant_sel_cck_val = 0, r_ant_select_ofdm_val = 0, r_ofdm_tx_en_val = 0;
+	u32		r_ant_select_ofdm_val = 0, r_ofdm_tx_en_val = 0;
 
 	ulAntennaTx = pHalData->antenna_tx_path;
 	ulAntennaRx = pHalData->AntennaRxPath;
@@ -1426,7 +1426,6 @@ void mpt_SetRFPath_819X(PADAPTER	pAdapter)
 		case RF_8225:
 		case RF_8256:
 		case RF_6052:
-			/*/r_ant_sel_cck_val = r_ant_select_cck_val;*/
 			phy_set_bb_reg(pAdapter, rFPGA1_TxInfo, 0x7fffffff, r_ant_select_ofdm_val);		/*/OFDM Tx*/
 			phy_set_bb_reg(pAdapter, rFPGA0_TxInfo, 0x0000000f, r_ofdm_tx_en_val);		/*/OFDM Tx*/
 			phy_set_bb_reg(pAdapter, rOFDM0_TRxPathEnable, 0x0000000f, r_rx_antenna_ofdm);	/*/OFDM Rx*/
@@ -1435,7 +1434,7 @@ void mpt_SetRFPath_819X(PADAPTER	pAdapter)
 				phy_set_bb_reg(pAdapter, rOFDM0_TRxPathEnable, 0x000000F0, r_rx_antenna_ofdm);	/*/OFDM Rx*/
 				phy_set_bb_reg(pAdapter, rOFDM1_TRxPathEnable, 0x000000F0, r_rx_antenna_ofdm);	/*/OFDM Rx*/
 			}
-			phy_set_bb_reg(pAdapter, rCCK0_AFESetting, bMaskByte3, r_ant_select_cck_val);/*/r_ant_sel_cck_val); /CCK TxRx*/
+			phy_set_bb_reg(pAdapter, rCCK0_AFESetting, bMaskByte3, r_ant_select_cck_val);/*/CCK TxRx*/
 			break;
 
 		default:
@@ -1667,8 +1666,6 @@ void hal_mpt_GetThermalMeter(PADAPTER pAdapter, u8 rfpath, u8 *value)
 
 void hal_mpt_SetSingleCarrierTx(PADAPTER pAdapter, u8 bStart)
 {
-	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(pAdapter);
-
 	pAdapter->mppriv.mpt_ctx.bSingleCarrier = bStart;
 
 	if (bStart) {/*/ Start Single Carrier.*/
@@ -2076,9 +2073,7 @@ static	void mpt_StopCckContTx(
 	PADAPTER	pAdapter
 )
 {
-	HAL_DATA_TYPE	*pHalData	= GET_HAL_DATA(pAdapter);
 	PMPT_CONTEXT	pMptCtx = &(pAdapter->mppriv.mpt_ctx);
-	u8			u1bReg;
 
 	pMptCtx->bCckContTx = FALSE;
 	pMptCtx->bOfdmContTx = FALSE;
@@ -2118,10 +2113,7 @@ static	void mpt_StopOfdmContTx(
 	PADAPTER	pAdapter
 )
 {
-	HAL_DATA_TYPE	*pHalData	= GET_HAL_DATA(pAdapter);
 	PMPT_CONTEXT	pMptCtx = &(pAdapter->mppriv.mpt_ctx);
-	u8			u1bReg;
-	u32			data;
 
 	pMptCtx->bCckContTx = FALSE;
 	pMptCtx->bOfdmContTx = FALSE;
@@ -2153,7 +2145,6 @@ static	void mpt_StartCckContTx(
 	PADAPTER		pAdapter
 )
 {
-	HAL_DATA_TYPE	*pHalData	= GET_HAL_DATA(pAdapter);
 	PMPT_CONTEXT	pMptCtx = &(pAdapter->mppriv.mpt_ctx);
 	u32			cckrate;
 
@@ -2207,7 +2198,6 @@ static	void mpt_StartOfdmContTx(
 	PADAPTER		pAdapter
 )
 {
-	HAL_DATA_TYPE	*pHalData	= GET_HAL_DATA(pAdapter);
 	PMPT_CONTEXT	pMptCtx = &(pAdapter->mppriv.mpt_ctx);
 
 	/* 1. if OFDM block on?*/

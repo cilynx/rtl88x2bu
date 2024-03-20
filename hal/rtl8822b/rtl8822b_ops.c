@@ -276,7 +276,6 @@ static void Hal_EfuseParseBTCoexistInfo(PADAPTER adapter, u8 *map, u8 mapvalid)
 {
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
 	u8 setting;
-	u32 tmpu4;
 
 	if ((_TRUE == mapvalid) && (map[EEPROM_RF_BOARD_OPTION_8822B] != 0xFF)) {
 		/* 0xc1[7:5] = 0x01 */
@@ -782,11 +781,9 @@ static void beacon_function_enable(PADAPTER adapter, u8 Enable, u8 Linked)
 static void set_beacon_related_registers(PADAPTER adapter)
 {
 	u8 val8;
-	u32 value32;
-	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
 	struct mlme_ext_priv *pmlmeext = &adapter->mlmeextpriv;
 	struct mlme_ext_info *pmlmeinfo = &pmlmeext->mlmext_info;
-	u32 bcn_ctrl_reg, bcn_interval_reg;
+	u32 bcn_ctrl_reg;
 
 
 	/* reset TSF, enable update TSF, correcting TSF On Beacon */
@@ -931,7 +928,6 @@ static void linked_status_check(PADAPTER p)
 {
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(p);
 	struct sreset_priv *psrtpriv = &hal->srestpriv;
-	struct	pwrctrl_priv *pwrpriv = adapter_to_pwrctl(p);
 	u32 rx_dma_status = 0;
 
 	rx_dma_status = rtw_read32(p, REG_RXDMA_STATUS_8822B);
@@ -967,7 +963,6 @@ static void set_opmode_monitor(PADAPTER adapter)
 {
 	u32 rcr_bits;
 	u16 value_rxfltmap2;
-	struct mlme_priv *pmlmepriv = &adapter->mlmepriv;
 
 
 	/* Receive all type */
@@ -993,7 +988,6 @@ static void set_opmode_port0(PADAPTER adapter, u8 mode)
 	u8 is_tx_bcn;
 	u8 val8;
 	u16 val16;
-	u32 val32;
 
 
 #ifdef CONFIG_CONCURRENT_MODE
@@ -1252,7 +1246,6 @@ void rtw_hw_client_port_clr(_adapter *adapter)
 
 static void hw_var_set_opmode(PADAPTER adapter, u8 mode)
 {
-	u8 val8;
 	static u8 isMonitor = _FALSE;
 
 
@@ -1436,10 +1429,7 @@ static void hw_var_set_mlme_sitesurvey(PADAPTER adapter, u8 enable)
 	struct dvobj_priv *dvobj;
 	PHAL_DATA_TYPE hal;
 	struct mlme_priv *pmlmepriv;
-	PADAPTER iface;
-	u32 reg_bcn_ctl;
 	u16 value_rxfltmap2;
-	u8 val8, i;
 
 
 	dvobj = adapter_to_dvobj(adapter);
@@ -1489,7 +1479,6 @@ static void hw_var_set_mlme_join(PADAPTER adapter, u8 type)
 {
 	u8 val8;
 	u16 val16;
-	u32 val32;
 	u8 RetryLimit;
 	PHAL_DATA_TYPE hal;
 	struct mlme_priv *pmlmepriv;
@@ -1677,10 +1666,8 @@ static void hw_var_set_ack_preamble(PADAPTER adapter, u8 bShortPreamble)
 
 void hw_var_set_dl_rsvd_page(PADAPTER adapter, u8 mstatus)
 {
-	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
 	struct mlme_ext_priv *pmlmeext = &adapter->mlmeextpriv;
 	struct mlme_ext_info *pmlmeinfo = &pmlmeext->mlmext_info;
-	struct pwrctrl_priv *pwrpriv = adapter_to_pwrctl(adapter);
 	u8 bcn_valid = _FALSE;
 	u8 DLBcnCount = 0;
 	u32 poll = 0;
@@ -2536,10 +2523,8 @@ void rtl8822b_read_wmmedca_reg(PADAPTER adapter, u16 *vo_params, u16 *vi_params,
 void rtl8822b_gethwreg(PADAPTER adapter, u8 variable, u8 *val)
 {
 	PHAL_DATA_TYPE hal;
-	u8 val8;
 	u16 val16;
 	u32 val32;
-	u64 val64;
 
 
 	hal = GET_HAL_DATA(adapter);
@@ -3265,7 +3250,7 @@ void rtl8822b_prepare_mp_txdesc(PADAPTER adapter, struct mp_priv *pmp_priv)
 	u32 pkt_size;
 	s32 bmcast;
 	u32 desc_size;
-	u8 data_rate, pwr_status, offset;
+	u8 offset;
 
 
 	desc = pmp_priv->tx.desc;

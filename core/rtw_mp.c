@@ -349,8 +349,6 @@ void mpt_InitHWConfig(PADAPTER Adapter)
 
 #ifdef CONFIG_RTL8822B
 	else if (IS_HARDWARE_TYPE_8822B(Adapter)) {
-		u32 tmp_reg = 0;
-
 		PlatformEFIOWrite2Byte(Adapter, REG_RXFLTMAP1_8822B, 0x2000);
 		/* fixed wifi can't 2.4g tx suggest by Szuyitasi 20160504 */
 		phy_set_bb_reg(Adapter, 0x70, bMaskByte3, 0x0e);
@@ -2403,7 +2401,6 @@ static u32 rtw_GetPSDData(PADAPTER pAdapter, u32 point)
  */
 u32 mp_query_psd(PADAPTER pAdapter, u8 *data)
 {
-	HAL_DATA_TYPE	*pHalData	= GET_HAL_DATA(pAdapter);
 	struct dm_struct *p_dm = adapter_to_phydm(pAdapter);
 
 	u32 i, psd_pts = 0, psd_start = 0, psd_stop = 0;

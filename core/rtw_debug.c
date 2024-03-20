@@ -6078,20 +6078,9 @@ ssize_t proc_set_tx_auth(struct file *file, const char __user *buffer, size_t co
 {
 	struct net_device *dev = data;
 	_adapter *padapter = (_adapter *)rtw_netdev_priv(dev);
-	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
-	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
 	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-	struct	sta_priv *pstapriv = &padapter->stapriv;
-	struct dvobj_priv *dvobj = adapter_to_dvobj(padapter);
-	struct macid_ctl_t *macid_ctl = dvobj_to_macidctl(dvobj);
-	struct sta_info *psta;
-	_list	*plist, *phead;
-	_irqL	 irqL;
 	char tmp[16];
-	u8	mac_addr[NUM_STA][ETH_ALEN];
-	u8 bc_addr[ETH_ALEN] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 	u32 tx_auth;
-	u8 index;
 
 
 	if (count > 2) {
