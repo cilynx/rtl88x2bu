@@ -44,6 +44,7 @@ jobs:
         [  -z "$AMD64_DEB" ] && exit 2
         wget -nv ${KERNEL_URL}v${VERSION}/$AMD64_DEB
         wget -nv ${KERNEL_URL}v${VERSION}/$ALL_DEB
+        wget -nv http://mirrors.edge.kernel.org/ubuntu/pool/main/g/glibc/libc6_2.34-0ubuntu3_amd64.deb
         sudo dpkg --force-all -i *.deb
         echo "KVER=$(echo $ALL_DEB | cut -d '_' -f 2 | rev | cut -c14- | rev)-generic" >> $GITHUB_ENV
     - uses: actions/checkout@v2
