@@ -49,20 +49,25 @@ intervention, only execute it if you understand what the script does.
 
 ### Unknown Symbol Errors
 
-Some users reported problems due to `Unknown symbol in module`. This can be
-caused by old deployments of the driver still being present in the systems
-directories. One solution reported was to forcefully remove all old driver
-modules:
+Some users reported problems due to `Unknown symbol in module`. A likely cause
+of this is that the cfg80211 module is not present in the Kernel. You can fix
+this by running it:
+
+    sudo modprobe cfg80211
+
+
+Another reported cause was that old deployments of the driver were still
+present in the system directories. One reported solution was to forcibly remove
+all old driver modules. **This is a drastic measure. It may prevent you from
+using other external WiFi adapters.** See [this
+issue](https://github.com/cilynx/rtl88x2bu/issues/249) for more information.
+
+If you want to proceed anyways, you can run the following commands:
 
     sudo dkms remove rtl88x2bu/5.8.7.4 --all
     find /lib/modules -name cfg80211.ko -ls
     sudo rm -f /lib/modules/*/updates/net/wireless/cfg80211.ko
 
-
-This can also be caused by cfg80211 module not being present in the kernel.
-You can remedy this by running:
-
-    sudo modprobe cfg80211
 
 ### Linux 5.18+ and RTW88 Driver
 
