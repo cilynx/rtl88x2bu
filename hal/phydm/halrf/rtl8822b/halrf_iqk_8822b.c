@@ -954,18 +954,17 @@ _lok_one_shot_8822b(void *dm_void, u8 path)
 	LOK_notready = _iqk_check_cal_8822b(dm, path, 0x0);
 	_iqk_ltec_write_8822b(dm, 0x38, MASKDWORD, iqk->tmp_gntwl);
 
-	if (!LOK_notready)
+	if (!LOK_notready) {
 		_iqk_backup_iqk_8822b(dm, 0x1, path);
-	if (DBG_RF_IQK) {
-		if (!LOK_notready) {
-			LOK_temp = odm_get_rf_reg(dm, (enum rf_path)path,
-						  RF_0x58, MASK20BITS);
-			RF_DBG(dm, DBG_RF_IQK, "[IQK]0x58 = 0x%x\n", LOK_temp);
-		} else {
-			RF_DBG(dm, DBG_RF_IQK, "[IQK]==>S%d LOK Fail!!!\n",
-			       path);
-		}
-	}
+    }
+    if (!LOK_notready) {
+        LOK_temp = odm_get_rf_reg(dm, (enum rf_path)path,
+                RF_0x58, MASK20BITS);
+        RF_DBG(dm, DBG_RF_IQK, "[IQK]0x58 = 0x%x\n", LOK_temp);
+    } else {
+        RF_DBG(dm, DBG_RF_IQK, "[IQK]==>S%d LOK Fail!!!\n",
+                path);
+    }
 	iqk->lok_fail[path] = LOK_notready;
 	return LOK_notready;
 }
