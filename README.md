@@ -27,7 +27,8 @@ Build confirmed on:
 * Linux version `6.5.5` (self compiled) on Debian Bookworm
 * Linux version `6.6.1` (self compiled) on Debian Bookworm
 * Linux version `6.7.2` (self compiled) on Debian Bookworm and Ubuntu 22.04
-* Linux version `6.8.0` (self compiled) on Debian Bookworm
+* Linux version `6.8.8` (self compiled) on Debian Trixie
+* Linux version `6.9.0` (self compiled) on Debian Trixie
 
 ## Using and Installing the Driver
 
