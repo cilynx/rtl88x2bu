@@ -1,3 +1,7 @@
+# Pending Deprecation
+
+A few versions ago (around 6.4 IIRC), rtw88x2bu support has been added to the mainline Linux kernel.  This repo will be maintained until we either receive a few comments on https://github.com/cilynx/rtl88x2bu/issues/270 that the mainline driver is working well or [MaxG87](https://github.com/MaxG87) and [cilynx](https://github.com/cilynx) agree that no feedback means no one is still using this driver and we make the executive decision to archive it.
+
 # Administrative Note
 
 As of upstream version 5.6.1, I'm moving away from individual repositories for each upstream version in favor of a single repository with version-based branches.  Hopefully, this will help with clutter and URL consistency moving forward.  The archived repositories are available here:
