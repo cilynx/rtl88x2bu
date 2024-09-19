@@ -682,8 +682,6 @@ void phydm_auto_dbg_console(
 
 void phydm_auto_dbg_engine(void *dm_void)
 {
-	u32 value32 = 0;
-
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct phydm_auto_dbg_struct *atd_t = &dm->auto_dbg_table;
 

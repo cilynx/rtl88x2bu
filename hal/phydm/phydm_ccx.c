@@ -1990,7 +1990,9 @@ void phydm_env_mntr_watchdog(void *dm_void)
 {
 #if (defined(NHM_SUPPORT) && defined(CLM_SUPPORT))
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	struct ccx_info *ccx = &dm->dm_ccx_info;
+#endif
 	boolean nhm_chk_ok = false;
 	boolean clm_chk_ok = false;
 

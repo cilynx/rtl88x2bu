@@ -162,8 +162,6 @@ halbtc8822b1ant_limited_tx(struct btc_coexist *btc, boolean force_exec,
 			   boolean tx_limit_en,  boolean ampdu_limit_en)
 {
 	struct coex_sta_8822b_1ant *coex_sta = &btc->coex_sta_8822b_1ant;
-	struct wifi_link_info_8822b_1ant *wifi_link_info_ext =
-					 &btc->wifi_link_info_8822b_1ant;
 	boolean wifi_under_b_mode = FALSE;
 
 	/* Force Max Tx retry limit = 8*/
@@ -536,8 +534,6 @@ static void halbtc8822b1ant_monitor_bt_ctr(struct btc_coexist *btc)
 	struct coex_sta_8822b_1ant *coex_sta = &btc->coex_sta_8822b_1ant;
 	u32 reg_hp_txrx, reg_lp_txrx, u32tmp;
 	u32 reg_hp_tx = 0, reg_hp_rx = 0, reg_lp_tx = 0, reg_lp_rx = 0;
-	static u8 num_of_bt_counter_chk, cnt_autoslot_hang;
-	struct btc_bt_link_info *bt_link_info = &btc->bt_link_info;
 
 	reg_hp_txrx = 0x770;
 	reg_lp_txrx = 0x774;
@@ -571,13 +567,10 @@ static void halbtc8822b1ant_monitor_bt_ctr(struct btc_coexist *btc)
 static void halbtc8822b1ant_monitor_wifi_ctr(struct btc_coexist *btc)
 {
 	struct coex_sta_8822b_1ant *coex_sta = &btc->coex_sta_8822b_1ant;
-	struct coex_dm_8822b_1ant *coex_dm = &btc->coex_dm_8822b_1ant;
 	boolean wifi_busy = FALSE, wifi_scan = FALSE;
 	static u8 wl_noisy_count0, wl_noisy_count1 = 3, wl_noisy_count2;
 	u32 cnt_cck;
 	static u8 cnt_ccklocking;
-	u8 h2c_parameter[1] = {0};
-	struct btc_bt_link_info *bt_link_info = &btc->bt_link_info;
 
 	btc->btc_get(btc, BTC_GET_BL_WIFI_BUSY, &wifi_busy);
 	btc->btc_get(btc, BTC_GET_BL_WIFI_SCAN, &wifi_scan);
@@ -722,7 +715,6 @@ halbtc8822b1ant_moniter_wifibt_status(struct btc_coexist *btc)
 	u32 num_of_wifi_link = 0, wifi_link_mode = 0;
 	static u32 pre_num_of_wifi_link, pre_wifi_link_mode;
 	boolean miracast_plus_bt = FALSE;
-	u8 lna_lvl = 1;
 
 	btc->btc_get(btc, BTC_GET_BL_WIFI_CONNECTED, &wifi_connected);
 	btc->btc_get(btc, BTC_GET_BL_WIFI_BUSY, &wifi_busy);
@@ -1323,7 +1315,6 @@ static void halbtc8822b1ant_update_bt_link_info(struct btc_coexist *btc)
 static void
 halbtc8822b1ant_update_wifi_ch_info(struct btc_coexist *btc, u8 type)
 {
-	struct coex_sta_8822b_1ant *coex_sta = &btc->coex_sta_8822b_1ant;
 	struct coex_dm_8822b_1ant *coex_dm = &btc->coex_dm_8822b_1ant;
 	struct wifi_link_info_8822b_1ant *wifi_link_info_ext =
 					 &btc->wifi_link_info_8822b_1ant;
@@ -1520,8 +1511,6 @@ halbtc8822b1ant_wait_indirect_reg_ready(struct btc_coexist *btc)
 static
 u32 halbtc8822b1ant_read_indirect_reg(struct btc_coexist *btc, u16 reg_addr)
 {
-	u32 delay_count = 0;
-
 	/* wait for ready bit before access 0x1700 */
 	halbtc8822b1ant_wait_indirect_reg_ready(btc);
 
@@ -1533,7 +1522,7 @@ static
 void halbtc8822b1ant_write_indirect_reg(struct btc_coexist *btc, u16 reg_addr,
 					u32 bit_mask, u32 reg_value)
 {
-	u32 val, i = 0, bitpos = 0, delay_count = 0;
+	u32 val, i = 0, bitpos = 0;
 
 	if (bit_mask == 0x0)
 		return;
@@ -2055,7 +2044,6 @@ void halbtc8822b1ant_set_tdma(struct btc_coexist *btc, u8 byte1,
 	u8 h2c_parameter[5] = {0};
 	u8 real_byte1 = byte1, real_byte5 = byte5;
 	boolean ap_enable = FALSE, result = FALSE;
-	struct btc_bt_link_info *bt_link_info = &btc->bt_link_info;
 	u8 ps_type = BTC_PS_WIFI_NATIVE;
 
 	if (byte5 & BIT(2))
@@ -2146,7 +2134,6 @@ halbtc8822b1ant_tdma(struct btc_coexist *btc, boolean force_exec,
 {
 	struct coex_sta_8822b_1ant *coex_sta = &btc->coex_sta_8822b_1ant;
 	struct coex_dm_8822b_1ant *coex_dm = &btc->coex_dm_8822b_1ant;
-	struct btc_bt_link_info *bt_link_info = &btc->bt_link_info;
 	u8 type;
 
 	btc->btc_set_atomic(btc, &coex_dm->setting_tdma, TRUE);
@@ -3319,7 +3306,6 @@ halbtc8822b1ant_action_wifi_native_lps(struct btc_coexist *btc)
 {
 	struct wifi_link_info_8822b_1ant *wifi_link_info_ext =
 					 &btc->wifi_link_info_8822b_1ant;
-	struct btc_bt_link_info *bt_link_info = &btc->bt_link_info;
 
 	if (wifi_link_info_ext->is_all_under_5g)
 		return;
@@ -3482,7 +3468,6 @@ static void
 halbtc8822b1ant_action_wifi_multiport2g(struct btc_coexist *btc)
 {
 	struct coex_sta_8822b_1ant *coex_sta = &btc->coex_sta_8822b_1ant;
-	struct btc_bt_link_info *bt_link_info = &btc->bt_link_info;
 	u32 traffic_dir;
 	u8 ant_pase;
 
@@ -3848,7 +3833,6 @@ static void halbtc8822b1ant_init_hw_config(struct btc_coexist *btc,
 {
 	struct coex_sta_8822b_1ant *coex_sta = &btc->coex_sta_8822b_1ant;
 	struct rfe_type_8822b_1ant *rfe_type = &btc->rfe_type_8822b_1ant;
-	u8 u8tmp = 0, i = 0;
 	u32 u32tmp1 = 0, u32tmp2 = 0, u32tmp3 = 0;
 
 	BTC_SPRINTF(trace_buf, BT_TMP_BUF_SIZE, "[BTCoex], %s()!\n", __func__);
@@ -3951,7 +3935,6 @@ static void halbtc8822b1ant_init_hw_config(struct btc_coexist *btc,
 
 void ex_halbtc8822b1ant_power_on_setting(struct btc_coexist *btc)
 {
-	struct coex_sta_8822b_1ant *coex_sta = &btc->coex_sta_8822b_1ant;
 	struct btc_board_info *board_info = &btc->board_info;
 	u8 u8tmp = 0x0;
 	u16 u16tmp = 0x0;
@@ -5418,8 +5401,6 @@ void ex_halbtc8822b1ant_tx_rate_change_notify(struct btc_coexist *btc,
 
 void ex_halbtc8822b1ant_rf_status_notify(struct btc_coexist *btc, u8 type)
 {
-	struct coex_sta_8822b_1ant *coex_sta = &btc->coex_sta_8822b_1ant;
-
 	BTC_SPRINTF(trace_buf, BT_TMP_BUF_SIZE, "[BTCoex], RF Status notify\n");
 	BTC_TRACE(trace_buf);
 

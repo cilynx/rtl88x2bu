@@ -56,7 +56,9 @@ u8 rtw_hal_read_chip_info(_adapter *padapter)
 {
 	u8 rtn = _SUCCESS;
 	u8 hci_type = rtw_get_intf_type(padapter);
+#ifdef CONFIG_RTW_DEBUG
 	systime start = rtw_get_current_time();
+#endif
 
 	/*  before access eFuse, make sure card enable has been called */
 	if ((hci_type == RTW_SDIO || hci_type == RTW_GSPI)
@@ -237,7 +239,6 @@ enum rf_type rtw_chip_rftype_to_hal_rftype(_adapter *adapter, u8 limit)
 
 void dump_hal_runtime_trx_mode(void *sel, _adapter *adapter)
 {
-	struct registry_priv *regpriv = &adapter->registrypriv;
 	PHAL_DATA_TYPE hal_data = GET_HAL_DATA(adapter);
 	int i;
 
@@ -250,7 +251,6 @@ void dump_hal_runtime_trx_mode(void *sel, _adapter *adapter)
 
 void dump_hal_trx_mode(void *sel, _adapter *adapter)
 {
-	struct registry_priv *regpriv = &adapter->registrypriv;
 	PHAL_DATA_TYPE hal_data = GET_HAL_DATA(adapter);
 
 	RTW_PRINT_SEL(sel, "trx_path_bmp:0x%02x(%s), NumTotalRFPath:%u, max_tx_cnt:%u\n"
@@ -315,7 +315,6 @@ if (IS_HARDWARE_TYPE_8814A(adapter)) {
 	enum rf_type type;
 	u8 tx_path_num;
 	u8 rx_path_num;
-	int i;
 
 	ic_cap = rtw_chip_rftype_to_hal_rftype(adapter, hal_spec->rf_reg_path_num);
 	if (!RF_TYPE_VALID(ic_cap)) {
@@ -707,7 +706,9 @@ s32 rtw_hal_fw_dl(_adapter *padapter, u8 wowlan)
 #ifdef RTW_HALMAC
 s32 rtw_hal_fw_mem_dl(_adapter *padapter, enum fw_mem mem)
 {
+#ifdef CONFIG_RTW_DEBUG
 	systime dlfw_start_time = rtw_get_current_time();
+#endif
 	struct dvobj_priv *dvobj = adapter_to_dvobj(padapter);
 	struct debug_priv *pdbgpriv = &dvobj->drv_dbg;
 	s32 rst = _FALSE;
@@ -1192,7 +1193,6 @@ bool rtw_hal_c2h_reg_hdr_parse(_adapter *adapter, u8 *buf, u8 *id, u8 *seq, u8 *
 #ifdef CONFIG_FW_C2H_PKT
 bool rtw_hal_c2h_pkt_hdr_parse(_adapter *adapter, u8 *buf, u16 len, u8 *id, u8 *seq, u8 *plen, u8 **payload)
 {
-	HAL_DATA_TYPE *HalData = GET_HAL_DATA(adapter);
 	bool ret = _FAIL;
 
 	if (!buf || len > 256 || len < 3)

@@ -33,7 +33,6 @@ static void _get_txvector_parameter(PADAPTER adapter, struct sta_info *sta, u8 *
 	u16 aid;
 	u8 *bssid;
 	u16 val16;
-	u8 i;
 
 
 	mlme = &adapter->mlmepriv;
@@ -170,9 +169,7 @@ static u8 _send_ht_ndpa_packet(PADAPTER adapter, u8 *ra, enum channel_width bw)
 	struct mlme_ext_info		*pmlmeinfo;
 	struct xmit_frame		*pmgntframe;
 	/* Beamforming */
-	struct beamforming_info		*info;
 	struct beamformee_entry		*bfee;
-	struct ndpa_sta_info		sta_info;
 	u8 ActionHdr[4] = {ACT_CAT_VENDOR, 0x00, 0xE0, 0x4C};
 	/* MISC */
 	struct pkt_attrib		*attrib;
@@ -715,8 +712,6 @@ static void _sounding_handler(PADAPTER adapter)
 	struct sounding_info *sounding;
 	struct beamformee_entry *bfee;
 	u8 su_idx, i;
-	u32 timeout_period = 0;
-	u8 set_timer = _FALSE;
 	int ret = 0;
 	static u16 wait_cnt = 0;
 
@@ -1000,8 +995,6 @@ static struct beamformer_entry *_bfer_add_entry(PADAPTER adapter,
 	struct mlme_priv *mlme;
 	struct beamforming_info *info;
 	struct beamformer_entry *bfer;
-	u8 *bssid;
-	u16 val16;
 	u8 i;
 
 
@@ -1185,8 +1178,6 @@ static struct beamformee_entry *_bfee_add_entry(PADAPTER adapter,
 	struct mlme_priv *mlme;
 	struct beamforming_info *info;
 	struct beamformee_entry *bfee;
-	u8 *bssid;
-	u16 val16;
 	u8 i;
 
 
@@ -1460,7 +1451,6 @@ static void _beamforming_leave(PADAPTER adapter, u8 *ra)
 	struct beamforming_info *info;
 	struct beamformer_entry *bfer = NULL;
 	struct beamformee_entry *bfee = NULL;
-	u8 bHwStateAddInit = _FALSE;
 
 
 	RTW_INFO("+%s\n", __FUNCTION__);

@@ -1627,7 +1627,6 @@ static u8 _rtw_phydm_pwr_tracking_rate_check(_adapter *adapter)
 	u8		if_tx_rate = 0xFF;
 	u8		tx_rate = 0xFF;
 	struct mlme_ext_priv	*pmlmeext = NULL;
-	struct mlme_priv *pmlmepriv = &adapter->mlmepriv;
 	struct dvobj_priv *dvobj = adapter_to_dvobj(adapter);
 	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(adapter);
 

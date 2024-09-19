@@ -2631,9 +2631,7 @@ exit:
 
 int rtw_check_bcn_info(ADAPTER *Adapter, u8 *pframe, u32 packet_len)
 {
-	u8 *pbssid = GetAddr3Ptr(pframe);
 	struct mlme_priv *pmlmepriv = &Adapter->mlmepriv;
-	struct wlan_network *cur_network = &(Adapter->mlmepriv.cur_network);
 	struct beacon_keys *cur_beacon = &pmlmepriv->cur_beacon_keys;
 	struct beacon_keys recv_beacon;
 	int ret = 0;
@@ -2798,7 +2796,9 @@ void parsing_eapol_packet(_adapter *padapter, u8 *key_payload, struct sta_info *
 	struct ieee802_1x_hdr *hdr;
 	struct wpa_eapol_key *key;
 	u16 key_info, key_data_length;
+#ifdef CONFIG_RTW_DEBUG
 	char *trx_msg = trx_type ? "send" : "recv";
+#endif
 
 	hdr = (struct ieee802_1x_hdr *) key_payload;
 

@@ -265,8 +265,6 @@ u32 halrf_get_iqk_psd_data(
 	struct dm_struct *dm,
 	u32 point)
 {
-	struct _hal_rf_ *rf = &(dm->rf_table);
-	struct _halrf_psd_data *psd = &(rf->halrf_psd_data);
 	u32 psd_val, psd_val1, psd_val2, psd_point, i, delay_time = 0;
 
 #if (DEV_BUS_TYPE == RT_USB_INTERFACE) || (DEV_BUS_TYPE == RT_SDIO_INTERFACE)
@@ -348,7 +346,7 @@ void halrf_iqk_psd(
 	struct _halrf_psd_data *psd = &(rf->halrf_psd_data);
 
 	u32 i = 0, j = 0, k = 0;
-	u32 psd_reg, avg_org, point_temp, average_tmp = 32, mode, reg_tmp = 5;
+	u32 point_temp, average_tmp = 32, mode, reg_tmp = 5;
 	u64 data_tatal = 0, data_temp[64] = {0};
 	s32 s_point_tmp;
 

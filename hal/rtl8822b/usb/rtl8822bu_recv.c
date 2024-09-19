@@ -75,10 +75,8 @@ int recvbuf2recvframe(PADAPTER padapter, void *ptr)
 	u8 pkt_cnt = 0;
 	u32 pkt_offset;
 	s32 transfer_len;
-	u8 *pphy_status = NULL;
 	union recv_frame *precvframe = NULL;
 	struct rx_pkt_attrib *pattrib = NULL;
-	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(padapter);
 	struct recv_priv *precvpriv = &padapter->recvpriv;
 	_queue *pfree_recv_queue = &precvpriv->free_recv_queue;
 	_pkt *pskb;

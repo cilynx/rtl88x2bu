@@ -37,7 +37,6 @@ static u8 sethwreg(PADAPTER padapter, u8 variable, u8 *val)
 {
 	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(padapter);
 	struct dvobj_priv	*pdvobjpriv = adapter_to_dvobj(padapter);
-	struct pwrctrl_priv *pwrctl = adapter_to_pwrctl(padapter);
 	struct registry_priv *registry_par = &padapter->registrypriv;
 	int status = 0;
 	u8 ret = _SUCCESS;
@@ -125,8 +124,6 @@ static u8 sethwreg(PADAPTER padapter, u8 variable, u8 *val)
 
 static void gethwreg(PADAPTER padapter, u8 variable, u8 *val)
 {
-	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(padapter);
-
 	switch (variable) {
 	case HW_VAR_CPWM:
 #ifdef CONFIG_LPS_LCLK
@@ -154,7 +151,6 @@ static void gethwreg(PADAPTER padapter, u8 variable, u8 *val)
 */
 static u8 sethaldefvar(PADAPTER padapter, HAL_DEF_VARIABLE eVariable, void *pValue)
 {
-	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(padapter);
 	u8 bResult = _SUCCESS;
 
 	switch (eVariable) {
@@ -172,7 +168,6 @@ static u8 sethaldefvar(PADAPTER padapter, HAL_DEF_VARIABLE eVariable, void *pVal
 */
 static u8 gethaldefvar(PADAPTER	padapter, HAL_DEF_VARIABLE eVariable, void *pValue)
 {
-	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(padapter);
 	u8 bResult = _SUCCESS;
 
 	switch (eVariable) {

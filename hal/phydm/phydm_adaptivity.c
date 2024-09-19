@@ -452,7 +452,6 @@ void phydm_set_edcca_val(void *dm_void, u32 *val_buf, u8 val_len)
 boolean phydm_edcca_abort(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct phydm_adaptivity_struct *adapt = &dm->adaptivity;
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void *adapter = dm->adapter;
 	u32 is_fw_in_psmode = false;
@@ -579,7 +578,9 @@ void phydm_set_edcca_threshold_api(void *dm_void)
 {
 #ifdef PHYDM_SUPPORT_ADAPTIVITY
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	struct phydm_adaptivity_struct *adapt = &dm->adaptivity;
+#endif
 
 	if (*dm->edcca_mode != PHYDM_EDCCA_ADAPT_MODE)
 		return;
@@ -769,8 +770,10 @@ void phydm_adaptivity(void *dm_void)
 {
 #ifdef PHYDM_SUPPORT_ADAPTIVITY
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	struct phydm_adaptivity_struct *adapt = &dm->adaptivity;
 	struct phydm_dig_struct *dig_t = &dm->dm_dig_table;
+#endif
 
 	if (phydm_edcca_abort(dm))
 		return;

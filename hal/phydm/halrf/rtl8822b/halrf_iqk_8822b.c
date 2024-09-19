@@ -974,7 +974,9 @@ _iqk_one_shot_8822b(void *dm_void, u8 path, u8 idx)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct dm_iqk_info *iqk = &dm->IQK_info;
+#ifdef CONFIG_RTW_DEBUG
 	u8 delay_count = 0;
+#endif
 	boolean fail = true;
 	u32 IQK_CMD = 0x0, tmp;
 	u16 iqk_apply[2] = {0xc94, 0xe94};
@@ -1597,7 +1599,6 @@ u32 _iqk_rximr_selfcheck_8822b(void *dm_void, u32 tone_index, u8 path,
 boolean _iqk_get_rxk1_8822b(struct dm_struct *dm, u8 path, u8 imr_limit,
 			    u8 side, u32 temp[][15])
 {
-	struct dm_iqk_info *iqk = &dm->IQK_info;
 	boolean kfail = true;
 	u8 i, count = 0;
 	u32 tone_index;
@@ -1654,13 +1655,14 @@ boolean _iqk_get_rxk1_8822b(struct dm_struct *dm, u8 path, u8 imr_limit,
 void _iqk_get_rxk2_8822b(struct dm_struct *dm, u8 path, u8 imr_limit, u8 side,
 			 u32 temp[][15])
 {
-	struct dm_iqk_info *iqk = &dm->IQK_info;
 	u8 i;
 	u32 tone_index, imr_result;
+#ifdef CONFIG_RTW_DEBUG
 	char *freq[15] = {
 		"1.25MHz", "3.75MHz", "6.25MHz", "8.75MHz", "11.25MHz",
 		"13.75MHz", "16.25MHz", "18.75MHz", "21.25MHz", "23.75MHz",
 		"26.25MHz", "28.75MHz", "31.25MHz", "33.75MHz", "36.25MHz"};
+#endif
 
 	for (i = 0x0; i < imr_limit; i++) {
 		if (side == 0)
@@ -1689,8 +1691,7 @@ void _iqk_rximr_test_8822b(struct dm_struct *dm, u8 path, u8 imr_limit)
 {
 	struct dm_iqk_info *iqk = &dm->IQK_info;
 	boolean kfail;
-	u8 i, step, count, side;
-	u32 imr_result = 0, tone_index;
+	u8 step, count, side;
 	u32 temp = 0, temp1b38[2][15];
 	u32 cmd = 0xf8000008;
 
@@ -1991,7 +1992,9 @@ void phy_get_iqk_cfir_8822b(void *dm_void, u8 idx, u8 path, boolean debug)
 void phy_iqk_dbg_cfir_backup_8822b(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	struct dm_iqk_info *iqk_info = &dm->IQK_info;
+#endif
 	u8 path, idx, i;
 
 	RF_DBG(dm, DBG_RF_IQK, "[IQK]%-20s\n", "backup TX/RX CFIR");
@@ -2131,7 +2134,9 @@ void phy_iqk_dbg_cfir_write_8822b(void *dm_void, u8 type, u32 path, u32 idx,
 void phy_iqk_dbg_cfir_backup_show_8822b(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	struct dm_iqk_info *iqk_info = &dm->IQK_info;
+#endif
 	u8 path, idx, i;
 
 	RF_DBG(dm, DBG_RF_IQK, "[IQK]%-20s\n", "backup TX/RX CFIR");

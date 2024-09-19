@@ -133,7 +133,9 @@ static int proc_get_drv_cfg(struct seq_file *m, void *v)
 static ssize_t proc_set_log_level(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data)
 {
 	char tmp[32];
+#ifdef CONFIG_RTW_DEBUG
 	int log_level;
+#endif
 
 	if (count < 1)
 		return -EINVAL;
@@ -2271,7 +2273,6 @@ static ssize_t proc_set_tx_aclt_force_val(struct file *file, const char __user *
 	}
 
 	if (buffer && !copy_from_user(tmp, buffer, count)) {
-		struct dvobj_priv *dvobj = adapter_to_dvobj(adapter);
 		struct tx_aclt_conf_t input;
 		int num = sscanf(tmp, "%hhx %u %u", &input.en, &input.vo_vi, &input.be_bk);
 
@@ -2350,7 +2351,6 @@ static ssize_t proc_set_tx_aclt_confs(struct file *file, const char __user *buff
 	}
 
 	if (buffer && !copy_from_user(tmp, buffer, count)) {
-		struct dvobj_priv *dvobj = adapter_to_dvobj(adapter);
 		u8 id;
 		struct tx_aclt_conf_t input;
 		int num = sscanf(tmp, "%hhu %hhx %u %u", &id, &input.en, &input.vo_vi, &input.be_bk);
