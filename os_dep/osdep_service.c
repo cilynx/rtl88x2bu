@@ -2702,7 +2702,7 @@ inline u32 rtw_random32(void)
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
 	return get_random_u32();
 #elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0))
-	return prandom_u32();
+	return prandom_u32_max();
 #elif (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 18))
 	u32 random_int;
 	get_random_bytes(&random_int , 4);
