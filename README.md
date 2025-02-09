@@ -27,6 +27,7 @@ Build confirmed on:
 * Linux version `6.1.*` to `6.12.*` (self-compiled) on Debian and Ubuntu 22.04
 * Linux version `6.10.3` to `6.12.10` on Debian Trixie
 * Linux version `6.13.0` (self-compiled) on Debian Trixie
+* Linux version `6.13.2` (self-compiled) on Arch (10 February 2025)
 
 ## Using and Installing the Driver
 
