@@ -28,7 +28,7 @@ Build confirmed on:
 - Linux version `6.1.*` to `6.12.*` (self-compiled) on Debian and Ubuntu 22.04
 - Linux version `6.10.3` to `6.12.10` on Debian Trixie
 - Linux version `6.13.0` (self-compiled) on Debian Trixie
-- Linux version `6.17.0` - `6.19.0` on Cachy OS (`make CC=clang LD=ld.lld -j16`)
+- Linux version `6.17.0` - `7.0.9` on Cachy OS (`make CC=clang LD=ld.lld -j16`)
 
 As of lately the maintainer experienced issues with the driver on Debian
 Testing, covering several Linux Kernel versions. More details can be found in
