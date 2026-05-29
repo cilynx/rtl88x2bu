@@ -1754,20 +1754,28 @@ exit:
 	return ret;
 }
 
-static int cfg80211_rtw_add_key(struct wiphy *wiphy, struct net_device *ndev
+static int cfg80211_rtw_add_key(struct wiphy *wiphy,
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(7, 1, 0))
+struct net_device *ndev,
+#else
+struct wireless_dev *wdev,
+#endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
-	, int link_id
+	int link_id,
 #endif
-	, u8 key_index
+	u8 key_index,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)) || defined(COMPAT_KERNEL_RELEASE)
-	, bool pairwise
+	bool pairwise,
 #endif
-	, const u8 *mac_addr, struct key_params *params)
+	const u8 *mac_addr, struct key_params *params)
 {
 	char *alg_name;
 	u32 param_len;
 	struct ieee_param *param = NULL;
 	int ret = 0;
+    #if (LINUX_VERSION_CODE >= KERNEL_VERSION(7, 1, 0))
+    struct net_device *ndev = wdev->netdev;
+    #endif
 	_adapter *padapter = (_adapter *)rtw_netdev_priv(ndev);
 	struct wireless_dev *rtw_wdev = padapter->rtw_wdev;
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
@@ -1901,16 +1909,21 @@ addkey_end:
 
 }
 
-static int cfg80211_rtw_get_key(struct wiphy *wiphy, struct net_device *ndev
+static int cfg80211_rtw_get_key(struct wiphy *wiphy,
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(7, 1, 0))
+struct net_device *ndev,
+#else
+struct wireless_dev *wdev,
+#endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
-	, int link_id
+	int link_id,
 #endif
-	, u8 keyid
+	u8 keyid,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)) || defined(COMPAT_KERNEL_RELEASE)
-	, bool pairwise
+	bool pairwise,
 #endif
-	, const u8 *mac_addr, void *cookie
-	, void (*callback)(void *cookie, struct key_params *))
+	const u8 *mac_addr, void *cookie,
+	void (*callback)(void *cookie, struct key_params *))
 {
 #define GET_KEY_PARAM_FMT_S " keyid=%d"
 #define GET_KEY_PARAM_ARG_S , keyid
@@ -1924,6 +1937,9 @@ static int cfg80211_rtw_get_key(struct wiphy *wiphy, struct net_device *ndev
 #define GET_KEY_PARAM_FMT_E ", addr=%pM"
 #define GET_KEY_PARAM_ARG_E , mac_addr
 
+    #if (LINUX_VERSION_CODE >= KERNEL_VERSION(7, 1, 0))
+    struct net_device *ndev = wdev->netdev;
+    #endif
 	_adapter *adapter = (_adapter *)rtw_netdev_priv(ndev);
 	struct security_priv *sec = &adapter->securitypriv;
 	struct sta_priv *stapriv = &adapter->stapriv;
@@ -2069,7 +2085,12 @@ exit:
 	return ret;
 }
 
-static int cfg80211_rtw_del_key(struct wiphy *wiphy, struct net_device *ndev,
+static int cfg80211_rtw_del_key(struct wiphy *wiphy,
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(7, 1, 0))
+struct net_device *ndev,
+#else
+struct wireless_dev *wdev,
+#endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
 	int link_id,
 #endif
@@ -2079,6 +2100,9 @@ static int cfg80211_rtw_del_key(struct wiphy *wiphy, struct net_device *ndev,
 				u8 key_index, const u8 *mac_addr)
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)) */
 {
+    #if (LINUX_VERSION_CODE >= KERNEL_VERSION(7, 1, 0))
+    struct net_device *ndev = wdev->netdev;
+    #endif
 	_adapter *padapter = (_adapter *)rtw_netdev_priv(ndev);
 	struct security_priv *psecuritypriv = &padapter->securitypriv;
 
@@ -2143,26 +2167,32 @@ static int cfg80211_rtw_set_default_key(struct wiphy *wiphy,
 
 }
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 30))
 int cfg80211_rtw_set_default_mgmt_key(struct wiphy *wiphy,
-	struct net_device *ndev
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
-	, int link_id
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(7, 1, 0))
+	struct net_device *ndev,
+#else
+    struct wireless_dev *wdev,
 #endif
-    , u8 key_index)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
+	int link_id,
+#endif
+    u8 key_index)
 {
 #define SET_DEF_KEY_PARAM_FMT " key_index=%d"
 #define SET_DEF_KEY_PARAM_ARG , key_index
 
 	RTW_INFO(FUNC_NDEV_FMT
 		SET_DEF_KEY_PARAM_FMT
+        #if (LINUX_VERSION_CODE < KERNEL_VERSION(7, 1, 0))
 		"\n", FUNC_NDEV_ARG(ndev)
+        #else
+		"\n", FUNC_NDEV_ARG(wdev->netdev)
+        #endif
 		SET_DEF_KEY_PARAM_ARG
 	);
 
 	return 0;
 }
-#endif
 
 #if defined(CONFIG_GTK_OL) && (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 1, 0))
 static int cfg80211_rtw_set_rekey_data(struct wiphy *wiphy,
