@@ -82,6 +82,12 @@
   PPPoE |type|   SID   |           AC MAC            |
 -----------------------------------------------------------------*/
 
+// Calculate access of the trailing data position of a struct. This is used to
+// fix the regressions introduced by Kernel commit
+// 7717fbb14028be5735acb911aeb7553b7c662418. It follows the example shown in
+// that commit. Typical values for offsets are MAGIC_CODE_LEN or 0. However,
+// other values have been observed too.
+#define trailing_data_pos(ptr, offset) ((char *)((ptr) + 1) + (offset))
 
 /* Find a tag in pppoe frame and return the pointer */
 static __inline__ unsigned char *__nat25_find_pppoe_tag(struct pppoe_hdr *ph, unsigned short type)
@@ -89,7 +95,7 @@ static __inline__ unsigned char *__nat25_find_pppoe_tag(struct pppoe_hdr *ph, un
 	unsigned char *cur_ptr, *start_ptr;
 	unsigned short tagLen, tagType;
 
-	start_ptr = cur_ptr = (unsigned char *)ph->tag;
+	start_ptr = cur_ptr = trailing_data_pos(ph, 0);
 	while ((cur_ptr - start_ptr) < ntohs(ph->length)) {
 		/* prevent un-alignment access */
 		tagType = (unsigned short)((cur_ptr[0] << 8) + cur_ptr[1]);
@@ -115,9 +121,9 @@ static __inline__ int __nat25_add_pppoe_tag(struct sk_buff *skb, struct pppoe_ta
 
 	skb_put(skb, data_len);
 	/* have a room for new tag */
-	memmove(((unsigned char *)ph->tag + data_len), (unsigned char *)ph->tag, ntohs(ph->length));
+	memmove(trailing_data_pos(ph, data_len), trailing_data_pos(ph, 0), ntohs(ph->length));
 	ph->length = htons(ntohs(ph->length) + data_len);
-	memcpy((unsigned char *)ph->tag, tag, data_len);
+	memcpy(trailing_data_pos(ph, 0), tag, data_len);
 	return data_len;
 }
 
@@ -603,9 +609,6 @@ static void __nat25_db_print(_adapter *priv)
 
 	_exit_critical_bh(&priv->br_ext_lock, &irqL);
 }
-
-
-
 
 /*
  *	NAT2.5 interface
@@ -1148,8 +1151,8 @@ int nat25_db_handle(_adapter *priv, struct sk_buff *skb, int method)
 								return -1;
 							}
 
-							memcpy(tag->tag_data + MAGIC_CODE_LEN + RTL_RELAY_TAG_LEN,
-							       pOldTag->tag_data, old_tag_len);
+							memcpy(trailing_data_pos(tag, MAGIC_CODE_LEN + RTL_RELAY_TAG_LEN),
+							       trailing_data_pos(pOldTag, 0), old_tag_len);
 
 							if (skb_pull_and_merge(skb, (unsigned char *)pOldTag, TAG_HDR_LEN + old_tag_len) < 0) {
 								DEBUG_ERR("call skb_pull_and_merge() failed in PADI/R packet!\n");
@@ -1162,9 +1165,9 @@ int nat25_db_handle(_adapter *priv, struct sk_buff *skb, int method)
 						tag->tag_len = htons(MAGIC_CODE_LEN + RTL_RELAY_TAG_LEN + old_tag_len);
 
 						/* insert the magic_code+client mac in relay tag */
-						pMagic = (unsigned short *)tag->tag_data;
+                        pMagic = (unsigned short *)trailing_data_pos(tag, 0);
 						*pMagic = htons(MAGIC_CODE);
-						memcpy(tag->tag_data + MAGIC_CODE_LEN, skb->data + ETH_ALEN, ETH_ALEN);
+						memcpy(trailing_data_pos(tag, MAGIC_CODE_LEN), skb->data + ETH_ALEN, ETH_ALEN);
 
 						/* Add relay tag */
 						if (__nat25_add_pppoe_tag(skb, tag) < 0)
@@ -1225,14 +1228,14 @@ int nat25_db_handle(_adapter *priv, struct sk_buff *skb, int method)
 						return -1;
 					}
 
-					pMagic = (unsigned short *)tag->tag_data;
+					pMagic = (unsigned short *)trailing_data_pos(tag, 0);
 					if (ntohs(*pMagic) != MAGIC_CODE) {
 						DEBUG_ERR("Can't find MAGIC_CODE in %s packet!\n",
 							(ph->code == PADO_CODE ? "PADO" : "PADS"));
 						return -1;
 					}
 
-					memcpy(skb->data, tag->tag_data + MAGIC_CODE_LEN, ETH_ALEN);
+					memcpy(skb->data, trailing_data_pos(tag, MAGIC_CODE_LEN), ETH_ALEN);
 
 					if (tagLen > MAGIC_CODE_LEN + RTL_RELAY_TAG_LEN)
 						offset = TAG_HDR_LEN;
