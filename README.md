@@ -1,4 +1,13 @@
-# Pending Deprecation
+## Driver for rtl88x2bu wifi adaptors
+
+Updated driver for rtl88x2bu wifi adaptors based on Realtek's source
+distributed with myriad adapters.
+
+Realtek's 5.6.1.6 source was found bundled with the [Cudy WU1200 AC1200 High
+Gain USB Wi-Fi Adapter](https://amzn.to/351ADVq) and can be downloaded from
+[Cudy's website](http://www.cudytech.com/wu1200_software_download).
+
+## Pending Deprecation
 
 A few versions ago (around 6.4 IIRC), rtw88x2bu support has been added to the
 mainline Linux kernel. This repo will be maintained until we either receive a
@@ -13,11 +22,7 @@ driver of this repository the maintainer switched to a new Wifi dongle that is
 supported by the mainline kernel. Therefore, the maintainer will not be able to
 detect subtle issues themself anymore.
 
-# Driver for rtl88x2bu wifi adaptors
-
-Updated driver for rtl88x2bu wifi adaptors based on Realtek's source distributed with myriad adapters.
-
-Realtek's 5.6.1.6 source was found bundled with the [Cudy WU1200 AC1200 High Gain USB Wi-Fi Adapter](https://amzn.to/351ADVq) and can be downloaded from [Cudy's website](http://www.cudytech.com/wu1200_software_download).
+## Compatibility
 
 Build confirmed on:
 
@@ -28,12 +33,18 @@ Build confirmed on:
 - Linux version `6.1.*` to `6.12.*` (self-compiled) on Debian and Ubuntu 22.04
 - Linux version `6.10.3` to `6.12.10` on Debian Trixie
 - Linux version `6.13.0` (self-compiled) on Debian Trixie
-- Linux version `6.17.0` - `7.1` on Cachy OS (`make CC=clang LD=ld.lld -j16`)
+- Linux version `6.17.0` - `7.2` on Cachy OS (`make CC=clang LD=ld.lld -j16`)
 
 As of lately the maintainer experienced issues with the driver on Debian
 Testing, covering several Linux Kernel versions. More details can be found in
 [issue 280](https://github.com/cilynx/rtl88x2bu/issues/280). Any suggestions on
 how to troubleshoot or fix this are welcome there too.
+
+**NOTE:** The fixes for Linux v7.2 broke compatibility with Linux v6.14 and
+older. The scope of the fixes was so big that it was decided not to use the
+conditional code inclusion technique for this case. If you need to use the
+driver on Linux v6.14 or older, please use the an older version of the driver
+(e.g. fc158d1f71b9e5dfcd1fccaf4d28725b65086e3b).
 
 ## Using and Installing the Driver
 
