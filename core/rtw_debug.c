@@ -636,7 +636,7 @@ void dump_adapters_status(void *sel, struct dvobj_priv *dvobj)
 				char tmp_str[10] = {'\0'};
 
 				len = snprintf(tmp_str, sizeof(tmp_str), "%s", "ap_id:");
-				strncpy(p, tmp_str, len);
+				memcpy(p, tmp_str, len);
 				p += len;
 				_rtw_memset(&tmp_str, '\0', sizeof(tmp_str));
 				#ifdef DBG_HW_PORT
@@ -644,7 +644,7 @@ void dump_adapters_status(void *sel, struct dvobj_priv *dvobj)
 				#else
 				len = snprintf(tmp_str, sizeof(tmp_str), "%d", iface->vap_id);
 				#endif
-				strncpy(p, tmp_str, len);
+				memcpy(p, tmp_str, len);
 			}
 			#endif
 			#ifdef CONFIG_CLIENT_PORT_CFG
@@ -654,7 +654,7 @@ void dump_adapters_status(void *sel, struct dvobj_priv *dvobj)
 				char tmp_str[10] = {'\0'};
 
 				len = snprintf(tmp_str, sizeof(tmp_str), "%s", "c_pid:");
-				strncpy(p, tmp_str, len);
+				memcpy(p, tmp_str, len);
 				p += len;
 				_rtw_memset(&tmp_str, '\0', sizeof(tmp_str));
 				#ifdef DBG_HW_PORT
@@ -662,7 +662,7 @@ void dump_adapters_status(void *sel, struct dvobj_priv *dvobj)
 				#else
 				len = snprintf(tmp_str, sizeof(tmp_str), "%d", iface->client_port);
 				#endif
-				strncpy(p, tmp_str, len);
+				memcpy(p, tmp_str, len);
 			}
 			#endif
 
@@ -7235,11 +7235,11 @@ inline void RTW_BUF_DUMP_SEL(uint _loglevel, void *sel, u8 *_titlestring,
 		if (_titlestring) {
 			if (sel == RTW_DBGDUMP) {
 				len = snprintf(str_val, sizeof(str_val), "%s", DRIVER_PREFIX);
-				strncpy(p, str_val, len);
+				memcpy(p, str_val, len);
 				p += len;
 			}
 			len = snprintf(str_val, sizeof(str_val), "%s", _titlestring);
-			strncpy(p, str_val, len);
+			memcpy(p, str_val, len);
 			p += len;
 		}
 		if (p != &str_out[0]) {
@@ -7254,18 +7254,18 @@ inline void RTW_BUF_DUMP_SEL(uint _loglevel, void *sel, u8 *_titlestring,
 			p = &str_out[0];
 			if (sel == RTW_DBGDUMP) {
 				len = snprintf(str_val, sizeof(str_val), "%s", DRIVER_PREFIX);
-				strncpy(p, str_val, len);
+				memcpy(p, str_val, len);
 				p += len;
 			}
 			if (_idx_show) {
 				len = snprintf(str_val, sizeof(str_val), "0x%03X: ", __i * RTW_BUFDUMP_BSIZE);
-				strncpy(p, str_val, len);
+				memcpy(p, str_val, len);
 				p += len;
 			}
 			for (__j =0; __j < RTW_BUFDUMP_BSIZE; __j++) {
 				idx = __i * RTW_BUFDUMP_BSIZE + __j;
 				len = snprintf(str_val, sizeof(str_val), "%02X%s", ptr[idx], (((__j + 1) % 4) == 0) ? "  " : " ");
-				strncpy(p, str_val, len);
+				memcpy(p, str_val, len);
 				p += len;
 			}
 			_RTW_STR_DUMP_SEL(sel, str_out);
@@ -7275,18 +7275,18 @@ inline void RTW_BUF_DUMP_SEL(uint _loglevel, void *sel, u8 *_titlestring,
 		p = &str_out[0];
 		if ((sel == RTW_DBGDUMP) && remain_byte) {
 			len = snprintf(str_val, sizeof(str_val), "%s", DRIVER_PREFIX);
-			strncpy(p, str_val, len);
+			memcpy(p, str_val, len);
 			p += len;
 		}
 		if (_idx_show && remain_byte) {
 			len = snprintf(str_val, sizeof(str_val), "0x%03X: ", block_num * RTW_BUFDUMP_BSIZE);
-			strncpy(p, str_val, len);
+			memcpy(p, str_val, len);
 			p += len;
 		}
 		for (__i = 0; __i < remain_byte; __i++) {
 			idx = block_num * RTW_BUFDUMP_BSIZE + __i;
 			len = snprintf(str_val, sizeof(str_val), "%02X%s", ptr[idx], (((__i + 1) % 4) == 0) ? "  " : " ");
-			strncpy(p, str_val, len);
+			memcpy(p, str_val, len);
 			p += len;
 		}
 		_RTW_STR_DUMP_SEL(sel, str_out);

@@ -1379,7 +1379,7 @@ static int rtw_cfgvendor_logger_start_logging(struct wiphy *wiphy,
 		type = nla_type(iter);
 		switch (type) {
 			case LOGGER_ATTRIBUTE_RING_NAME:
-				strncpy(ring_name, nla_data(iter),
+				memcpy(ring_name, nla_data(iter),
 					MIN(sizeof(ring_name) -1, nla_len(iter)));
 				break;
 			case LOGGER_ATTRIBUTE_LOG_LEVEL:
@@ -1508,7 +1508,7 @@ static int rtw_cfgvendor_logger_get_ring_data(struct wiphy *wiphy,
 		type = nla_type(iter);
 		switch (type) {
 			case LOGGER_ATTRIBUTE_RING_NAME:
-				strncpy(ring_name, nla_data(iter),
+				memcpy(ring_name, nla_data(iter),
 					MIN(sizeof(ring_name) -1, nla_len(iter)));
 				RTW_INFO(" %s LOGGER_ATTRIBUTE_RING_NAME : %s\n", __func__, ring_name);
 				break;
