@@ -1013,8 +1013,6 @@ int rtw_mp_ctx(struct net_device *dev,
 
 	} else if (stop == 0) {
 		struct xmit_priv	*pxmitpriv = &(padapter->xmitpriv);
-		_queue *pfree_xmitbuf_queue = &pxmitpriv->free_xmitbuf_queue;
-		_queue *pfree_xmit_queue = &pxmitpriv->free_xmit_queue;
 
 		u32 i = 0;
 		bStartTest = 0; /* To set Stop*/

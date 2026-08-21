@@ -421,9 +421,9 @@ void phydm_bb_hw_dbg_info_ac(void *dm_void, u32 *_used, char *output,
 	u32 used = *_used;
 	u32 out_len = *_out_len;
 	char *tmp_string = NULL;
-	u8 rx_ht_bw, rx_vht_bw, rxsc, rx_ht, bw_idx = 0;
+	u8 rxsc, rx_ht, bw_idx = 0;
 	static u8 v_rx_bw;
-	u32 value32, value32_1, value32_2, value32_3;
+	u32 value32;
 	struct phydm_cfo_rpt cfo;
 	u8 i = 0;
 	static u8 tail, parity, rsv, vrsv, smooth, htsound, agg;
@@ -431,7 +431,7 @@ void phydm_bb_hw_dbg_info_ac(void *dm_void, u32 *_used, char *output,
 	static u8 vtxops, vrsv2, vbrsv, bf, vbcrc;
 	static u16 h_length, htcrc8, length;
 	static u16 vpaid;
-	static u16 v_length, vhtcrc8, v_mcss, v_tail, vb_tail;
+	static u16 vhtcrc8, v_mcss, v_tail;
 	static u8 hmcss, hrx_bw;
 	u8 pwdb;
 	s8 rxevm_0, rxevm_1, rxevm_2;
@@ -1922,8 +1922,6 @@ u16 phydm_rx_avg_phy_rate(void *dm_void)
 void phydm_print_hist_2_buf(void *dm_void, u16 *val, u16 len, char *buf,
 			    u16 buf_size)
 {
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
-
 	if (len == PHY_HIST_SIZE) {
 		PHYDM_SNPRINTF(buf, buf_size,
 			       "[%.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d, %.2d]",
@@ -2032,7 +2030,6 @@ void phydm_show_phy_hitogram(void *dm_void)
 	char buf[PHYDM_SNPRINT_SIZE] = {0};
 	u16 buf_size = PHYDM_SNPRINT_SIZE;
 	u16 th_size = PHY_HIST_SIZE - 1;
-	u8 i = 0;
 
 	PHYDM_DBG(dm, DBG_CMN, "[PHY Histogram] ==============>\n");
 /*@===[Threshold]=============================================================*/
@@ -2369,7 +2366,9 @@ void phydm_get_phy_statistic(void *dm_void)
 void phydm_basic_dbg_msg_linked(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	struct phydm_cfo_track_struct *cfo_t = &dm->dm_cfo_track;
+#endif
 	struct odm_phy_dbg_info *dbg_t = &dm->phy_dbg_info;
 	u16 macid, client_cnt = 0;
 	u8 rate = 0;
@@ -2627,7 +2626,9 @@ void phydm_dm_summary(void *dm_void, u8 macid)
 void phydm_basic_dbg_message(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	struct phydm_fa_struct *fa_t = &dm->false_alm_cnt;
+#endif
 	#ifdef NHM_SUPPORT
 	struct ccx_info *ccx = &dm->dm_ccx_info;
 	u8 nhm_valid = 0;
@@ -3965,7 +3966,9 @@ void phydm_dump_rf_reg(void *dm_void, u32 *_used, char *output, u32 *_out_len)
 
 void phydm_dump_mac_reg(void *dm_void, u32 *_used, char *output, u32 *_out_len)
 {
+#ifdef CONFIG_RTW_DEBUG
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#endif
 	u32 addr = 0;
 	u32 used = *_used;
 	u32 out_len = *_out_len;
@@ -3996,7 +3999,6 @@ void phydm_dump_reg(void *dm_void, char input[][16], u32 *_used, char *output,
 	u32 var1[10] = {0};
 	u32 used = *_used;
 	u32 out_len = *_out_len;
-	u32 addr = 0;
 
 	if (input[1])
 		PHYDM_SSCANF(input[1], DCMD_DECIMAL, &var1[0]);
@@ -4632,7 +4634,6 @@ void phydm_mp_dbg(void *dm_void, char input[][16], u32 *_used, char *output,
 	char buf[PHYDM_SNPRINT_SIZE] = {0};
 	u32 used = *_used;
 	u32 out_len = *_out_len;
-	u32 var1[10] = {0};
 	u16 buf_size = PHYDM_SNPRINT_SIZE;
 	u16 th_size = PHY_HIST_SIZE - 1;
 	u8 i = 0;
@@ -5586,6 +5587,7 @@ void phydm_fw_trace_handler_code(void *dm_void, u8 *buffer, u8 cmd_len)
 {
 #ifdef CONFIG_PHYDM_DEBUG_FUNCTION
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
+#ifdef CONFIG_RTW_DEBUG
 	u8 function = buffer[0];
 	u8 dbg_num = buffer[1];
 	u16 content_0 = (((u16)buffer[3]) << 8) | ((u16)buffer[2]);
@@ -5593,6 +5595,7 @@ void phydm_fw_trace_handler_code(void *dm_void, u8 *buffer, u8 cmd_len)
 	u16 content_2 = (((u16)buffer[7]) << 8) | ((u16)buffer[6]);
 	u16 content_3 = (((u16)buffer[9]) << 8) | ((u16)buffer[8]);
 	u16 content_4 = (((u16)buffer[11]) << 8) | ((u16)buffer[10]);
+#endif
 
 	if (cmd_len > 12)
 		PHYDM_DBG(dm, DBG_FW_TRACE,

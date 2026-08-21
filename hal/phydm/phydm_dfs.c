@@ -169,7 +169,7 @@ void phydm_radar_detect_enable(void *dm_void)
 	u8 region_domain = dm->dfs_region_domain;
 	u8 c_channel = *dm->channel;
 	u8 band_width = *dm->band_width;
-	u8 enable = 0, i;
+	u8 enable = 0;
 	u8 short_pw_upperbound = 0;
 
 	PHYDM_DBG(dm, DBG_DFS, "test, region_domain = %d\n", region_domain);
@@ -829,7 +829,7 @@ phydm_radar_detect_dm_check(
 	struct _DFS_STATISTICS *dfs = &dm->dfs;
 	u8 region_domain = dm->dfs_region_domain, index = 0;
 
-	u16 i = 0, j = 0, k = 0, fa_count_cur = 0, fa_count_inc = 0;
+	u16 i = 0, k = 0, fa_count_cur = 0, fa_count_inc = 0;
 	u16 total_fa_in_hist = 0, pre_post_now_acc_fa_in_hist = 0;
 	u16 max_fa_in_hist = 0, vht_crc_ok_cnt_cur = 0;
 	u16 vht_crc_ok_cnt_inc = 0, ht_crc_ok_cnt_cur = 0;
@@ -841,15 +841,18 @@ phydm_radar_detect_dm_check(
 	u32 regf98_value = 0, reg918_value = 0, reg91c_value = 0;
 	u32 reg920_value = 0, reg924_value = 0, radar_rpt_reg_value = 0;
 	u32 regf54_value = 0, regf58_value = 0, regf5c_value = 0;
-	u32 regdf4_value = 0, regf70_value = 0, regf74_value = 0;
+	u32 regf70_value = 0, regf74_value = 0;
 	u32 rega40_value = 0, rega44_value = 0, rega48_value = 0;
 	u32 rega4c_value = 0, rega50_value = 0, rega54_value = 0;
+#ifdef CONFIG_RTW_DEBUG
+	u32 regdf4_value = 0;
+#endif
 	#if (RTL8721D_SUPPORT)
 	u32 reg908_value = 0, regdf4_value = 0;
 	u32 regf54_value = 0, regf58_value = 0, regf5c_value = 0;
 	u32 regf70_value = 0, regf74_value = 0;
 	#endif
-	boolean tri_short_pulse = 0, tri_long_pulse = 0, radar_type = 0;
+	boolean tri_short_pulse = 0, tri_long_pulse = 0;
 	boolean fault_flag_det = 0, fault_flag_psd = 0, fa_flag = 0;
 	boolean radar_detected = 0;
 	u8 st_l2h_new = 0, fa_mask_th = 0, sum = 0;
@@ -1312,8 +1315,7 @@ void phydm_dfs_histogram_radar_distinguish(
 	u16 j = 0;
 	u32 dfs_hist1_peak_index = 0, dfs_hist2_peak_index = 0;
 	u32 dfs_hist1_pw = 0, dfs_hist2_pw = 0, g_pw[6] = {0};
-	u32 g_peakindex[16] = {0}, g_mask_32 = 0, false_peak_hist1 = 0;
-	u32 false_peak_hist2_above10 = 0, false_peak_hist2_above0 = 0;
+	u32 g_peakindex[16] = {0};
 	u32 dfs_hist1_pri = 0, dfs_hist2_pri = 0, g_pri[6] = {0};
 	u32 pw_sum_g0g5 = 0, pw_sum_g1g2g3g4 = 0;
 	u32 pri_sum_g0g5 = 0, pri_sum_g1g2g3g4 = 0;

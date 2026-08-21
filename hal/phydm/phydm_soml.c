@@ -139,7 +139,6 @@ void phydm_adaptive_soml_workitem_callback(void *context)
 void phydm_adaptive_soml_callback(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	void *padapter = dm->adapter;
 
 	if (*dm->is_net_closed == true)
 		return;
@@ -509,7 +508,6 @@ void phydm_soml_stats_vht_off(void *dm_void)
 void phydm_soml_statistics(void *dm_void, u8 on_off_state)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
-	struct adaptive_soml *soml_tab = &dm->dm_soml_table;
 
 	if (on_off_state == SOML_ON) {
 		if (*dm->channel <= 14)
@@ -576,7 +574,7 @@ void phydm_adsl_odd_state(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct adaptive_soml *soml_tab = &dm->dm_soml_table;
-	u16 ht_reset[HT_RATE_IDX] = {0}, vht_reset[VHT_RATE_IDX] = {0};
+	u16 ht_reset[HT_RATE_IDX] = {0};
 	u8 size = sizeof(ht_reset[0]);
 
 	soml_tab->get_stats = true;

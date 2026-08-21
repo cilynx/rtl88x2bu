@@ -244,7 +244,6 @@ static int rtw_cfgvendor_send_cmd_reply(struct wiphy *wiphy,
 int rtw_dev_get_feature_set(struct net_device *dev)
 {
 	_adapter *adapter = (_adapter *)rtw_netdev_priv(dev);
-	HAL_DATA_TYPE *HalData = GET_HAL_DATA(adapter);
 	int feature_set = 0;
 
 	feature_set |= WIFI_FEATURE_INFRA;

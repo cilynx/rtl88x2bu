@@ -674,7 +674,6 @@ void phydm_bf_debug(void *dm_void, char input[][16], u32 *_used, char *output,
 		#endif
 	} else if (var1[0] == 1) {
 		#ifdef PHYDM_IC_JGR3_SERIES_SUPPORT
-		struct dm_struct *dm = (struct dm_struct *)dm_void;
 		struct phydm_bf_rate_info_jgr3 *bfinfo = &dm->bf_rate_info_jgr3;
 
 		bfinfo->enable = (u8)var1[1];

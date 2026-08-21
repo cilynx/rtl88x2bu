@@ -285,7 +285,9 @@ void odm_tx_pwr_track_set_pwr8822b(void *dm_void, enum pwrtrack_method method,
 #if (DM_ODM_SUPPORT_TYPE & ODM_WIN)
 	struct _ADAPTER *adapter = dm->adapter;
 #endif
+#ifdef CONFIG_RTW_DEBUG
 	struct dm_rf_calibration_struct *cali_info = &dm->rf_calibrate_info;
+#endif
 	struct _hal_rf_ *rf = &dm->rf_table;
 	u8 tx_pwr_idx_offset = 0;
 	u8 tx_pwr_idx = 0;

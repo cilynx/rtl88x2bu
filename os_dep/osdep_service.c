@@ -2210,7 +2210,6 @@ static int writeFile(struct file *fp, char *buf, int len)
 static int isDirReadable(const char *pathname, u32 *sz)
 {
 	struct path path;
-	int error = 0;
 
 	return kern_path(pathname, LOOKUP_FOLLOW, &path);
 }

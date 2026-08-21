@@ -1628,7 +1628,6 @@ void start_bss_network(_adapter *padapter, struct createbss_parm *parm)
 	u8 mlme_act = MLME_ACTION_UNKNOWN;
 	u8 val8;
 	u16 bcn_interval;
-	u32	acparm;
 	struct registry_priv	*pregpriv = &padapter->registrypriv;
 	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
 	struct security_priv *psecuritypriv = &(padapter->securitypriv);
@@ -4569,7 +4568,6 @@ u8 rtw_ap_chbw_decision(_adapter *adapter, u8 ifbmp, u8 excl_ifbmp
 {
 	struct dvobj_priv *dvobj = adapter_to_dvobj(adapter);
 	RT_CHANNEL_INFO *chset = adapter_to_chset(adapter);
-	struct rf_ctl_t *rfctl = adapter_to_rfctl(adapter);
 	bool ch_avail = _FALSE;
 	u8 cur_ie_ch[CONFIG_IFACE_NUMBER] = {0};
 	u8 cur_ie_bw[CONFIG_IFACE_NUMBER] = {0};

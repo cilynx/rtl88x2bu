@@ -236,7 +236,6 @@ void phydm_set_direct_bfer(void *dm_void, u16 phs_idx, u8 su_idx)
 				  0x1df, 0x1e5, 0x1ea, 0x1ef, 0x1f5, 0x1fa,
 				  0x1c0}; //{Psi_4bit, Phi_6bit} of 0~360
 		u16 psiphiR;
-		u8 i;
 		u8 snr = 0x12; // for 1SS BF
 		u8 nc = 0x0; //bit 2-0
 		u8 nr = 0x1; //bit 5-3
@@ -342,8 +341,8 @@ void phydm_set_direct_bfer(void *dm_void, u16 phs_idx, u8 su_idx)
 /*only 1SS rate can improve performance*/
 void phydm_set_direct_bfer_txdesc_en(void *dm_void, u8 enable)
 {
-	struct dm_struct *dm = (struct dm_struct *)dm_void;
 #if (RTL8197G_SUPPORT)
+	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	if (dm->support_ic_type & ODM_RTL8197G) {
 		phydm_iq_gen_en(dm);
 

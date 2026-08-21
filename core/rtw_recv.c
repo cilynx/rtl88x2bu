@@ -855,7 +855,11 @@ sint recv_decache(union recv_frame *precv_frame)
 {
 	struct sta_info *psta = precv_frame->u.hdr.psta;
 	struct rx_pkt_attrib *pattrib = &precv_frame->u.hdr.attrib;
+#ifdef CONFIG_RTW_DEBUG
+#if defined(DBG_RX_SEQ) || defined(DBG_RX_DROP_FRAME)
 	_adapter *adapter = psta->padapter;
+#endif
+#endif
 	sint tid = pattrib->priority;
 	u16 seq_ctrl = ((precv_frame->u.hdr.attrib.seq_num & 0xffff) << 4) |
 		       (precv_frame->u.hdr.attrib.frag_num & 0xf);

@@ -425,7 +425,6 @@ static void init_phydm_cominfo(PADAPTER adapter)
 {
 	PHAL_DATA_TYPE hal;
 	struct dm_struct *p_dm_odm;
-	u32 support_ability = 0;
 	u8 cut_ver = ODM_CUT_A, fab_ver = ODM_TSMC;
 
 
@@ -500,7 +499,6 @@ static void check_rxfifo_full(PADAPTER adapter)
 	struct dvobj_priv *psdpriv = adapter->dvobj;
 	struct debug_priv *pdbgpriv = &psdpriv->drv_dbg;
 	struct registry_priv *regsty = &adapter->registrypriv;
-	u8 val8 = 0;
 
 	if (regsty->check_hw_status == 1) {
 		pdbgpriv->dbg_rx_fifo_last_overflow = pdbgpriv->dbg_rx_fifo_curr_overflow;
@@ -793,7 +791,6 @@ exit:
  */
 static u8 need_switch_band(PADAPTER adapter, u8 channelToSW)
 {
-	u8 u1tmp = 0;
 	u8 ret_value = _TRUE;
 	u8 Band = BAND_ON_5G, BandToSW = BAND_ON_5G;
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
@@ -875,7 +872,7 @@ static void switch_chnl_and_set_bw_by_drv(PADAPTER adapter, u8 switch_band)
 {
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
 	struct dm_struct *p_dm_odm = &hal->odmpriv;
-	u8 center_ch = 0, ret = 0;
+	u8 ret = 0;
 
 	/* set channel & Bandwidth register */
 	/* 1. set switch band register if need to switch band */
@@ -945,7 +942,7 @@ void rtl8822b_switch_chnl_and_set_bw(PADAPTER adapter)
 {
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
 	struct dm_struct *p_dm_odm = &hal->odmpriv;
-	u8 center_ch = 0, ret = 0, switch_band = _FALSE;
+	u8 switch_band = _FALSE;
 
 	if (adapter->bNotifyChannelChange) {
 		RTW_INFO("[%s] bSwChnl=%d, ch=%d, bSetChnlBW=%d, bw=%d\n",
@@ -1072,7 +1069,6 @@ void rtl8822b_handle_sw_chnl_and_set_bw(
 	u8 tmpnCur40MhzPrimeSC = hal->nCur40MhzPrimeSC;
 	u8 tmpnCur80MhzPrimeSC = hal->nCur80MhzPrimeSC;
 	u8 tmpCenterFrequencyIndex1 = hal->CurrentCenterFrequencyIndex1;
-	struct mlme_ext_priv *pmlmeext = &Adapter->mlmeextpriv;
 
 
 	/* check swchnl or setbw */
@@ -1591,7 +1587,6 @@ static void _config_beamformer_mu(PADAPTER adapter, struct beamformer_entry *bfe
 	u32 csi_param;
 	/* Misc */
 	u8 i, val8;
-	u16 val16;
 
 	RTW_INFO("%s: Config MU BFer entry HW setting\n", __FUNCTION__);
 
@@ -1652,8 +1647,6 @@ static void _config_beamformee_su(PADAPTER adapter, struct beamformee_entry *bfe
 	u8 idx;
 	u16 p_aid = 0;
 	/* Misc */
-	u8 val8;
-	u16 val16;
 	u32 val32;
 
 
@@ -1969,7 +1962,7 @@ static void _reset_beamformee_mu(PADAPTER adapter, struct beamformee_entry *bfee
 void rtl8822b_phy_bf_reset_all(PADAPTER adapter)
 {
 	struct beamforming_info *info;
-	u8 i, val8;
+	u8 i;
 	u32 val32;
 
 

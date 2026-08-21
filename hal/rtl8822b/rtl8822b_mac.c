@@ -107,7 +107,6 @@ s32 rtl8822b_fw_dl(PADAPTER adapter, u8 wowlan)
 {
 	struct dvobj_priv *d = adapter_to_dvobj(adapter);
 	HAL_DATA_TYPE *hal = GET_HAL_DATA(adapter);
-	struct pwrctrl_priv *pwrpriv = adapter_to_pwrctl(adapter);
 	int err;
 	u8 fw_bin = _TRUE;
 

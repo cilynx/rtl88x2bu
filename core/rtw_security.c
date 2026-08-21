@@ -2038,7 +2038,7 @@ u32	rtw_BIP_verify(_adapter *padapter, u8 *whdr_pos, sint flen
 {
 	u8 *BIP_AAD, *mme;
 	u32	res = _FAIL;
-	uint len, ori_len;
+	uint ori_len;
 	u16 pkt_keyid = 0;
 	u64 pkt_ipn = 0;
 	struct rtw_ieee80211_hdr *pwlanhdr;

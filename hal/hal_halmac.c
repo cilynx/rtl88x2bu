@@ -3422,11 +3422,8 @@ static int init_mac_flow(struct dvobj_priv *d)
 	struct hal_com_data *hal;
 	struct halmac_adapter *halmac;
 	struct halmac_api *api;
-	enum halmac_drv_rsvd_pg_num rsvd_page_number;
-	union halmac_wlan_addr hwa;
 	enum halmac_trx_mode trx_mode;
 	enum halmac_ret_status status;
-	u8 drv_rsvd_num;
 	u8 nettype;
 	int err, err_ret = -1;
 
@@ -3921,7 +3918,6 @@ int rtw_halmac_dlfw_mem_from_file(struct dvobj_priv *d, u8 *fwpath, enum fw_mem 
 int rtw_halmac_dlfw(struct dvobj_priv *d, u8 *fw, u32 fwsize)
 {
 	PADAPTER adapter;
-	enum halmac_ret_status status;
 	u32 ok;
 	int err, err_ret = -1;
 

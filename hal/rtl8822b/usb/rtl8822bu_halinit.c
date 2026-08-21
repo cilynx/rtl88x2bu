@@ -193,7 +193,9 @@ static void hal_init_misc(PADAPTER adapter)
 u32 rtl8822bu_init(PADAPTER padapter)
 {
 	u8 status = _SUCCESS;
+#ifdef CONFIG_RTW_DEBUG
 	systime init_start_time = rtw_get_current_time();
+#endif
 
 #ifdef CONFIG_FWLPS_IN_IPS
 	if (_SUCCESS == rtl8822bu_fw_ips_init(padapter))
@@ -226,9 +228,6 @@ static void hal_deinit_misc(PADAPTER adapter)
 
 u32 rtl8822bu_deinit(PADAPTER padapter)
 {
-	struct pwrctrl_priv *pwrctl = adapter_to_pwrctl(padapter);
-	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(padapter);
-	struct dvobj_priv *pobj_priv = adapter_to_dvobj(padapter);
 	u8 status = _TRUE;
 
 	RTW_INFO("==> %s\n", __func__);
