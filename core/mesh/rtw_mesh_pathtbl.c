@@ -19,26 +19,11 @@
 #include <linux/jhash.h>
 
 #ifdef PLATFORM_LINUX
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 0, 0))
 static void rtw_mpath_free_rcu(struct rtw_mesh_path *mpath)
 {
 	kfree_rcu(mpath, rcu);
 	rtw_mstat_update(MSTAT_TYPE_PHY, MSTAT_FREE, sizeof(struct rtw_mesh_path));
 }
-#else
-static void rtw_mpath_free_rcu_callback(rtw_rcu_head *head)
-{
-	struct rtw_mesh_path *mpath;
-
-	mpath = container_of(head, struct rtw_mesh_path, rcu);
-	rtw_mfree(mpath, sizeof(struct rtw_mesh_path));
-}
-
-static void rtw_mpath_free_rcu(struct rtw_mesh_path *mpath)
-{
-	call_rcu(&mpath->rcu, rtw_mpath_free_rcu_callback);
-}
-#endif
 #endif /* PLATFORM_LINUX */
 
 static void rtw_mesh_path_free_rcu(struct rtw_mesh_table *tbl, struct rtw_mesh_path *mpath);
@@ -1239,4 +1224,3 @@ void rtw_mesh_pathtbl_unregister(_adapter *adapter)
 	}
 }
 #endif /* CONFIG_RTW_MESH */
-
