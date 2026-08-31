@@ -1781,7 +1781,7 @@ chbw_decision:
 	rtw_hal_set_mcc_setting_start_bss_network(padapter, chbw_allow);
 #endif
 
-#if defined(CONFIG_IOCTL_CFG80211) && (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 5, 0))
+#if defined(CONFIG_IOCTL_CFG80211)
 	for (i = 0; i < pdvobj->iface_nums; i++) {
 		if (!(ifbmp_ch_changed & BIT(i)) || !pdvobj->padapters[i])
 			continue;
@@ -1800,7 +1800,7 @@ chbw_decision:
 				, ht_option, 0);
 		}
 	}
-#endif /* defined(CONFIG_IOCTL_CFG80211) && (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 5, 0)) */
+#endif /* defined(CONFIG_IOCTL_CFG80211) */
 
 	if (DUMP_ADAPTERS_STATUS) {
 		RTW_INFO(FUNC_ADPT_FMT" done\n", FUNC_ADPT_ARG(padapter));
@@ -3842,11 +3842,11 @@ u8 ap_free_sta(_adapter *padapter, struct sta_info *psta, bool active, u16 reaso
 #ifdef CONFIG_IOCTL_CFG80211
 		#ifdef COMPAT_KERNEL_RELEASE
 		rtw_cfg80211_indicate_sta_disassoc(padapter, psta->cmn.mac_addr, reason);
-		#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)) && !defined(CONFIG_CFG80211_FORCE_COMPATIBLE_2_6_37_UNDER)
+		#elif !defined(CONFIG_CFG80211_FORCE_COMPATIBLE_2_6_37_UNDER)
 		rtw_cfg80211_indicate_sta_disassoc(padapter, psta->cmn.mac_addr, reason);
-		#else /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)) && !defined(CONFIG_CFG80211_FORCE_COMPATIBLE_2_6_37_UNDER) */
+		#else /* !defined(CONFIG_CFG80211_FORCE_COMPATIBLE_2_6_37_UNDER) */
 		/* will call rtw_cfg80211_indicate_sta_disassoc() in cmd_thread for old API context */
-		#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)) && !defined(CONFIG_CFG80211_FORCE_COMPATIBLE_2_6_37_UNDER) */
+		#endif /*  !defined(CONFIG_CFG80211_FORCE_COMPATIBLE_2_6_37_UNDER) */
 #else
 		rtw_indicate_sta_disassoc_event(padapter, psta);
 #endif
@@ -5439,4 +5439,3 @@ exit:
 	return;
 }
 #endif /* CONFIG_AP_MODE */
-
