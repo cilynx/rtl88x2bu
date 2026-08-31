@@ -2586,13 +2586,7 @@ void _rtw_mesh_expire_peer_ent(_adapter *adapter, struct mesh_plink_ent *plink)
 		struct mlme_ext_priv *mlmeext = &adapter->mlmeextpriv;
 		struct wireless_dev *wdev = adapter->rtw_wdev;
 		s32 freq = rtw_ch2freq(mlmeext->cur_channel);
-
-		#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)) || defined(COMPAT_KERNEL_RELEASE)
 		rtw_cfg80211_rx_mgmt(wdev, freq, 0, frame, flen, GFP_ATOMIC);
-		#else
-		cfg80211_rx_action(adapter->pnetdev, freq, frame, flen, GFP_ATOMIC);
-		#endif
-
 		rtw_mfree(frame, flen);
 	} else {
 		rtw_mesh_expire_peer_notify(adapter, plink->addr);
@@ -4094,4 +4088,3 @@ void dump_mesh_stats(void *sel, _adapter *adapter)
 	RTW_PRINT_SEL(sel, "mrc_del_qlen:%u\n", stats->mrc_del_qlen);
 }
 #endif /* CONFIG_RTW_MESH */
-
