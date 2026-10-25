@@ -1847,8 +1847,8 @@ struct wireless_dev *wdev,
 		goto addkey_end;
 	}
 
-	memcpy((char *)param->u.crypt.alg, alg_name, IEEE_CRYPT_ALG_NAME_LEN);
-
+	strncpy((char *)param->u.crypt.alg, alg_name, IEEE_CRYPT_ALG_NAME_LEN);
+	param->u.crypt.alg[IEEE_CRYPT_ALG_NAME_LEN - 1] = '\0';
 
 	if (!mac_addr || is_broadcast_ether_addr(mac_addr)
 		#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)) || defined(COMPAT_KERNEL_RELEASE)
@@ -5040,7 +5040,8 @@ static int rtw_cfg80211_add_monitor_if(_adapter *padapter, char *name, struct ne
 		goto out;
 
 	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
-	_rtw_memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ + 1);
+	strncpy(pwdev_priv->ifname_mon, name, IFNAMSIZ);
+	pwdev_priv->ifname_mon[IFNAMSIZ - 1] = '\0';
 
 out:
 	if (ret && mon_wdev) {
