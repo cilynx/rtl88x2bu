@@ -15957,7 +15957,7 @@ void rtw_join_done_chk_ch(_adapter *adapter, int join_res)
 					rtw_start_bss_hdl_after_chbw_decided(iface);
 
 					{
-						#if defined(CONFIG_IOCTL_CFG80211) && (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 5, 0))
+						#if defined(CONFIG_IOCTL_CFG80211)
 						u8 ht_option = 0;
 
 						#ifdef CONFIG_80211N_HT
@@ -16171,7 +16171,7 @@ exit:
 		*bw = u_bw;
 		*offset = u_offset;
 
-#if defined(CONFIG_IOCTL_CFG80211) && (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 5, 0))
+#if defined(CONFIG_IOCTL_CFG80211)
 		{
 			u8 ht_option = 0;
 
