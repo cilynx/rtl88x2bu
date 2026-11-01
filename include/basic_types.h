@@ -79,18 +79,7 @@
 	#include <linux/utsname.h>
 
 	typedef	signed int sint;
-
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 19))
-typedef _Bool bool;
-
-enum {
-	false	= 0,
-	true	= 1
-};
-#endif
-
 	typedef void (*proc_t)(void *);
-
 	typedef	__kernel_size_t	SIZE_T;
 	typedef	__kernel_ssize_t	SSIZE_T;
 	#define FIELD_OFFSET(s, field)	((SSIZE_T)&((s *)(0))->field)
