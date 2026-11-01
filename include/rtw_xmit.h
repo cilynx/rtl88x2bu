@@ -981,9 +981,7 @@ void _rtw_free_xmit_priv(struct xmit_priv *pxmitpriv);
 
 void rtw_alloc_hwxmits(_adapter *padapter);
 void rtw_free_hwxmits(_adapter *padapter);
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 24))
 s32 rtw_monitor_xmit_entry(struct sk_buff *skb, struct net_device *ndev);
-#endif
 void rtw_xmit_dequeue_callback(_workitem *work);
 void rtw_xmit_queue_set(struct sta_info *sta);
 void rtw_xmit_queue_clear(struct sta_info *sta);
