@@ -17,6 +17,7 @@
 #include <drv_types.h>
 #include <rtw_mp.h>
 #include "../../hal/phydm/phydm_precomp.h"
+#include <linux/string.h>  /* For strlen */
 #ifdef RTW_HALMAC
 #include "../../hal/hal_halmac.h"
 #endif
@@ -3141,7 +3142,7 @@ static int rtw_wx_set_enc_ext(struct net_device *dev,
 		goto exit;
 	}
 
-	memcpy((char *)param->u.crypt.alg, alg_name, IEEE_CRYPT_ALG_NAME_LEN);
+	_rtw_memcpy((char *)param->u.crypt.alg, alg_name, strlen(alg_name) + 1);
 
 	if (pext->ext_flags & IW_ENCODE_EXT_SET_TX_KEY)
 		param->u.crypt.set_tx = 1;

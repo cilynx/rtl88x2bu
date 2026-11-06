@@ -16,6 +16,7 @@
 
 #include <drv_types.h>
 #include <hal_data.h>
+#include <linux/string.h>  /* For strlen */
 
 #ifdef CONFIG_IOCTL_CFG80211
 
@@ -1847,8 +1848,7 @@ struct wireless_dev *wdev,
 		goto addkey_end;
 	}
 
-	memcpy((char *)param->u.crypt.alg, alg_name, IEEE_CRYPT_ALG_NAME_LEN);
-
+	_rtw_memcpy((char *)param->u.crypt.alg, alg_name, strlen(alg_name) + 1);
 
 	if (!mac_addr || is_broadcast_ether_addr(mac_addr)
 		#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)) || defined(COMPAT_KERNEL_RELEASE)
@@ -5040,7 +5040,7 @@ static int rtw_cfg80211_add_monitor_if(_adapter *padapter, char *name, struct ne
 		goto out;
 
 	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
-	_rtw_memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ + 1);
+	_rtw_memcpy(pwdev_priv->ifname_mon, name, strnlen(name, IFNAMSIZ) + 1);
 
 out:
 	if (ret && mon_wdev) {

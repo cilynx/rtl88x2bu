@@ -334,6 +334,8 @@ struct rtw_usb_drv usb_drv = {
 #endif
 #ifdef CONFIG_AUTOSUSPEND
 	.usbdrv.supports_autosuspend = 1,
+#else
+	.usbdrv.supports_autosuspend = 0,
 #endif
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
