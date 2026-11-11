@@ -1477,11 +1477,7 @@ static int rtw_net_set_mac_address(struct net_device *pnetdev, void *addr)
 	}
 
 	_rtw_memcpy(adapter_mac_addr(padapter), sa->sa_data, ETH_ALEN); /* set mac addr to adapter */
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 17, 0))
 	eth_hw_addr_set(pnetdev, sa->sa_data);
-#else
-	_rtw_memcpy(pnetdev->dev_addr, sa->sa_data, ETH_ALEN); /* set mac addr to net_device */
-#endif
 
 #if 0
 	if (rtw_is_hw_init_completed(padapter)) {
@@ -1531,7 +1527,6 @@ static struct net_device_stats *rtw_net_get_stats(struct net_device *pnetdev)
 	return &padapter->stats;
 }
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 /*
  * AC to queue mapping
  *
@@ -1568,16 +1563,7 @@ unsigned int rtw_classify8021d(struct sk_buff *skb)
 
 
 static u16 rtw_select_queue(struct net_device *dev, struct sk_buff *skb
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 13, 0)
-	#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 	, struct net_device *sb_dev
-	#else
-	, void *accel_priv
-	#endif
-	#if ((LINUX_VERSION_CODE >= KERNEL_VERSION(3, 14, 0)) && (LINUX_VERSION_CODE < KERNEL_VERSION(5, 2, 0)))
-	, select_queue_fallback_t fallback
-	#endif
-#endif
 )
 {
 	_adapter	*padapter = rtw_netdev_priv(dev);
@@ -1619,18 +1605,12 @@ u16 rtw_recv_select_queue(struct sk_buff *skb)
 
 }
 
-#endif
 
 static u8 is_rtw_ndev(struct net_device *ndev)
 {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29))
 	return ndev->netdev_ops
 		&& ndev->netdev_ops->ndo_do_ioctl
 		&& ndev->netdev_ops->ndo_do_ioctl == rtw_ioctl;
-#else
-	return ndev->do_ioctl
-		&& ndev->do_ioctl == rtw_ioctl;
-#endif
 }
 
 static int rtw_ndev_notifier_call(struct notifier_block *nb, unsigned long state, void *ptr)
@@ -1640,11 +1620,7 @@ static int rtw_ndev_notifier_call(struct notifier_block *nb, unsigned long state
 	if (ptr == NULL)
 		return NOTIFY_DONE;
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 11, 0))
 	ndev = netdev_notifier_info_to_dev(ptr);
-#else
-	ndev = ptr;
-#endif
 
 	if (ndev == NULL)
 		return NOTIFY_DONE;
@@ -1708,21 +1684,17 @@ void rtw_ndev_uninit(struct net_device *dev)
 	rtw_adapter_proc_deinit(dev);
 }
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29))
 static const struct net_device_ops rtw_netdev_ops = {
 	.ndo_init = rtw_ndev_init,
 	.ndo_uninit = rtw_ndev_uninit,
 	.ndo_open = netdev_open,
 	.ndo_stop = netdev_close,
 	.ndo_start_xmit = rtw_xmit_entry,
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 	.ndo_select_queue	= rtw_select_queue,
-#endif
 	.ndo_set_mac_address = rtw_net_set_mac_address,
 	.ndo_get_stats = rtw_net_get_stats,
 	.ndo_do_ioctl = rtw_ioctl,
 };
-#endif
 
 int rtw_init_netdev_name(struct net_device *pnetdev, const char *ifname)
 {
@@ -1761,18 +1733,7 @@ int rtw_init_netdev_name(struct net_device *pnetdev, const char *ifname)
 
 void rtw_hook_if_ops(struct net_device *ndev)
 {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29))
 	ndev->netdev_ops = &rtw_netdev_ops;
-#else
-	ndev->init = rtw_ndev_init;
-	ndev->uninit = rtw_ndev_uninit;
-	ndev->open = netdev_open;
-	ndev->stop = netdev_close;
-	ndev->hard_start_xmit = rtw_xmit_entry;
-	ndev->set_mac_address = rtw_net_set_mac_address;
-	ndev->get_stats = rtw_net_get_stats;
-	ndev->do_ioctl = rtw_ioctl;
-#endif
 }
 
 #ifdef CONFIG_CONCURRENT_MODE
@@ -1795,9 +1756,6 @@ struct net_device *rtw_init_netdev(_adapter *old_padapter)
 	padapter = rtw_netdev_priv(pnetdev);
 	padapter->pnetdev = pnetdev;
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 24)
-	SET_MODULE_OWNER(pnetdev);
-#endif
 
 	rtw_hook_if_ops(pnetdev);
 #ifdef CONFIG_CONCURRENT_MODE
@@ -1808,23 +1766,17 @@ struct net_device *rtw_init_netdev(_adapter *old_padapter)
 
 #ifdef CONFIG_TCP_CSUM_OFFLOAD_TX
         pnetdev->features |= (NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 39)
         pnetdev->hw_features |= (NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM);
-#endif
 #endif
 
 #ifdef CONFIG_RTW_NETIF_SG
         pnetdev->features |= NETIF_F_SG;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 39)
         pnetdev->hw_features |= NETIF_F_SG;
-#endif
 #endif
 
 	if ((pnetdev->features & NETIF_F_SG) && (pnetdev->features & NETIF_F_IP_CSUM)) {
 		pnetdev->features |= (NETIF_F_TSO | NETIF_F_GSO);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 39)
 		pnetdev->hw_features |= (NETIF_F_TSO | NETIF_F_GSO);
-#endif
 	}
 	/* pnetdev->tx_timeout = NULL; */
 	pnetdev->watchdog_timeo = HZ * 3; /* 3 second timeout */
@@ -1851,9 +1803,7 @@ int rtw_os_ndev_alloc(_adapter *adapter)
 		rtw_warn_on(1);
 		goto exit;
 	}
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2, 5, 0)
 	SET_NETDEV_DEV(ndev, dvobj_to_dev(adapter_to_dvobj(adapter)));
-#endif
 
 #ifdef CONFIG_PCI_HCI
 	if (adapter_to_dvobj(adapter)->bdma64)
@@ -1904,9 +1854,6 @@ int rtw_os_ndev_register(_adapter *adapter, const char *name)
 
 #ifdef CONFIG_RTW_NAPI
 	netif_napi_add(ndev, &adapter->napi, rtw_recv_napi_poll
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 1, 0))
-            , RTL_NAPI_WEIGHT
-#endif
             );
 #endif /* CONFIG_RTW_NAPI */
 
@@ -1923,11 +1870,7 @@ int rtw_os_ndev_register(_adapter *adapter, const char *name)
 	/* alloc netdev name */
 	rtw_init_netdev_name(ndev, name);
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 17, 0))
 	eth_hw_addr_set(ndev, adapter_mac_addr(adapter));
-#else
-	_rtw_memcpy(ndev->dev_addr, adapter_mac_addr(adapter), ETH_ALEN);
-#endif
 #if defined(CONFIG_NET_NS)
     dev_net_set(ndev, wiphy_net(adapter_to_wiphy(adapter)));
 #endif //CONFIG_NET_NS
@@ -2502,21 +2445,6 @@ inline u8 rtw_rtnl_lock_needed(struct dvobj_priv *dvobj)
 	return 1;
 }
 
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26))
-static inline int rtnl_is_locked(void)
-{
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 17))
-	if (unlikely(rtnl_trylock())) {
-		rtnl_unlock();
-#else
-	if (unlikely(down_trylock(&rtnl_sem) == 0)) {
-		up(&rtnl_sem);
-#endif
-		return 0;
-	}
-	return 1;
-}
-#endif
 
 inline void rtw_set_rtnl_lock_holder(struct dvobj_priv *dvobj, _thread_hdl_ thd_hdl)
 {
@@ -2555,9 +2483,6 @@ u8 rtw_reset_drv_sw(_adapter *padapter)
 	_clr_fwstate_(pmlmepriv, _FW_UNDER_SURVEY | _FW_UNDER_LINKING);
 
 #ifdef CONFIG_AUTOSUSPEND
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 22) && LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 34))
-	adapter_to_dvobj(padapter)->pusbdev->autosuspend_disabled = 1;/* autosuspend disabled by the user */
-#endif
 #endif
 
 #ifdef DBG_CONFIG_ERROR_DETECT
@@ -3062,7 +2987,6 @@ static int netdev_vir_if_close(struct net_device *pnetdev)
 }
 #endif /*#ifndef CONFIG_NEW_NETDEV_HDL*/
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29))
 static const struct net_device_ops rtw_netdev_vir_if_ops = {
 	.ndo_init = rtw_ndev_init,
 	.ndo_uninit = rtw_ndev_uninit,
@@ -3077,29 +3001,12 @@ static const struct net_device_ops rtw_netdev_vir_if_ops = {
 	.ndo_set_mac_address = rtw_net_set_mac_address,
 	.ndo_get_stats = rtw_net_get_stats,
 	.ndo_do_ioctl = rtw_ioctl,
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 	.ndo_select_queue	= rtw_select_queue,
-#endif
 };
-#endif
 
 static void rtw_hook_vir_if_ops(struct net_device *ndev)
 {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29))
 	ndev->netdev_ops = &rtw_netdev_vir_if_ops;
-#else
-	ndev->init = rtw_ndev_init;
-	ndev->uninit = rtw_ndev_uninit;
-	#ifdef CONFIG_NEW_NETDEV_HDL
-	ndev->open = netdev_open;
-	ndev->stop = netdev_close;
-	#else
-	ndev->open = netdev_vir_if_open;
-	ndev->stop = netdev_vir_if_close;
-	#endif
-
-	ndev->set_mac_address = rtw_net_set_mac_address;
-#endif
 }
 _adapter *rtw_drv_add_vir_if(_adapter *primary_padapter,
 	void (*set_intf_ops)(_adapter *primary_padapter, struct _io_ops *pops))
@@ -3521,18 +3428,12 @@ void netdev_br_init(struct net_device *netdev)
 {
 	_adapter *adapter = (_adapter *)rtw_netdev_priv(netdev);
 
-#if (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 35))
 	rcu_read_lock();
-#endif
 
 	/* if(check_fwstate(pmlmepriv, WIFI_STATION_STATE|WIFI_ADHOC_STATE) == _TRUE) */
 	{
 		/* struct net_bridge	*br = netdev->br_port->br; */ /* ->dev->dev_addr; */
-		#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 35))
-		if (netdev->br_port)
-		#else
 		if (rcu_dereference(adapter->pnetdev->rx_handler_data))
-		#endif
 		{
 			struct net_device *br_netdev;
 
@@ -3551,9 +3452,7 @@ void netdev_br_init(struct net_device *netdev)
 		adapter->ethBrExtInfo.addPPPoETag = 1;
 	}
 
-#if (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 35))
 	rcu_read_unlock();
-#endif
 }
 #endif /* CONFIG_BR_EXT */
 
@@ -4265,9 +4164,6 @@ static int route_dump(u32 *gw_addr , int *gw_index)
 	struct msghdr msg;
 	struct iovec iov;
 	struct sockaddr_nl nladdr;
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
-	mm_segment_t oldfs;
-#endif
 	char *pg;
 	int size = 0;
 
@@ -4291,33 +4187,17 @@ static int route_dump(u32 *gw_addr , int *gw_index)
 
 	msg.msg_name = &nladdr;
 	msg.msg_namelen = sizeof(nladdr);
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 19, 0))
 	/* referece:sock_xmit in kernel code
 	 * WRITE for sock_sendmsg, READ for sock_recvmsg
 	 * third parameter for msg_iovlen
 	 * last parameter for iov_len
 	 */
 	iov_iter_init(&msg.msg_iter, WRITE, &iov, 1, sizeof(req));
-#else
-	msg.msg_iov = &iov;
-	msg.msg_iovlen = 1;
-#endif
 	msg.msg_control = NULL;
 	msg.msg_controllen = 0;
 	msg.msg_flags = MSG_DONTWAIT;
 
-    #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
-        oldfs = get_fs();
-        set_fs(KERNEL_DS);
-    #endif
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 1, 0))
 	err = sock_sendmsg(sock, &msg);
-#else
-	err = sock_sendmsg(sock, &msg, sizeof(req));
-#endif
-    #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
-        set_fs(oldfs);
-    #endif
 
 	if (err < 0)
 		goto out_sock;
@@ -4338,22 +4218,9 @@ restart:
 		iov.iov_base = pg;
 		iov.iov_len = PAGE_SIZE;
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 19, 0))
 		iov_iter_init(&msg.msg_iter, READ, &iov, 1, PAGE_SIZE);
-#endif
 
-        #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
-            oldfs = get_fs();
-            set_fs(KERNEL_DS);
-        #endif
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 7, 0))
 		err = sock_recvmsg(sock, &msg, MSG_DONTWAIT);
-#else
-		err = sock_recvmsg(sock, &msg, PAGE_SIZE, MSG_DONTWAIT);
-#endif
-        #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
-            set_fs(oldfs);
-        #endif
 
 		if (err < 0)
 			goto out_sock_pg;
@@ -4414,28 +4281,12 @@ done:
 
 		msg.msg_name = &nladdr;
 		msg.msg_namelen = sizeof(nladdr);
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 19, 0))
 		iov_iter_init(&msg.msg_iter, WRITE, &iov, 1, sizeof(req));
-#else
-		msg.msg_iov = &iov;
-		msg.msg_iovlen = 1;
-#endif
 		msg.msg_control = NULL;
 		msg.msg_controllen = 0;
 		msg.msg_flags = MSG_DONTWAIT;
 
-        #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
-            oldfs = get_fs();
-            set_fs(KERNEL_DS);
-        #endif
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 1, 0))
 		err = sock_sendmsg(sock, &msg);
-#else
-		err = sock_sendmsg(sock, &msg, sizeof(req));
-#endif
-        #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
-            set_fs(oldfs);
-        #endif
 
 		if (err > 0)
 			goto restart;

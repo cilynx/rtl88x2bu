@@ -64,11 +64,7 @@ void rtw_regd_apply_flags(struct wiphy *wiphy)
 		}
 
 		if (channel_set[i].ScanType == SCAN_PASSIVE) {
-			#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 14, 0))
-			ch->flags |= IEEE80211_CHAN_NO_IBSS | IEEE80211_CHAN_PASSIVE_SCAN;
-			#else
 			ch->flags |= IEEE80211_CHAN_NO_IR;
-			#endif
 		}
 	}
 }
@@ -95,31 +91,14 @@ static void rtw_reg_notifier(struct wiphy *wiphy, struct regulatory_request *req
 	rtw_regd_apply_flags(wiphy);
 }
 
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 9, 0))
-static int rtw_reg_notifier_return(struct wiphy *wiphy, struct regulatory_request *request)
-{
-	rtw_reg_notifier(wiphy, request);
-	return 0;
-}
-#endif
 
 int rtw_regd_init(struct wiphy *wiphy)
 {
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 9, 0))
-	wiphy->reg_notifier = rtw_reg_notifier_return;
-#else
 	wiphy->reg_notifier = rtw_reg_notifier;
-#endif
 
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 14, 0))
-	wiphy->flags |= WIPHY_FLAG_CUSTOM_REGULATORY;
-	wiphy->flags &= ~WIPHY_FLAG_STRICT_REGULATORY;
-	wiphy->flags &= ~WIPHY_FLAG_DISABLE_BEACON_HINTS;
-#else
 	wiphy->regulatory_flags |= REGULATORY_CUSTOM_REG;
 	wiphy->regulatory_flags &= ~REGULATORY_STRICT_REG;
 	wiphy->regulatory_flags &= ~REGULATORY_DISABLE_BEACON_HINTS;
-#endif
 
 	rtw_regd_apply_flags(wiphy);
 

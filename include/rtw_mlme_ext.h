@@ -282,9 +282,6 @@ enum TDLS_option {
 
 #endif /* CONFIG_TDLS */
 
-#if (KERNEL_VERSION(3, 8, 0) > LINUX_VERSION_CODE)
-#define NL80211_AUTHTYPE_SAE (__NL80211_AUTHTYPE_NUM + 1)
-#endif
 
 /*
  * Usage:

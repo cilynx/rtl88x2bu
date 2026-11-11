@@ -21,16 +21,10 @@
 
 #if defined(RTW_ENABLE_WIFI_CONTROL_FUNC)
 #include <linux/platform_device.h>
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 	#include <linux/wlan_plat.h>
-#else
-	#include <linux/wifi_tiwlan.h>
-#endif
 #endif /* defined(RTW_ENABLE_WIFI_CONTROL_FUNC) */
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0))
 #define strnicmp	strncasecmp
-#endif /* Linux kernel >= 4.0.0 */
 
 #ifdef CONFIG_GPIO_WAKEUP
 #include <linux/interrupt.h>
@@ -89,9 +83,6 @@ const char *android_wifi_cmd_str[ANDROID_WIFI_CMD_MAX] = {
 	"HOSTAPD_SET_MACADDR_ACL",
 	"HOSTAPD_ACL_ADD_STA",
 	"HOSTAPD_ACL_REMOVE_STA",
-#if defined(CONFIG_GTK_OL) && (LINUX_VERSION_CODE < KERNEL_VERSION(3, 1, 0))
-	"GTK_REKEY_OFFLOAD",
-#endif /* CONFIG_GTK_OL */
 /*	Private command for	P2P disable*/
 	"P2P_DISABLE",
 	"SET_AEK",
@@ -308,10 +299,8 @@ int rtw_android_cfg80211_pno_setup(struct net_device *net,
 		memcpy(pno_ssids_local[index].SSID, ssids[index].ssid,
 		       ssids[index].ssid_len);
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 2, 0)
 	if(ssids)
 		rtw_mfree((u8 *)ssids, (n_ssids * sizeof(struct cfg80211_ssid)));
-#endif
 	pno_time = (interval / 1000);
 
 	RTW_INFO("%s: nssids: %d, pno_time=%d\n", __func__, nssid, pno_time);
@@ -519,50 +508,6 @@ int get_int_from_command(char *pcmd)
 	return rtw_atoi(pcmd + i) ;
 }
 
-#if defined(CONFIG_GTK_OL) && (LINUX_VERSION_CODE < KERNEL_VERSION(3, 1, 0))
-int rtw_gtk_offload(struct net_device *net, u8 *cmd_ptr)
-{
-	int i;
-	/* u8 *cmd_ptr = priv_cmd.buf; */
-	struct sta_info *psta;
-	_adapter *padapter = (_adapter *)rtw_netdev_priv(net);
-	struct mlme_priv	*pmlmepriv = &padapter->mlmepriv;
-	struct sta_priv *pstapriv = &padapter->stapriv;
-	struct security_priv *psecuritypriv = &(padapter->securitypriv);
-	psta = rtw_get_stainfo(pstapriv, get_bssid(pmlmepriv));
-
-
-	if (psta == NULL)
-		RTW_INFO("%s, : Obtain Sta_info fail\n", __func__);
-	else {
-		/* string command length of "GTK_REKEY_OFFLOAD" */
-		cmd_ptr += 18;
-
-		_rtw_memcpy(psta->kek, cmd_ptr, RTW_KEK_LEN);
-		cmd_ptr += RTW_KEK_LEN;
-		/*
-		printk("supplicant KEK: ");
-		for(i=0;i<RTW_KEK_LEN; i++)
-			printk(" %02x ", psta->kek[i]);
-		printk("\n supplicant KCK: ");
-		*/
-		_rtw_memcpy(psta->kck, cmd_ptr, RTW_KCK_LEN);
-		cmd_ptr += RTW_KCK_LEN;
-		/*
-		for(i=0;i<RTW_KEK_LEN; i++)
-			printk(" %02x ", psta->kck[i]);
-		*/
-		_rtw_memcpy(psta->replay_ctr, cmd_ptr, RTW_REPLAY_CTR_LEN);
-		psecuritypriv->binstallKCK_KEK = _TRUE;
-
-		/* printk("\nREPLAY_CTR: "); */
-		/* for(i=0;i<RTW_REPLAY_CTR_LEN; i++) */
-		/* printk(" %02x ", psta->replay_ctr[i]); */
-	}
-
-	return _SUCCESS;
-}
-#endif /* CONFIG_GTK_OL */
 
 #ifdef CONFIG_RTW_MESH_AEK
 static int rtw_android_set_aek(struct net_device *ndev, char *command, int total_len)
@@ -624,11 +569,7 @@ int rtw_android_priv_cmd(struct net_device *net, struct ifreq *ifr, int cmd)
 		goto exit;
 	}
 #ifdef CONFIG_COMPAT
-#if (KERNEL_VERSION(4, 6, 0) > LINUX_VERSION_CODE)
-	if (is_compat_task()) {
-#else
 	if (in_compat_syscall()) {
-#endif
 		/* User space is 32-bit, use compat ioctl */
 		compat_android_wifi_priv_cmd compat_priv_cmd;
 
@@ -663,11 +604,7 @@ int rtw_android_priv_cmd(struct net_device *net, struct ifreq *ifr, int cmd)
 		ret = -ENOMEM;
 		goto exit;
 	}
-	#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 0, 0))
 	if (!access_ok(priv_cmd.buf, priv_cmd.total_len)) {
-	#else
-	if (!access_ok(VERIFY_READ, priv_cmd.buf, priv_cmd.total_len)) {
-	#endif
 		RTW_INFO("%s: failed to access memory\n", __FUNCTION__);
 		ret = -EFAULT;
 		goto exit;
@@ -918,11 +855,6 @@ int rtw_android_priv_cmd(struct net_device *net, struct ifreq *ifr, int cmd)
 		break;
 	}
 #endif /* CONFIG_RTW_MACADDR_ACL */
-#if defined(CONFIG_GTK_OL) && (LINUX_VERSION_CODE < KERNEL_VERSION(3, 1, 0))
-	case ANDROID_WIFI_CMD_GTK_REKEY_OFFLOAD:
-		rtw_gtk_offload(net, (u8 *)command);
-		break;
-#endif /* CONFIG_GTK_OL		 */
 	case ANDROID_WIFI_CMD_P2P_DISABLE: {
 #ifdef CONFIG_P2P
 		rtw_p2p_enable(padapter, P2P_ROLE_DISABLE);
@@ -1061,7 +993,6 @@ int wifi_set_power(int on, unsigned long msec)
 	return 0;
 }
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 int wifi_get_mac_addr(unsigned char *buf)
 {
 	RTW_INFO("%s\n", __FUNCTION__);
@@ -1071,27 +1002,16 @@ int wifi_get_mac_addr(unsigned char *buf)
 		return wifi_control_data->get_mac_addr(buf);
 	return -EOPNOTSUPP;
 }
-#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35)) */
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 39)) || defined(COMPAT_KERNEL_RELEASE)
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
 void *wifi_get_country_code(char *ccode, u32 flags)
-#else /* Linux kernel < 3.18 */
-void *wifi_get_country_code(char *ccode)
-#endif /* Linux kernel < 3.18 */
 {
 	RTW_INFO("%s\n", __FUNCTION__);
 	if (!ccode)
 		return NULL;
 	if (wifi_control_data && wifi_control_data->get_country_code)
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
 		return wifi_control_data->get_country_code(ccode, flags);
-#else /* Linux kernel < 3.18 */
-		return wifi_control_data->get_country_code(ccode);
-#endif /* Linux kernel < 3.18 */
 	return NULL;
 }
-#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 39)) */
 
 static int wifi_set_carddetect(int on)
 {
@@ -1253,19 +1173,12 @@ static void wifi_shutdown(struct platform_device *pdev)
 static int wifi_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	RTW_INFO("##> %s\n", __FUNCTION__);
-#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 39)) && defined(OOB_INTR_ONLY)
-	bcmsdh_oob_intr_set(0);
-#endif
 	return 0;
 }
 
 static int wifi_resume(struct platform_device *pdev)
 {
 	RTW_INFO("##> %s\n", __FUNCTION__);
-#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 39)) && defined(OOB_INTR_ONLY)
-	if (dhd_os_check_if_up(bcmsdh_get_drvdata()))
-		bcmsdh_oob_intr_set(1);
-#endif
 	return 0;
 }
 

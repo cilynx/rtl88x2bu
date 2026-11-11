@@ -47,11 +47,9 @@ void dump_drv_version(void *sel)
 
 void dump_drv_cfg(void *sel)
 {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 24))
 	char *kernel_version = utsname()->release;
 
 	RTW_PRINT_SEL(sel, "\nKernel Version: %s\n", kernel_version);
-#endif
 
 	RTW_PRINT_SEL(sel, "Driver Version: %s\n", DRIVERVERSION);
 	RTW_PRINT_SEL(sel, "------------------------------------------------\n");

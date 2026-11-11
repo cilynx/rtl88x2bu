@@ -18,9 +18,7 @@
 #include "../../hal_halmac.h"
 #include "../rtl8822b.h"	/* rtl8822b_cal_txdesc_chksum() and etc. */
 
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 5, 0)) || (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 18))
 #define usb_write_port_complete_not_xmitframe(purb, regs)	usb_write_port_complete_not_xmitframe(purb)
-#endif
 static void usb_write_port_complete_not_xmitframe(struct urb *purb, struct pt_regs *regs)
 {
 

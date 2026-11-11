@@ -2587,11 +2587,7 @@ void _rtw_mesh_expire_peer_ent(_adapter *adapter, struct mesh_plink_ent *plink)
 		struct wireless_dev *wdev = adapter->rtw_wdev;
 		s32 freq = rtw_ch2freq(mlmeext->cur_channel);
 
-		#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)) || defined(COMPAT_KERNEL_RELEASE)
 		rtw_cfg80211_rx_mgmt(wdev, freq, 0, frame, flen, GFP_ATOMIC);
-		#else
-		cfg80211_rx_action(adapter->pnetdev, freq, frame, flen, GFP_ATOMIC);
-		#endif
 
 		rtw_mfree(frame, flen);
 	} else {

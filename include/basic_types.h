@@ -80,14 +80,6 @@
 
 	typedef	signed int sint;
 
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 19))
-typedef _Bool bool;
-
-enum {
-	false	= 0,
-	true	= 1
-};
-#endif
 
 	typedef void (*proc_t)(void *);
 

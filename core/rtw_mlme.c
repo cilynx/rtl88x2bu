@@ -3604,15 +3604,9 @@ void rtw_iface_dynamic_check_timer_handlder(_adapter *adapter)
 
 #ifdef CONFIG_BR_EXT
 
-#if (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 35))
 	rcu_read_lock();
-#endif /* (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 35)) */
 
-#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 35))
-	if (adapter->pnetdev->br_port
-#else	/* (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 35)) */
 	if (rcu_dereference(adapter->pnetdev->rx_handler_data)
-#endif /* (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 35)) */
 		&& (check_fwstate(pmlmepriv, WIFI_STATION_STATE | WIFI_ADHOC_STATE) == _TRUE)) {
 		/* expire NAT2.5 entry */
 		void nat25_db_expire(_adapter *priv);
@@ -3625,9 +3619,7 @@ void rtw_iface_dynamic_check_timer_handlder(_adapter *adapter)
 			adapter->pppoe_connection_in_progress--;
 	}
 
-#if (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 35))
 	rcu_read_unlock();
-#endif /* (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 35)) */
 
 #endif /* CONFIG_BR_EXT */
 

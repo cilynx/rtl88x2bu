@@ -2597,11 +2597,7 @@ static COL_H2C_STATUS halbtcoutsrc_send_h2c(PADAPTER Adapter, PCOL_H2C pcol_h2c,
 	COL_H2C_STATUS		h2c_status = COL_STATUS_C2H_OK;
 	u8				i;
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 13, 0))
 	reinit_completion(&gl_coex_offload.c2h_event[pcol_h2c->req_num]);		/* set event to un signaled state */
-#else
-	INIT_COMPLETION(gl_coex_offload.c2h_event[pcol_h2c->req_num]);
-#endif
 
 	if (TRUE) {
 #if 0	/*(USE_HAL_MAC_API == 1) */

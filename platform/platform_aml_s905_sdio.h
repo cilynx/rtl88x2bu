@@ -20,9 +20,5 @@
 extern void sdio_reinit(void);
 extern void extern_wifi_set_enable(int is_on);
 
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 14, 0))
-extern void wifi_teardown_dt(void);
-extern int wifi_setup_dt(void);
-#endif /* kernel < 3.14.0 */
 
 #endif /* __PLATFORM_AML_S905_SDIO_H__ */

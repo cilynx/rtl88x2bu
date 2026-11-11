@@ -355,13 +355,8 @@ static int napi_recv(_adapter *padapter, int budget)
 
 #ifdef CONFIG_RTW_GRO
 		if (pregistrypriv->en_gro) {
-			#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0))
 			rtw_napi_gro_receive(&padapter->napi, pskb);
 			rx_ok = _TRUE;
-			#else
-			if (rtw_napi_gro_receive(&padapter->napi, pskb) != GRO_DROP)
-				rx_ok = _TRUE;
-			#endif
 			goto next;
 		}
 #endif /* CONFIG_RTW_GRO */
@@ -462,9 +457,7 @@ void rtw_os_recv_indicate_pkt(_adapter *padapter, _pkt *pkt, union recv_frame *r
 
 					/* skb->ip_summed = CHECKSUM_NONE; */
 					pkt->dev = pnetdev;
-					#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 					skb_set_queue_mapping(pkt, rtw_recv_select_queue(pkt));
-					#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35) */
 
 					_rtw_xmit_entry(pkt, pnetdev);
 
@@ -485,13 +478,9 @@ void rtw_os_recv_indicate_pkt(_adapter *padapter, _pkt *pkt, union recv_frame *r
 #ifdef CONFIG_BR_EXT
 		if (check_fwstate(pmlmepriv, WIFI_STATION_STATE | WIFI_ADHOC_STATE) == _TRUE) {
 			/* Insert NAT2.5 RX here! */
-			#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 35))
-			br_port = padapter->pnetdev->br_port;
-			#else
 			rcu_read_lock();
 			br_port = rcu_dereference(padapter->pnetdev->rx_handler_data);
 			rcu_read_unlock();
-			#endif
 
 			if (br_port) {
 				int nat25_handle_frame(_adapter *priv, struct sk_buff *skb);

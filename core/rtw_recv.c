@@ -4126,7 +4126,6 @@ static sint fill_radiotap_hdr(_adapter *padapter, union recv_frame *precvframe, 
 	return ret;
 
 }
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 24))
 int recv_frame_monitor(_adapter *padapter, union recv_frame *rframe)
 {
 	int ret = _SUCCESS;
@@ -4172,7 +4171,6 @@ int recv_frame_monitor(_adapter *padapter, union recv_frame *rframe)
 exit:
 	return ret;
 }
-#endif
 int recv_func_prehandle(_adapter *padapter, union recv_frame *rframe)
 {
 	int ret = _SUCCESS;
@@ -4331,9 +4329,7 @@ int recv_func(_adapter *padapter, union recv_frame *rframe)
 #endif
 	if (check_fwstate(mlmepriv, WIFI_MONITOR_STATE)) {
 		/* monitor mode */
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 24))
 		recv_frame_monitor(padapter, rframe);
-#endif
 		ret = _SUCCESS;
 		goto exit;
 	} else
